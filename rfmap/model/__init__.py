@@ -1,1 +1,1 @@
-from molmap.model import cbks, loss, net, importance
+from rfmap.model import cbks, loss, net, importance

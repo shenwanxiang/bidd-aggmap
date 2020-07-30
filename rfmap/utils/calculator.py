@@ -7,8 +7,8 @@ Created on Sat Aug 17 16:54:12 2019
 
 @usecase: calculate varies distances
 """
-from molmap.utils.distances import named_distances
-from molmap.utils.multiproc import MultiProcessUnorderedBarRun
+from rfmap.utils.distances import named_distances
+from rfmap.utils.multiproc import MultiProcessUnorderedBarRun
 
 import numpy as np
 from tqdm import tqdm

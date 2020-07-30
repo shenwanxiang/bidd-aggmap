@@ -1,4 +1,3 @@
-
 from scipy.cluster.hierarchy import dendrogram, linkage, to_tree
 from scipy.spatial.distance import squareform
 import seaborn as sns
@@ -7,20 +6,20 @@ import pandas as pd
 import numpy as np
 import os
 
-from molmap.utils.logtools import print_info
+from rfmap.utils.logtools import print_info
 
 
-def plot_scatter(molmap, htmlpath = './', htmlname = None, radius = 3):
+def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2):
     '''
-    molmap: the object of molmap
+    mp: the object of mp
     htmlpath: the figure path, not include the prefix of 'html'
     htmlname: the name 
     radius: int, defaut:3, the radius of scatter dot
     '''
     
-    title = '2D emmbedding of %s based on %s method' % (molmap.ftype, molmap.method)
-    subtitle = 'number of %s: %s, metric method: %s' % (molmap.ftype, len(molmap.flist), molmap.metric)
-    name = '%s_%s_%s_%s_%s' % (molmap.ftype,len(molmap.flist), molmap.metric, molmap.method, 'scatter')
+    title = '2D emmbedding of %s based on %s method' % (mp.ftype, mp.emb_method)
+    subtitle = 'number of %s: %s, metric method: %s' % (mp.ftype, len(mp.flist), mp.metric)
+    name = '%s_%s_%s_%s_%s' % (mp.ftype,len(mp.flist), mp.metric, mp.emb_method, 'scatter')
     
     if not os.path.exists(htmlpath):
         os.makedirs(htmlpath)
@@ -32,12 +31,12 @@ def plot_scatter(molmap, htmlpath = './', htmlname = None, radius = 3):
     print_info('generate file: %s' % filename)
         
     
-    xy = molmap.embedded.embedding_
-    colormaps = molmap.extract.colormaps
+    xy = mp.embedded.embedding_
+    colormaps = mp.colormaps
     
     df = pd.DataFrame(xy, columns = ['x', 'y'])
-    bitsinfo = molmap.extract.bitsinfo.set_index('IDs')
-    df = df.join(bitsinfo.loc[molmap.flist].reset_index())
+    bitsinfo = mp.bitsinfo.set_index('IDs')
+    df = df.join(bitsinfo.loc[mp.flist].reset_index())
     df['colors'] = df['Subtypes'].map(colormaps)
 
     H = Highchart(width=1000, height=850)
@@ -86,19 +85,19 @@ def plot_scatter(molmap, htmlpath = './', htmlname = None, radius = 3):
 
 
 
-def plot_grid(molmap, htmlpath = './', htmlname = None):
+def plot_grid(mp, htmlpath = './', htmlname = None):
     '''
-    molmap: the object of molmap
+    mp: the object of mp
     htmlpath: the figure path
     '''    
 
     if not os.path.exists(htmlpath):
         os.makedirs(htmlpath)    
     
-    title = 'Assignment of %s by %s emmbedding result' % (molmap.ftype, molmap.method)
-    subtitle = 'number of %s: %s, metric method: %s' % (molmap.ftype, len(molmap.flist), molmap.metric)    
+    title = 'Assignment of %s by %s emmbedding result' % (mp.ftype, mp.emb_method)
+    subtitle = 'number of %s: %s, metric method: %s' % (mp.ftype, len(mp.flist), mp.metric)    
 
-    name = '%s_%s_%s_%s_%s' % (molmap.ftype,len(molmap.flist), molmap.metric, molmap.method, 'molmap')
+    name = '%s_%s_%s_%s_%s' % (mp.ftype,len(mp.flist), mp.metric, mp.emb_method, 'mp')
     
     if htmlname:
         name = name = htmlname + '_' + name   
@@ -108,10 +107,10 @@ def plot_grid(molmap, htmlpath = './', htmlname = None):
     
     
     
-    m,n = molmap.fmap_shape
-    colormaps = molmap.extract.colormaps
-    position = np.zeros(molmap.fmap_shape, dtype='O').reshape(m*n,)
-    position[molmap._S.col_asses] = molmap.flist
+    m,n = mp.fmap_shape
+    colormaps = mp.colormaps
+    position = np.zeros(mp.fmap_shape, dtype='O').reshape(m*n,)
+    position[mp._S.col_asses] = mp.flist
     position = position.reshape(m, n)
     
 
@@ -126,7 +125,7 @@ def plot_grid(molmap, htmlpath = './', htmlname = None):
     v = position.reshape(m*n, order = 'f')
 
     df = pd.DataFrame(list(zip(x,y, v)), columns = ['x', 'y', 'v'])
-    bitsinfo = molmap.extract.bitsinfo
+    bitsinfo = mp.bitsinfo
     subtypedict = bitsinfo.set_index('IDs')['Subtypes'].to_dict()
     subtypedict.update({0:'NaN'})
     df['Subtypes'] = df.v.map(subtypedict)
@@ -139,18 +138,18 @@ def plot_grid(molmap, htmlpath = './', htmlname = None):
     H.set_options('subtitle', {'text': subtitle})
 
 #     H.set_options('xAxis', {'title': '', 
-#                             'min': 0, 'max': molmap.fmap_shape[1]-1,
+#                             'min': 0, 'max': mp.fmap_shape[1]-1,
 #                             'allowDecimals':False,
 #                             'labels':{'style':{'fontSize':20}}})
     
 #     H.set_options('yAxis', {'title': '', 'tickPosition': 'inside', 
-#                             'min': 0, 'max': molmap.fmap_shape[0]-1,
+#                             'min': 0, 'max': mp.fmap_shape[0]-1,
 #                             'reversed': True,
 #                             'allowDecimals':False,
 #                             'labels':{'style':{'fontSize':20}}})
 
     H.set_options('xAxis', {'title': None,                         
-                            'min': 0, 'max': molmap.fmap_shape[1],
+                            'min': 0, 'max': mp.fmap_shape[1],
                             'startOnTick': False,
                             'endOnTick': False,    
                             'allowDecimals':False,
@@ -162,7 +161,7 @@ def plot_grid(molmap, htmlpath = './', htmlname = None):
                             'endOnTick': False,
                             'gridLineWidth': 0,
                             'reversed': True,
-                            'min': 0, 'max': molmap.fmap_shape[0],
+                            'min': 0, 'max': mp.fmap_shape[0],
                             'allowDecimals':False,
                             'labels':{'style':{'fontSize':20}}})
     
@@ -210,11 +209,11 @@ def _getNewick(node, newick, parentdist, leaf_names):
         newick = "(%s" % (newick)
         return newick
     
-def _mp2newick(molmap, treefile = 'mytree'):
+def _mp2newick(mp, treefile = 'mytree'):
 
-    dist_matrix = molmap.dist_matrix
-    leaf_names = molmap.flist
-    df = molmap.df_embedding[['colors','Subtypes']]
+    dist_matrix = mp.dist_matrix
+    leaf_names = mp.flist
+    df = mp.df_embedding[['colors','Subtypes']]
     
     dists = squareform(dist_matrix)
     linkage_matrix = linkage(dists, 'complete')
@@ -226,5 +225,5 @@ def _mp2newick(molmap, treefile = 'mytree'):
     df.to_excel(treefile + '.xlsx')
     
         
-def plot_tree(molmap, htmlpath = './', htmlname = None):
+def plot_tree(mp, htmlpath = './', htmlname = None):
     pass

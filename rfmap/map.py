@@ -5,22 +5,20 @@ Created on Sun Aug 25 20:29:36 2019
 
 @author: wanxiang.shen@u.nus.edu
 
-main molmap code
+main rfmap code
 
 """
 
-from molmap.feature.fingerprint import Extraction as fext
-from molmap.feature.descriptor import Extraction as dext
-from molmap.utils.logtools import print_info, print_warn, print_error
-from molmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
 
-from molmap.config import load_config
-from molmap.utils import vismap
+from rfmap.utils.logtools import print_info, print_warn, print_error
+from rfmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
+from rfmap.utils import vismap, summary, calculator
 
 
 from sklearn.manifold import TSNE, MDS
 from sklearn.utils import shuffle
 from joblib import Parallel, delayed, load, dump
+from scipy.spatial.distance import squareform
 from umap import UMAP
 from tqdm import tqdm
 import pandas as pd
@@ -43,93 +41,56 @@ class Base:
 
     def MinMaxScaleClip(self, x, xmin, xmax):
         scaled = (x - xmin) / ((xmax - xmin) + 1e-8)
-        return scaled.clip(0, 1)
+        return scaled
 
     def StandardScaler(self, x, xmean, xstd):
         return (x-xmean) / (xstd + 1e-8) 
     
-    
+
     
 
-class MolMap(Base):
+class RFMAP(Base):
     
     def __init__(self, 
-                 ftype = 'descriptor',
-                 flist = None, 
-                 fmap_type = 'grid', 
-                 fmap_shape = None, 
-                 split_channels = True,
-                 metric = 'cosine', 
-                 var_thr = 1e-4, ):
+                 dfx,
+                 metric = 'cosine' 
+                ):
+        
         """
         paramters
         -----------------
-        ftype: {'fingerprint', 'descriptor'}, feature type
-        flist: feature list, if you want use some of the features instead of all features, each element in flist should be the id of a feature
-        fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
-        fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
-        split_channels: bool, if True, outputs will split into various channels using the types of feature
-        metric: {'cosine', 'correlation'}, default: 'cosine', measurement of feature distance
-        var_thr: float, defalt is 1e-4, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
+        dfx: pandas DataFrame
+        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'cosine', measurement of feature distance
+
+        
         """
-        
         super().__init__()
-        assert ftype in ['descriptor', 'fingerprint'], 'no such feature type supported!'        
-        assert fmap_type in ['scatter', 'grid'], 'no such feature map type supported!'
-       
-        self.ftype = ftype
+
         self.metric = metric
-        self.method = None
         self.isfit = False
+        self.alist = dfx.columns.tolist()
+        self.ftype = 'feature points'
+        ## calculating distance
+        print_info('Calculating distance ...')
+        D = calculator.pairwise_distance(dfx.values, n_cpus=16, method=metric)
+        D = np.nan_to_num(D,copy=False)
+        self.info_distance = squareform(D)
 
         
-        #default we will load the  precomputed matrix
-        dist_matrix = load_config(ftype, metric)
-        feature_order = dist_matrix.index.tolist()
-        feat_seq_dict = dict(zip(feature_order, range(len(feature_order))))
-
-
-        scale_info = load_config(ftype, 'scale')      
-        scale_info = scale_info[scale_info['var'] > var_thr]
-        slist = scale_info.index.tolist()
         
-        if not flist:
-            flist = list(dist_matrix.columns)
+        ## statistic info
+        S = summary.Summary(n_jobs = 10)
+        res= []
+        for i in tqdm(range(dfx.shape[1])):
+            r = S._statistics_one(dfx.values, i)
+            res.append(r)
+        dfs = pd.DataFrame(res, index = self.alist)
+        self.info_scale = dfs
         
-        #fix input feature's order as random order
-        final_list = list(set(slist) & set(flist))
-        final_list.sort(key = lambda x:feat_seq_dict.get(x))
-        #final_list = shuffle(final_list, random_state=123)
-
-        dist_matrix = dist_matrix.loc[final_list][final_list]
-        
-        self.dist_matrix = dist_matrix
-        self.flist = final_list
-        self.scale_info = scale_info.loc[final_list]
-        
-        #init the feature extract object
-        if ftype == 'fingerprint':
-            self.extract = fext()
-        else:
-            self.extract = dext() 
-
-        self.fmap_type = fmap_type
-        
-        if fmap_type == 'grid':
-            S = Scatter2Grid()
-        else:
-            if fmap_shape == None:
-                N = len(self.flist)
-                l = np.int(np.sqrt(N))*2
-                fmap_shape = (l, l)                
-            S = Scatter2Array(fmap_shape)
-        
-        self._S = S
-        self.split_channels = split_channels        
-
         
         
     def _fit_embedding(self, 
+                        dist_matrix,
                         method = 'tsne',  
                         n_components = 2,
                         random_state = 1,  
@@ -141,10 +102,11 @@ class MolMap(Base):
         """
         parameters
         -----------------
+        dist_matrix: distance matrix to fit
         method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
         kwargs: the extra parameters for the conresponding algorithm
         """
-        dist_matrix = self.dist_matrix
+
         if 'metric' in kwargs.keys():
             metric = kwargs.get('metric')
             kwargs.pop('metric')
@@ -182,41 +144,111 @@ class MolMap(Base):
                            random_state = random_state, **kwargs)
         
         embedded = embedded.fit(dist_matrix)    
-
-        df = pd.DataFrame(embedded.embedding_, index = self.flist,columns=['x', 'y'])
-        typemap = self.extract.bitsinfo.set_index('IDs')
-        df = df.join(typemap)
-        df['Channels'] = df['Subtypes']
-        self.df_embedding = df
-        self.embedded = embedded
         
+        return embedded
+    
+    
+   
+            
 
     def fit(self, 
-            method = 'umap', min_dist = 0.1, n_neighbors = 30,
-            verbose = 2, random_state = 1, **kwargs): 
+            feature_group_list = [],
+            group_color_dict  = {},
+            var_thr = 1e-3, 
+            split_channels = True, 
+            fmap_type = 'grid',  
+            fmap_shape = None, 
+            emb_method = 'umap', 
+            min_dist = 0.1, 
+            n_neighbors = 15,
+            verbose = 2, 
+            random_state = 32, 
+            **kwargs): 
         """
         parameters
         -----------------
-        method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
-        kwargs: the extra parameters for the conresponding method
+        feature_group_list: list of the group name for each feature point
+        group_color_dict: dict of the group colors, keys are the group names, values are the colors
+        var_thr: float, defalt is 1e-3, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
+        split_channels: bool, if True, outputs will split into various channels using the types of feature
+        fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
+        fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
+        emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
+        kwargs: the extra parameters for the conresponding embedding method
         """
+            
         if 'n_components' in kwargs.keys():
             kwargs.pop('n_components')
             
+        #bitsinfo
+        dfb = pd.DataFrame(self.alist, columns = ['IDs'])
+        if feature_group_list != []:
+            assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
+            dfb['Subtypes'] = feature_group_list
+            if group_color_dict != {}:
+                assert set(feature_group_list).issubset(set(group_color_dict.keys())), 'group_color_dict should contains all of the feature groups'
+                dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
+            else:
+                dfb['colors'] = '#ff6a00' 
+        else:
+            dfb['Subtypes'] = 'features'
+            dfb['colors'] = '#ff6a00'
+        self.bitsinfo = dfb
+        colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
+        colormaps.update({'NaN': '#000000'})
+        self.colormaps = colormaps
+        
         ## embedding  into a 2d 
-        assert method in ['tsne', 'umap', 'mds'], 'no support such method!'
-        
-        self.method = method
-        
-        ## 2d embedding first
-        self._fit_embedding(method = method,
-                            n_neighbors = n_neighbors,
-                            random_state = random_state,
-                            min_dist = min_dist, 
-                            verbose = verbose,
-                            n_components = 2, **kwargs)
+        assert emb_method in ['tsne', 'umap', 'mds'], 'No Such Method Supported: %s' % emb_method
+        assert fmap_type in ['scatter', 'grid'], 'No Such Feature Map Type Supported: %s'   % fmap_type     
+        self.var_thr = var_thr
+        self.split_channels = split_channels
+        self.fmap_type = fmap_type
+        self.fmap_shape = fmap_shape
+        self.emb_method = emb_method
 
         
+        scale_info = self.info_scale[self.info_scale['var'] > self.var_thr]
+        flist = scale_info.index.tolist()
+        
+        dfd = pd.DataFrame(squareform(self.info_distance),
+                           index=self.alist,
+                           columns=self.alist)
+
+        dist_matrix = dfd.loc[flist][flist]
+        
+        self.flist = flist
+        self.scale_info = scale_info
+        
+
+        if fmap_type == 'grid':
+            S = Scatter2Grid()
+        else:
+            if fmap_shape == None:
+                N = len(self.flist)
+                l = np.int(np.sqrt(N))*2
+                fmap_shape = (l, l)                
+            S = Scatter2Array(fmap_shape)
+        
+        self._S = S
+
+        ## 2d embedding first
+        embedded = self._fit_embedding(dist_matrix,
+                                       method = emb_method,
+                                       n_neighbors = n_neighbors,
+                                       random_state = random_state,
+                                       min_dist = min_dist, 
+                                       verbose = verbose,
+                                       n_components = 2, **kwargs)
+        
+        self.embedded = embedded 
+        
+        df = pd.DataFrame(embedded.embedding_, index = self.flist,columns=['x', 'y'])
+        typemap = self.bitsinfo.set_index('IDs')
+        df = df.join(typemap)
+        df['Channels'] = df['Subtypes']
+        self.df_embedding = df
+      
         if self.fmap_type == 'scatter':
             ## naive scatter algorithm
             print_info('Applying naive scatter feature map...')
@@ -231,12 +263,12 @@ class MolMap(Base):
         
         ## fit flag
         self.isfit = True
-        self.fmap_shape = self._S.fmap_shape
-    
+        self.fmap_shape = self._S.fmap_shape        
+        
+        
 
-    
     def transform(self, 
-                  smiles, 
+                  arr_1d, 
                   scale = True, 
                   scale_method = 'minmax',):
     
@@ -244,7 +276,7 @@ class MolMap(Base):
         """
         parameters
         --------------------
-        smiles:smiles string of compound
+        arr_1d: 1d numpy array feature points
         scale: bool, if True, we will apply MinMax scaling by the precomputed values
         scale_method: {'minmax', 'standard'}
         """
@@ -253,11 +285,11 @@ class MolMap(Base):
             print_error('please fit first!')
             return
 
-        arr = self.extract.transform(smiles)
-        df = pd.DataFrame(arr).T
-        df.columns = self.extract.bitsinfo.IDs
+
+        df = pd.DataFrame(arr_1d).T
+        df.columns = self.bitsinfo.IDs
         
-        if (scale) & (self.ftype == 'descriptor'):
+        if scale:
             
             if scale_method == 'standard':
                 df = self.StandardScaler(df,  
@@ -272,11 +304,10 @@ class MolMap(Base):
         vector_1d = df.values[0] #shape = (N, )
         fmap = self._S.transform(vector_1d)       
         return np.nan_to_num(fmap)   
-        
 
-        
+    
     def batch_transform(self, 
-                        smiles_list, 
+                        array_2d, 
                         scale = True, 
                         scale_method = 'minmax',
                         n_jobs=4):
@@ -284,57 +315,24 @@ class MolMap(Base):
         """
         parameters
         --------------------
-        smiles_list: list of smiles strings
+        array_2d: 2D numpy array feature points, M(samples) x N(feature ponits)
         scale: bool, if True, we will apply MinMax scaling by the precomputed values
         scale_method: {'minmax', 'standard'}
         n_jobs: number of parallel
         """
         
-                    
+        assert array_2d.ndim == 2, 'input X must be 2-D array!' 
+        
         P = Parallel(n_jobs=n_jobs)
-        res = P(delayed(self.transform)(smiles, 
+        res = P(delayed(self.transform)(arr_1d, 
                                         scale,
-                                        scale_method) for smiles in tqdm(smiles_list, ascii=True)) 
+                                        scale_method) for arr_1d in tqdm(array_2d, ascii=True)) 
         X = np.stack(res) 
         
         return X
-
-    
-    def rearrangement(self, orignal_X, target_mp):
-
-        """
-        Re-Arragement feature maps X from orignal_mp's to target_mp's style, in case that feature already extracted but the position need to be refit and rearrangement.
-
-        parameters
-        -------------------
-        orignal_X: the feature values transformed from orignal_mp(object self)
-        target_mp: the target feature map object
-
-        return
-        -------------
-        target_X, shape is (N, W, H, C)
-        """
-        assert self.flist == target_mp.flist, print_error('Input features list is different, can not re-arrangement, check your flist by mp.flist method' )
-        assert len(orignal_X.shape) == 4, print_error('Input X has error shape, please reshape to (samples, w, h, channels)')
-        
-        idx = self._S.df.sort_values('indices').idx.tolist()
-        idx = np.argsort(idx)
-
-        N = len(orignal_X) #number of sample
-        M = len(self.flist) # number of features
-        res = []
-        for i in tqdm(range(N), ascii=True):
-            x = orignal_X[i].sum(axis=-1)
-            vector_1d_ordered = x.reshape(-1,)
-            vector_1d_ordered = vector_1d_ordered[:M]
-            vector_1d = vector_1d_ordered[idx]
-            fmap = target_mp._S.transform(vector_1d)
-            res.append(fmap)
-        return np.stack(res)
-
     
     
-    def plot_scatter(self, htmlpath='./', htmlname=None, radius = 3):
+    def plot_scatter(self, htmlpath='./', htmlname=None, radius = 2):
         """radius: the size of the scatter, must be int"""
         df_scatter, H_scatter = vismap.plot_scatter(self,  
                                 htmlpath=htmlpath, 
@@ -364,4 +362,3 @@ class MolMap(Base):
     
     def save(self, filename):
         return self._save(filename)
-    

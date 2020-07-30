@@ -1,7 +1,7 @@
 # bidd-rsmap
 
 
-## RFMap - An Efficient Shallow Neural Network by Reconstructed Feature Map
+## RFMap - An Efficient Shallow Neural Network by Reconstructed Multi-Channel Feature Maps
 
 
 
@@ -19,4 +19,17 @@ echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
 
 # init bashrc
 source ~/.bashrc
+```
+
+
+## Usage
+
+
+```python
+mp = RFMap()
+
+mp.fit()
+
+X = mp.transform(x)
+
 ```
