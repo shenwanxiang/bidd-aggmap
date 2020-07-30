@@ -8,8 +8,6 @@ Created on Sun Aug 25 20:29:36 2019
 main rfmap code
 
 """
-
-
 from rfmap.utils.logtools import print_info, print_warn, print_error
 from rfmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
 from rfmap.utils import vismap, summary, calculator
@@ -19,6 +17,9 @@ from sklearn.manifold import TSNE, MDS
 from sklearn.utils import shuffle
 from joblib import Parallel, delayed, load, dump
 from scipy.spatial.distance import squareform
+from scipy.cluster.hierarchy import fcluster, linkage
+
+import seaborn as sns
 from umap import UMAP
 from tqdm import tqdm
 import pandas as pd
@@ -37,8 +38,8 @@ class Base:
         
     def _load(self, filename):
         return load(filename)
- 
 
+    
     def MinMaxScaleClip(self, x, xmin, xmax):
         scaled = (x - xmin) / ((xmax - xmin) + 1e-8)
         return scaled
@@ -70,18 +71,18 @@ class RFMAP(Base):
         self.isfit = False
         self.alist = dfx.columns.tolist()
         self.ftype = 'feature points'
+        
         ## calculating distance
         print_info('Calculating distance ...')
         D = calculator.pairwise_distance(dfx.values, n_cpus=16, method=metric)
         D = np.nan_to_num(D,copy=False)
-        self.info_distance = squareform(D)
+        D_ = squareform(D)
+        self.info_distance = D_.clip(0, np.inf)
 
-        
-        
         ## statistic info
         S = summary.Summary(n_jobs = 10)
         res= []
-        for i in tqdm(range(dfx.shape[1])):
+        for i in tqdm(range(dfx.shape[1]), ascii=True):
             r = S._statistics_one(dfx.values, i)
             res.append(r)
         dfs = pd.DataFrame(res, index = self.alist)
@@ -153,7 +154,7 @@ class RFMAP(Base):
 
     def fit(self, 
             feature_group_list = [],
-            group_color_dict  = {},
+            cluster_channels = 3,
             var_thr = 1e-3, 
             split_channels = True, 
             fmap_type = 'grid',  
@@ -162,42 +163,29 @@ class RFMAP(Base):
             min_dist = 0.1, 
             n_neighbors = 15,
             verbose = 2, 
-            random_state = 32, 
+            random_state = 32,
+            group_color_dict  = {},
+            lnk_method = 'complete',
             **kwargs): 
         """
         parameters
         -----------------
         feature_group_list: list of the group name for each feature point
-        group_color_dict: dict of the group colors, keys are the group names, values are the colors
+        cluster_channels: int, number of the channels(clusters) if feature_group_list is empty
         var_thr: float, defalt is 1e-3, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
         fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
         fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
         emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
+        group_color_dict: dict of the group colors, keys are the group names, values are the colors
+        lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
         kwargs: the extra parameters for the conresponding embedding method
         """
             
         if 'n_components' in kwargs.keys():
             kwargs.pop('n_components')
             
-        #bitsinfo
-        dfb = pd.DataFrame(self.alist, columns = ['IDs'])
-        if feature_group_list != []:
-            assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
-            dfb['Subtypes'] = feature_group_list
-            if group_color_dict != {}:
-                assert set(feature_group_list).issubset(set(group_color_dict.keys())), 'group_color_dict should contains all of the feature groups'
-                dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
-            else:
-                dfb['colors'] = '#ff6a00' 
-        else:
-            dfb['Subtypes'] = 'features'
-            dfb['colors'] = '#ff6a00'
-        self.bitsinfo = dfb
-        colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
-        colormaps.update({'NaN': '#000000'})
-        self.colormaps = colormaps
-        
+            
         ## embedding  into a 2d 
         assert emb_method in ['tsne', 'umap', 'mds'], 'No Such Method Supported: %s' % emb_method
         assert fmap_type in ['scatter', 'grid'], 'No Such Feature Map Type Supported: %s'   % fmap_type     
@@ -206,21 +194,62 @@ class RFMAP(Base):
         self.fmap_type = fmap_type
         self.fmap_shape = fmap_shape
         self.emb_method = emb_method
-
+        self.lnk_method = lnk_method
         
+        # flist and distance
         scale_info = self.info_scale[self.info_scale['var'] > self.var_thr]
         flist = scale_info.index.tolist()
-        
         dfd = pd.DataFrame(squareform(self.info_distance),
                            index=self.alist,
                            columns=self.alist)
-
         dist_matrix = dfd.loc[flist][flist]
-        
         self.flist = flist
         self.scale_info = scale_info
         
+        #bitsinfo
+        dfb = pd.DataFrame(self.alist, columns = ['IDs'])
+        if feature_group_list != []:
+            assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
+            self.cluster_channels = len(set(feature_group_list))
+            self.feature_group_list = feature_group_list
+            
+            dfb['Subtypes'] = feature_group_list
+            if group_color_dict != {}:
+                assert set(feature_group_list).issubset(set(group_color_dict.keys())), 'group_color_dict should contains all of the feature groups'
+                self.group_color_dict = group_color_dict
+                dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
+            else:
+                unique_types = dfb['Subtypes'].unique()
+                color_list = sns.color_palette("hsv", len(unique_types)).as_hex()
+                group_color_dict = dict(zip(unique_types, color_list))
+                dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
+                self.group_color_dict = group_color_dict
+        else:
+            
+            self.cluster_channels = cluster_channels
+            print_info('applying hierarchical clustering to obtain group information ...')
+            
+            Z = linkage(squareform(dfd.values),  lnk_method)
+            labels = fcluster(Z, cluster_channels, criterion='maxclust')
+            
+            feature_group_list = ['Cluster_%s' % str(i).zfill(2) for i in labels]
+            dfb['Subtypes'] = feature_group_list
+            dfb = dfb.sort_values('Subtypes')
+            unique_types = dfb['Subtypes'].unique()
+            color_list = sns.color_palette("hsv", len(unique_types)).as_hex()
+            group_color_dict = dict(zip(unique_types, color_list))
+            dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
+            self.group_color_dict = group_color_dict           
+            self.Z = Z
+            self.feature_group_list = feature_group_list
+            
 
+        self.bitsinfo = dfb
+        colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
+        colormaps.update({'NaN': '#000000'})
+        self.colormaps = colormaps
+
+        
         if fmap_type == 'grid':
             S = Scatter2Grid()
         else:
