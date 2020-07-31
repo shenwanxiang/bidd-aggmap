@@ -26,9 +26,18 @@ source ~/.bashrc
 
 
 ```python
-
 from rfmap import RFMAP
+
+#create rfmap object
 mp = RFMAP(dfx, metric = 'correlation')
+
+#fit rfmap
 mp.fit(var_thr = 1e-4, cluster_channels = 3,split_channels = True)
+
+#transform
 X = mp.transform(dfx.values)
+
+#save mp object
+
+mp.save('./test.mp')
 ```
