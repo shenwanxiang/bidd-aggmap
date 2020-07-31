@@ -26,10 +26,9 @@ source ~/.bashrc
 
 
 ```python
-mp = RFMap()
 
-mp.fit()
-
-X = mp.transform(x)
-
+from rfmap import RFMAP
+mp = RFMAP(dfx, metric = 'correlation')
+mp.fit(var_thr = 1e-4, cluster_channels = 3,split_channels = True)
+X = mp.transform(dfx)
 ```
