@@ -197,15 +197,22 @@ class RFMAP(Base):
         self.lnk_method = lnk_method
         
         # flist and distance
-        scale_info = self.info_scale[self.info_scale['var'] > self.var_thr]
-        flist = scale_info.index.tolist()
+        flist = self.info_scale[self.info_scale['var'] > self.var_thr].index.tolist()
+        
         dfd = pd.DataFrame(squareform(self.info_distance),
                            index=self.alist,
                            columns=self.alist)
         dist_matrix = dfd.loc[flist][flist]
         self.flist = flist
-        self.scale_info = scale_info
         
+        self.x_mean = self.info_scale['mean'].values
+        self.x_std =  self.info_scale['std'].values
+        
+        self.x_min = self.info_scale['min'].values
+        self.x_max = self.info_scale['max'].values
+        
+   
+                
         #bitsinfo
         dfb = pd.DataFrame(self.alist, columns = ['IDs'])
         if feature_group_list != []:
@@ -314,25 +321,23 @@ class RFMAP(Base):
             print_error('please fit first!')
             return
 
-
+        if scale:
+            if scale_method == 'standard':
+                arr_1d = self.StandardScaler(arr_1d, self.x_mean, self.x_std)
+            else:
+                arr_1d = self.MinMaxScaleClip(arr_1d, self.x_min, self.x_max)
+        
         df = pd.DataFrame(arr_1d).T
         df.columns = self.bitsinfo.IDs
         
-        if scale:
-            
-            if scale_method == 'standard':
-                df = self.StandardScaler(df,  
-                                    self.scale_info['mean'],
-                                    self.scale_info['std'])
-            else:
-                df = self.MinMaxScaleClip(df, 
-                                     self.scale_info['min'], 
-                                     self.scale_info['max'])
-        
         df = df[self.flist]
         vector_1d = df.values[0] #shape = (N, )
-        fmap = self._S.transform(vector_1d)       
+        fmap = self._S.transform(vector_1d)    
+        
+        
         return np.nan_to_num(fmap)   
+    
+    
 
     
     def batch_transform(self, 
