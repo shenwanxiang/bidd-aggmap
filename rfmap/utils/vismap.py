@@ -9,7 +9,7 @@ import os
 from rfmap.utils.logtools import print_info
 
 
-def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2):
+def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2, enabled_data_labels = False):
     '''
     mp: the object of mp
     htmlpath: the figure path, not include the prefix of 'html'
@@ -70,7 +70,9 @@ def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2):
                                               'states': {'hover': {'marker': {'enabled': False} }},
                                               'tooltip': {'headerFormat': '<b>{series.name}</b><br>',
                                                           'pointFormat': '{point.IDs}'}},
-                                  'series': {'turboThreshold': 5000}})
+                                  'series': {'turboThreshold': 5000, 
+                                             'dataLabels': {'enabled': enabled_data_labels, 'format': '{point.IDs}'}}
+                                 })
     
     for subtype, color in colormaps.items():
         dfi = df[df['Subtypes'] == subtype]
@@ -85,7 +87,7 @@ def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2):
 
 
 
-def plot_grid(mp, htmlpath = './', htmlname = None):
+def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False):
     '''
     mp: the object of mp
     htmlpath: the figure path
@@ -136,7 +138,6 @@ def plot_grid(mp, htmlpath = './', htmlname = None):
     H.set_options('chart', {'type': 'heatmap', 'zoomType': 'xy'})
     H.set_options('title', {'text': title})
     H.set_options('subtitle', {'text': subtitle})
-
 #     H.set_options('xAxis', {'title': '', 
 #                             'min': 0, 'max': mp.fmap_shape[1]-1,
 #                             'allowDecimals':False,
@@ -176,7 +177,15 @@ def plot_grid(mp, htmlpath = './', htmlname = None):
                               'pointFormat': '{point.v}'})
 
     
-    H.set_options('plotOptions', {'series': {'turboThreshold': 5000}})
+    H.set_options('plotOptions', {'series': {'turboThreshold': 5000,
+                                             'dataLabels': {'enabled': enabled_data_labels, 
+                                                            'format': '{point.v}',
+                                                            'style': {'textOutline':False, 'color': 'black'},
+
+                                                           }
+                                            }
+                                 }
+                 )
     
     for subtype, color in colormaps.items():
         dfi = df[df['Subtypes'] == subtype]
@@ -184,7 +193,8 @@ def plot_grid(mp, htmlpath = './', htmlname = None):
             continue
         H.add_data_set(dfi.to_dict('records'), 'heatmap', 
                        name = subtype,
-                       color = color,#dataLabels = {'enabled': True, 'color': '#000000'}
+                       #dataLabels = {'enabled': True, 'color': color}
+                       color = color,
                       )
     H.save_file(filename)
     print_info('save html file to %s' % filename)

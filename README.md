@@ -4,6 +4,8 @@
 ## RFMap - An Efficient Shallow Neural Network by Reconstructed Multi-Channel Feature Maps
 
 
+### 2D signature map
+
 
 ## Installation
 

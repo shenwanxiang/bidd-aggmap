@@ -17,8 +17,8 @@ from sklearn.manifold import TSNE, MDS
 from sklearn.utils import shuffle
 from joblib import Parallel, delayed, load, dump
 from scipy.spatial.distance import squareform
-from scipy.cluster.hierarchy import fcluster, linkage
-
+from scipy.cluster.hierarchy import fcluster, linkage, dendrogram
+import matplotlib.pylab as plt
 import seaborn as sns
 from umap import UMAP
 from tqdm import tqdm
@@ -71,6 +71,7 @@ class RFMAP(Base):
         self.isfit = False
         self.alist = dfx.columns.tolist()
         self.ftype = 'feature points'
+        self.cluster_flag = False
         
         ## calculating distance
         print_info('Calculating distance ...')
@@ -235,6 +236,7 @@ class RFMAP(Base):
             
             self.cluster_channels = cluster_channels
             print_info('applying hierarchical clustering to obtain group information ...')
+            self.cluster_flag = True
             
             Z = linkage(squareform(dfd.values),  lnk_method)
             labels = fcluster(Z, cluster_channels, criterion='maxclust')
@@ -301,6 +303,7 @@ class RFMAP(Base):
         self.isfit = True
         self.fmap_shape = self._S.fmap_shape        
         
+        return self
         
 
     def transform(self, 
@@ -366,28 +369,54 @@ class RFMAP(Base):
         return X
     
     
-    def plot_scatter(self, htmlpath='./', htmlname=None, radius = 2):
+    def plot_scatter(self, htmlpath='./', htmlname=None, radius = 2, enabled_data_labels = False):
         """radius: the size of the scatter, must be int"""
         df_scatter, H_scatter = vismap.plot_scatter(self,  
-                                htmlpath=htmlpath, 
-                                htmlname=htmlname,
-                                radius = radius)
+                                                    htmlpath=htmlpath, 
+                                                    htmlname=htmlname,
+                                                    radius = radius,
+                                                    enabled_data_labels = enabled_data_labels)
         
         self.df_scatter = df_scatter
         return H_scatter   
         
         
-    def plot_grid(self, htmlpath='./', htmlname=None):
+    def plot_grid(self, htmlpath='./', htmlname=None, enabled_data_labels = False):
         
         if self.fmap_type != 'grid':
             return
         
-        df_grid, H_grid = vismap.plot_grid(self,  
-                                htmlpath=htmlpath, 
-                                htmlname=htmlname)
+        df_grid, H_grid = vismap.plot_grid(self,
+                                           htmlpath=htmlpath, 
+                                           htmlname=htmlname,
+                                           enabled_data_labels = enabled_data_labels)
         
         self.df_grid = df_grid
         return H_grid       
+        
+        
+        
+    def plot_tree(self, figsize=(16,8), leaf_font_size = 18, leaf_rotation = 90):
+
+        fig = plt.figure(figsize=figsize)
+        
+        if self.cluster_flag:
+            
+            Z = self.Z
+            labels = self.alist
+
+            D_leaf_colors = self.bitsinfo['colors'].to_dict() 
+            link_cols = {}
+            for i, i12 in enumerate(Z[:,:2].astype(int)):
+                c1, c2 = (link_cols[x] if x > len(Z) else D_leaf_colors[x] for x in i12)
+                link_cols[i+1+len(Z)] = c1
+
+            P =dendrogram(Z, labels = labels, 
+                          leaf_rotation = leaf_rotation, 
+                          leaf_font_size = leaf_font_size, 
+                          link_color_func=lambda x: link_cols[x])
+        
+        return fig
         
         
     def load(self, filename):
