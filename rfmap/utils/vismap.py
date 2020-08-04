@@ -150,7 +150,7 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
 #                             'labels':{'style':{'fontSize':20}}})
 
     H.set_options('xAxis', {'title': None,                         
-                            'min': 0, 'max': mp.fmap_shape[1],
+                            'min': 0, 'max': mp.fmap_shape[1]-1,
                             'startOnTick': False,
                             'endOnTick': False,    
                             'allowDecimals':False,
@@ -162,7 +162,7 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
                             'endOnTick': False,
                             'gridLineWidth': 0,
                             'reversed': True,
-                            'min': 0, 'max': mp.fmap_shape[0],
+                            'min': 0, 'max': mp.fmap_shape[0]-1,
                             'allowDecimals':False,
                             'labels':{'style':{'fontSize':20}}})
     

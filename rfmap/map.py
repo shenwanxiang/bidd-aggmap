@@ -93,11 +93,11 @@ class RFMAP(Base):
         
     def _fit_embedding(self, 
                         dist_matrix,
-                        method = 'tsne',  
+                        method = 'umap',  
                         n_components = 2,
-                        random_state = 1,  
+                        random_state = 32,  
                         verbose = 2,
-                        n_neighbors = 30,
+                        n_neighbors = 15,
                         min_dist = 0.1,
                         **kwargs):
         
@@ -156,7 +156,7 @@ class RFMAP(Base):
     def fit(self, 
             feature_group_list = [],
             cluster_channels = 3,
-            var_thr = 1e-3, 
+            var_thr = 0, 
             split_channels = True, 
             fmap_type = 'grid',  
             fmap_shape = None, 
@@ -173,7 +173,7 @@ class RFMAP(Base):
         -----------------
         feature_group_list: list of the group name for each feature point
         cluster_channels: int, number of the channels(clusters) if feature_group_list is empty
-        var_thr: float, defalt is 1e-3, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
+        var_thr: float, defalt is 0, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
         fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
         fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
@@ -331,7 +331,7 @@ class RFMAP(Base):
                 arr_1d = self.MinMaxScaleClip(arr_1d, self.x_min, self.x_max)
         
         df = pd.DataFrame(arr_1d).T
-        df.columns = self.bitsinfo.IDs
+        df.columns = self.alist
         
         df = df[self.flist]
         vector_1d = df.values[0] #shape = (N, )

@@ -43,7 +43,7 @@ def Inception(inputs, units = 8, strides = 1):
 
 
 
-def MolMapNet(input_shape,  
+def RFMapNet(input_shape,  
                 n_outputs = 1, 
                 conv1_kernel_size = 13,
                 dense_layers = [128, 32], 
@@ -90,7 +90,7 @@ def MolMapNet(input_shape,
 
 
 
-def MolMapDualPathNet(molmap1_size, 
+def RFMapDualPathNet(molmap1_size, 
                     molmap2_size, 
                     n_outputs = 1, 
                     dense_layers = [256, 128, 32], 
@@ -141,7 +141,7 @@ def MolMapDualPathNet(molmap1_size,
 
 
 
-def MolMapAddPathNet(molmap_shape,  additional_shape,
+def RFMapAddPathNet(molmap_shape,  additional_shape,
                     n_outputs = 1,              
                     dense_layers = [128, 32], 
                     dense_avf = 'relu', 
@@ -192,7 +192,7 @@ def MolMapAddPathNet(molmap_shape,  additional_shape,
 
 
 
-def MolMapResNet(input_shape,
+def RFMapResNet(input_shape,
                  num_resnet_blocks = 8,
                 n_outputs = 1, 
                 dense_layers = [128, 32], 
