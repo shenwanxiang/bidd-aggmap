@@ -1,3 +1,33 @@
 特征之间的关系没有被考虑
 
 在这里， 我们通过相似性分配和增加通道来实现特征之间关系的考量
+
+
+
+orignal(c=1): OR1
+
+orignal_shuffle(c=1): ORS1
+
+orignal_shuffle_agglomerate(c=1): ORSAgg1
+
+orignal_shuffle_agglomerate_cluster(c=3): ORSAggC3
+
+orignal_shuffle_agglomerate_cluster(c=6): ORSAggC6
+
+orignal_shuffle_agglomerate_horizontal(c=4): ORSAggH4
+
+orignal_shuffle_agglomerate_vertical(c=4): ORSAggV4
+
+orignal_shuffle_agglomerate_squared(c=4): ORSAggS4
+
+
+
+feature point pairwise corr. in test set(n*n-1)/2, feature point pairwise corr. in training set(n*n-1)/2
+
+FeaturePoint Pairwise Correlation Distance in TrainingSet
+FeaturePoint Pairwise Correlation Distance in TestSet
+
+
+The construction process is unsupervised learning, thus the test set features can be constructured together with training set, 
+
+or constructed only on the training set, and transform on the test set

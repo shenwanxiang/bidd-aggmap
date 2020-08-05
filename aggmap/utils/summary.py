@@ -16,7 +16,7 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 
 
-from rfmap.utils.multiproc import MultiProcessUnorderedBarRun
+from aggmap.utils.multiproc import MultiProcessUnorderedBarRun
 
 
 class Summary:

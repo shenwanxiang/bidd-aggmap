@@ -34,7 +34,7 @@ formatter = ColoredFormatter(
     )
 
 
-logger = logging.getLogger('bidd-rfmap')
+logger = logging.getLogger('bidd-aggmap')
 logger.propagate = False
 
 

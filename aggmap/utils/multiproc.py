@@ -17,7 +17,7 @@ from multiprocessing import Pool,cpu_count,current_process
 import subprocess
 
 
-from rfmap.utils.logtools import print_info, print_error, pbar,print_warn
+from aggmap.utils.logtools import print_info, print_error, pbar,print_warn
 
 
 def RunCmd(cmd):

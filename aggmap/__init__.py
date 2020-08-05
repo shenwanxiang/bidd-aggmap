@@ -1,5 +1,5 @@
 
-from .map import RFMAP
+from .map import AggMap
 from joblib import load as loadmap
 
 

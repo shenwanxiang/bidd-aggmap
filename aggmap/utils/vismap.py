@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 
-from rfmap.utils.logtools import print_info
+from aggmap.utils.logtools import print_info
 
 
 def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2, enabled_data_labels = False):

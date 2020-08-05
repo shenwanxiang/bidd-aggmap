@@ -8,9 +8,9 @@ Created on Sun Aug 25 20:29:36 2019
 main rfmap code
 
 """
-from rfmap.utils.logtools import print_info, print_warn, print_error
-from rfmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
-from rfmap.utils import vismap, summary, calculator
+from aggmap.utils.logtools import print_info, print_warn, print_error
+from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
+from aggmap.utils import vismap, summary, calculator
 
 
 from sklearn.manifold import TSNE, MDS
@@ -22,10 +22,10 @@ import matplotlib.pylab as plt
 import seaborn as sns
 from umap import UMAP
 from tqdm import tqdm
+from copy import copy
 import pandas as pd
 import numpy as np
 import os
-
 
 
 class Base:
@@ -50,7 +50,7 @@ class Base:
 
     
 
-class RFMAP(Base):
+class AggMap(Base):
     
     def __init__(self, 
                  dfx,
@@ -156,7 +156,7 @@ class RFMAP(Base):
     def fit(self, 
             feature_group_list = [],
             cluster_channels = 3,
-            var_thr = 0, 
+            var_thr = -1, 
             split_channels = True, 
             fmap_type = 'grid',  
             fmap_shape = None, 
@@ -173,7 +173,7 @@ class RFMAP(Base):
         -----------------
         feature_group_list: list of the group name for each feature point
         cluster_channels: int, number of the channels(clusters) if feature_group_list is empty
-        var_thr: float, defalt is 0, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
+        var_thr: float, defalt is -1, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
         fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
         fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
@@ -222,8 +222,8 @@ class RFMAP(Base):
             self.feature_group_list = feature_group_list
             
             dfb['Subtypes'] = feature_group_list
-            if group_color_dict != {}:
-                assert set(feature_group_list).issubset(set(group_color_dict.keys())), 'group_color_dict should contains all of the feature groups'
+            
+            if set(feature_group_list).issubset(set(group_color_dict.keys())):
                 self.group_color_dict = group_color_dict
                 dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
             else:
@@ -241,12 +241,15 @@ class RFMAP(Base):
             Z = linkage(squareform(dfd.values),  lnk_method)
             labels = fcluster(Z, cluster_channels, criterion='maxclust')
             
-            feature_group_list = ['Cluster_%s' % str(i).zfill(2) for i in labels]
+            feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
             dfb['Subtypes'] = feature_group_list
             dfb = dfb.sort_values('Subtypes')
             unique_types = dfb['Subtypes'].unique()
-            color_list = sns.color_palette("hsv", len(unique_types)).as_hex()
-            group_color_dict = dict(zip(unique_types, color_list))
+            
+            if not set(unique_types).issubset(set(group_color_dict.keys())):
+                color_list = sns.color_palette("hsv", len(unique_types)).as_hex()
+                group_color_dict = dict(zip(unique_types, color_list))
+            
             dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
             self.group_color_dict = group_color_dict           
             self.Z = Z
@@ -417,6 +420,10 @@ class RFMAP(Base):
                           link_color_func=lambda x: link_cols[x])
         
         return fig
+        
+        
+    def copy(self):
+        return copy(self)
         
         
     def load(self, filename):
