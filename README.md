@@ -1,4 +1,4 @@
-# bidd-rsmap
+# bidd-aggmap
 
 
 ## AggMap -  Enhancing Feature Representation Ability by Agglomeration and Multi-Channel Operations
@@ -34,7 +34,7 @@ from aggmap import AggMap
 mp = AggMap(dfx, metric = 'correlation')
 
 #fit AggMap
-mp.fit(var_thr = 1e-4, cluster_channels = 3,split_channels = True)
+mp.fit(cluster_channels = 3)
 
 #transform
 X = mp.transform(dfx.values)
