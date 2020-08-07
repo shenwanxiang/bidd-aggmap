@@ -193,13 +193,14 @@ class Reg_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
 
 class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
 
-    def __init__(self, train_data, valid_data, MASK = -1, patience=5, criteria = 'val_loss', metric = 'ROC'):
+    def __init__(self, train_data, valid_data, MASK = -1, patience=5, criteria = 'val_loss', metric = 'ROC', last_avf = None, verbose = 0):
         super(CLA_EarlyStoppingAndPerformance, self).__init__()
         
         sp = ['val_loss', 'val_auc']
         assert criteria in sp, 'not support %s ! only %s' % (criteria, sp)
         self.x, self.y  = train_data
         self.x_val, self.y_val = valid_data
+        self.last_avf = last_avf
         
         self.history = {'loss':[],
                         'val_loss':[],
@@ -214,6 +215,7 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         self.criteria = criteria
         self.metric = metric
         self.best_epoch = 0
+        self.verbose = verbose
         
     def sigmoid(self, x):
         s = 1/(1+np.exp(-x))
@@ -221,8 +223,11 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
 
     
     def roc_auc(self, y_true, y_pred):
-
-        y_pred_logits = self.sigmoid(y_pred)
+        if self.last_avf == None:
+            y_pred_logits = self.sigmoid(y_pred)
+        else:
+            y_pred_logits = y_pred
+            
         N_classes = y_pred_logits.shape[1]
 
         aucs = []
@@ -282,19 +287,20 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         auc = '{0:.4f}'.format(roc_mean)
         auc_val = '{0:.4f}'.format(roc_val_mean)    
         
-        if self.metric == 'ACC':
-            print('\repoch: %s, loss: %s - val_loss: %s; acc: %s - val_acc: %s' % (eph,
-                                                                               loss, 
-                                                                               val_loss, 
-                                                                               auc,
-                                                                               auc_val), end=100*' '+'\n')
-            
-        else:
-            print('\repoch: %s, loss: %s - val_loss: %s; auc: %s - val_auc: %s' % (eph,
-                                                                               loss, 
-                                                                               val_loss, 
-                                                                               auc,
-                                                                               auc_val), end=100*' '+'\n')
+        if self.verbose:
+            if self.metric == 'ACC':
+                print('\repoch: %s, loss: %s - val_loss: %s; acc: %s - val_acc: %s' % (eph,
+                                                                                   loss, 
+                                                                                   val_loss, 
+                                                                                   auc,
+                                                                                   auc_val), end=100*' '+'\n')
+
+            else:
+                print('\repoch: %s, loss: %s - val_loss: %s; auc: %s - val_auc: %s' % (eph,
+                                                                                   loss, 
+                                                                                   val_loss, 
+                                                                                   auc,
+                                                                                   auc_val), end=100*' '+'\n')
 
 
         if self.criteria == 'val_loss':

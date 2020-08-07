@@ -43,9 +43,9 @@ def Inception(inputs, units = 8, strides = 1):
 
 
 
-def RFMapNet(input_shape,  
+def AggMapNet(input_shape,  
                 n_outputs = 1, 
-                conv1_kernel_size = 13,
+                conv1_kernel_size = 11,
                 dense_layers = [128, 32], 
                 dense_avf = 'relu', 
                 last_avf = None):
@@ -80,7 +80,7 @@ def RFMapNet(input_shape,
     ## dense layer
     for units in dense_layers:
         x = Dense(units, activation = dense_avf)(x)
-        
+        #x = BatchNormalization()(x)
     #last layer
     outputs = Dense(n_outputs,activation=last_avf)(x)
     
@@ -90,9 +90,10 @@ def RFMapNet(input_shape,
 
 
 
-def RFMapDualPathNet(molmap1_size, 
+def AggMapDualPathNet(molmap1_size, 
                     molmap2_size, 
-                    n_outputs = 1, 
+                    n_outputs = 1,
+                    conv1_kernel_size = 11,
                     dense_layers = [256, 128, 32], 
                     dense_avf = 'relu', 
                     last_avf = None):
@@ -109,7 +110,7 @@ def RFMapDualPathNet(molmap1_size,
     
     ## first inputs
     d_inputs1 = Input(molmap1_size)
-    d_conv1 = Conv2D(48, 13, padding = 'same', activation='relu', strides = 1)(d_inputs1)
+    d_conv1 = Conv2D(48, conv1_kernel_size, padding = 'same', activation='relu', strides = 1)(d_inputs1)
     d_pool1 = MaxPool2D(pool_size = 3, strides = 2, padding = 'same')(d_conv1) #p1
     d_incept1 = Inception(d_pool1, strides = 1, units = 32)
     d_pool2 = MaxPool2D(pool_size = 3, strides = 2, padding = 'same')(d_incept1) #p2
@@ -119,7 +120,7 @@ def RFMapDualPathNet(molmap1_size,
     
     ## second inputs
     f_inputs1 = Input(molmap2_size)
-    f_conv1 = Conv2D(48, 13, padding = 'same', activation='relu', strides = 1)(f_inputs1)
+    f_conv1 = Conv2D(48, conv1_kernel_size, padding = 'same', activation='relu', strides = 1)(f_inputs1)
     f_pool1 = MaxPool2D(pool_size = 3, strides = 2, padding = 'same')(f_conv1) #p1
     f_incept1 = Inception(f_pool1, strides = 1, units = 32)
     f_pool2 = MaxPool2D(pool_size = 3, strides = 2, padding = 'same')(f_incept1) #p2
@@ -132,7 +133,8 @@ def RFMapDualPathNet(molmap1_size,
     ## dense layer
     for units in dense_layers:
         x = Dense(units, activation = dense_avf)(x)
-
+        #x = BatchNormalization()(x)
+        
     ## last layer
     outputs = Dense(n_outputs, activation=last_avf)(x)
     model = tf.keras.Model(inputs=[d_inputs1, f_inputs1], outputs=outputs)
@@ -141,7 +143,7 @@ def RFMapDualPathNet(molmap1_size,
 
 
 
-def RFMapAddPathNet(molmap_shape,  additional_shape,
+def AggMapAddPathNet(molmap_shape,  additional_shape,
                     n_outputs = 1,              
                     dense_layers = [128, 32], 
                     dense_avf = 'relu', 
@@ -179,7 +181,7 @@ def RFMapAddPathNet(molmap_shape,  additional_shape,
     ## dense layer
     for units in dense_layers:
         x = Dense(units, activation = dense_avf)(x)
-        
+        #x = BatchNormalization()(x)
     #last layer
     outputs = Dense(n_outputs,activation=last_avf)(x)
     
@@ -192,7 +194,7 @@ def RFMapAddPathNet(molmap_shape,  additional_shape,
 
 
 
-def RFMapResNet(input_shape,
+def AggMapResNet(input_shape,
                  num_resnet_blocks = 8,
                 n_outputs = 1, 
                 dense_layers = [128, 32], 
@@ -229,7 +231,7 @@ def RFMapResNet(input_shape,
      ## dense layer
     for units in dense_layers:
         x = layers.Dense(units, activation = dense_avf)(x)
-        
+        #x = BatchNormalization()(x)
     #last layer
     outputs = Dense(n_outputs,activation=last_avf)(x)
     
