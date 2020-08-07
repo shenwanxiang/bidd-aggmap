@@ -217,6 +217,9 @@ class AggMap(Base):
         #bitsinfo
         dfb = pd.DataFrame(self.alist, columns = ['IDs'])
         if feature_group_list != []:
+            
+            self.cluster_flag = False
+            
             assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
             self.cluster_channels = len(set(feature_group_list))
             self.feature_group_list = feature_group_list
