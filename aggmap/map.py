@@ -65,6 +65,8 @@ class AggMap(Base):
 
         
         """
+        
+        assert type(dfx) == pd.core.frame.DataFrame, 'input dfx mush be pandas DataFrame!'
         super().__init__()
 
         self.metric = metric
@@ -364,7 +366,8 @@ class AggMap(Base):
         n_jobs: number of parallel
         """
         
-        assert array_2d.ndim == 2, 'input X must be 2-D array!' 
+        assert type(array_2d) == np.ndarray, 'input must be numpy ndarray!' 
+        assert array_2d.ndim == 2, 'input must be 2-D  numpy array!' 
         
         P = Parallel(n_jobs=n_jobs)
         res = P(delayed(self.transform)(arr_1d, 
