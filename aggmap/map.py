@@ -366,6 +366,10 @@ class AggMap(Base):
         n_jobs: number of parallel
         """
         
+        if not self.isfit:
+            print_error('please fit first!')
+            return
+        
         assert type(array_2d) == np.ndarray, 'input must be numpy ndarray!' 
         assert array_2d.ndim == 2, 'input must be 2-D  numpy array!' 
         

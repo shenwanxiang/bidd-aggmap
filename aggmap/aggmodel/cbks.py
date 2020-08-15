@@ -25,7 +25,7 @@ for early-stopping techniques in regression and classification task
 
 class Reg_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
 
-    def __init__(self, train_data, valid_data, MASK = -1, patience=5, criteria = 'val_loss'):
+    def __init__(self, train_data, valid_data, MASK = -1, patience=5, criteria = 'val_loss', verbose = 0):
         super(Reg_EarlyStoppingAndPerformance, self).__init__()
         
         assert criteria in ['val_loss', 'val_r2'], 'not support %s ! only %s' % (criteria, ['val_loss', 'val_r2'])
@@ -48,7 +48,7 @@ class Reg_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         self.best_weights = None
         self.criteria = criteria
         self.best_epoch = 0
-
+        self.verbose = verbose
         
     def rmse(self, y_true, y_pred):
 
@@ -129,11 +129,12 @@ class Reg_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         r2_mean = '{0:.4f}'.format(r2_mean)
         r2_mean_val = '{0:.4f}'.format(r2_mean_val)
         
-        print('\repoch: %s, loss: %s - val_loss: %s; rmse: %s - rmse_val: %s;  r2: %s - r2_val: %s' % (eph,
-                                                                                                       loss, val_loss, 
-                                                                                                       rmse,rmse_val,
-                                                                                                       r2_mean,r2_mean_val),
-              end=100*' '+'\n')
+        if self.verbose:
+            print('\repoch: %s, loss: %s - val_loss: %s; rmse: %s - rmse_val: %s;  r2: %s - r2_val: %s' % (eph,
+                                                                                                           loss, val_loss, 
+                                                                                                           rmse,rmse_val,
+                                                                                                           r2_mean,r2_mean_val),
+                  end=100*' '+'\n')
 
 
         if self.criteria == 'val_loss':
