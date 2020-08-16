@@ -39,7 +39,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     
     def __init__(self, 
                  epochs = 100,  
-                 conv1_kernel_size = 3,
+                 conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
                  batch_size = 128,  
@@ -113,7 +113,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.X_ = X
         self.y_ = y
         
-        if (X_valid == None) | (y_valid == None):
+        if (X_valid is None) | (y_valid is None):
             
             X_valid = X
             y_valid = y
@@ -194,7 +194,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     
     
     
-class MultiClassesEstimator(BaseEstimator, ClassifierMixin):
+class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
     """ An AggMap CNN MultiClass estimator (each sample belongs to only one class) 
     Parameters
@@ -212,7 +212,7 @@ class MultiClassesEstimator(BaseEstimator, ClassifierMixin):
     
     def __init__(self, 
                  epochs = 150,  
-                 conv1_kernel_size = 3,
+                 conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
                  batch_size = 128,  
@@ -287,7 +287,7 @@ class MultiClassesEstimator(BaseEstimator, ClassifierMixin):
         self.X_ = X
         self.y_ = y
         
-        if (X_valid == None) | (y_valid == None):
+        if (X_valid is None) | (y_valid is None):
             
             X_valid = X
             y_valid = y
@@ -304,23 +304,25 @@ class MultiClassesEstimator(BaseEstimator, ClassifierMixin):
 
         
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = aggmodel.loss.cross_entropy)
+        model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
         performance = aggmodel.cbks.CLA_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
                                                                     last_avf="softmax",
-                                                                    verbose = self.verbose,)
+                                                                    verbose = 0,)
 
-        model.fit(X, y, 
+        history = model.fit(X, y, 
                   batch_size=self.batch_size, 
-                  epochs= self.epochs, verbose= 0, shuffle = True, 
+                  epochs= self.epochs, verbose= self.verbose, shuffle = True, 
                   validation_data = (X_valid, y_valid), 
                   callbacks=[performance]) 
 
         self._model = model
         self._performance = performance
+        self.history = history
+        
         # Return the classifier
         return self
 
@@ -388,7 +390,7 @@ class MultiClassesEstimator(BaseEstimator, ClassifierMixin):
     
     
     
-class MultiLabelsEstimator(BaseEstimator, ClassifierMixin):
+class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
     """ An AggMap CNN MultiLabel estimator (each sample belongs to many classes) 
     Parameters
@@ -406,7 +408,7 @@ class MultiLabelsEstimator(BaseEstimator, ClassifierMixin):
     
     def __init__(self, 
                  epochs = 150,  
-                 conv1_kernel_size = 3,
+                 conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
                  batch_size = 128,  
@@ -481,7 +483,7 @@ class MultiLabelsEstimator(BaseEstimator, ClassifierMixin):
         self.X_ = X
         self.y_ = y
         
-        if (X_valid == None) | (y_valid == None):
+        if (X_valid is None) | (y_valid is None):
             
             X_valid = X
             y_valid = y
