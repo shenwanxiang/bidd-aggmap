@@ -54,14 +54,14 @@ class AggMap(Base):
     
     def __init__(self, 
                  dfx,
-                 metric = 'cosine' 
+                 metric = 'correlation' 
                 ):
         
         """
         paramters
         -----------------
         dfx: pandas DataFrame
-        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'cosine', measurement of feature distance
+        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation', measurement of feature distance
 
         
         """

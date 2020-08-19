@@ -45,7 +45,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     """
     
     def __init__(self, 
-                 epochs = 100,  
+                 epochs = 200,  
                  conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
@@ -218,7 +218,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     """
     
     def __init__(self, 
-                 epochs = 150,  
+                 epochs = 200,  
                  conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
@@ -414,7 +414,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     """
     
     def __init__(self, 
-                 epochs = 150,  
+                 epochs = 200,  
                  conv1_kernel_size = 11,
                  dense_layers = [128],  
                  dense_avf = 'relu',
