@@ -1,9 +1,7 @@
 # bidd-aggmap
 
 
-## AggMap -  Enhancing Feature Representation Ability by Agglomeration and Multi-Channel Operations
-
-## AggMap - Enhancing Feature Representation Ability by Unsurpervised Embedding  and Multi-Channel Operations
+## AggMap - Enhancing Feature Representation Ability by Unsupervised Agglomeration and Multi-Channel Operations
 
 
 ### 2D signature map
