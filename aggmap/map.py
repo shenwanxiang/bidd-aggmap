@@ -5,7 +5,7 @@ Created on Sun Aug 25 20:29:36 2019
 
 @author: wanxiang.shen@u.nus.edu
 
-main rfmap code
+main aggmap code
 
 """
 from aggmap.utils.logtools import print_info, print_warn, print_error
@@ -409,21 +409,25 @@ class AggMap(Base):
         
         
         
-    def plot_tree(self, figsize=(16,8), leaf_font_size = 18, leaf_rotation = 90):
+    def plot_tree(self, figsize=(16,8), add_leaf_labels = True, leaf_font_size = 18, leaf_rotation = 90):
 
         fig = plt.figure(figsize=figsize)
         
         if self.cluster_flag:
             
             Z = self.Z
-            labels = self.alist
+            
 
             D_leaf_colors = self.bitsinfo['colors'].to_dict() 
             link_cols = {}
             for i, i12 in enumerate(Z[:,:2].astype(int)):
                 c1, c2 = (link_cols[x] if x > len(Z) else D_leaf_colors[x] for x in i12)
                 link_cols[i+1+len(Z)] = c1
-
+            
+            if add_leaf_labels:
+                labels = self.alist
+            else:
+                labels = None
             P =dendrogram(Z, labels = labels, 
                           leaf_rotation = leaf_rotation, 
                           leaf_font_size = leaf_font_size, 
