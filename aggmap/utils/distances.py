@@ -221,7 +221,7 @@ descriptors_dist = [(euclidean,'euclidean'),
 
 
 fingerprint_dist = [(jaccard, 'jaccard'),
-                    (rogers_tanimoto, 'rogerstanimoto'),
+                    (rogers_tanimoto, 'rogers_tanimoto'),
                     (hamming,'hamming'),
                     (dice, 'dice'),
                     (kulsinski, 'kulsinski'),
