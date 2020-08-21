@@ -317,7 +317,8 @@ class AggMap(Base):
     def transform(self, 
                   arr_1d, 
                   scale = True, 
-                  scale_method = 'minmax',):
+                  scale_method = 'minmax',
+                  fillnan = 0):
     
     
         """
@@ -326,6 +327,7 @@ class AggMap(Base):
         arr_1d: 1d numpy array feature points
         scale: bool, if True, we will apply MinMax scaling by the precomputed values
         scale_method: {'minmax', 'standard'}
+        fillnan: fill nan value, default: 0
         """
         
         if not self.isfit:
@@ -346,7 +348,7 @@ class AggMap(Base):
         fmap = self._S.transform(vector_1d)    
         
         
-        return np.nan_to_num(fmap)   
+        return np.nan_to_num(fmap, nan = fillnan)   
     
     
 
@@ -355,7 +357,8 @@ class AggMap(Base):
                         array_2d, 
                         scale = True, 
                         scale_method = 'minmax',
-                        n_jobs=4):
+                        n_jobs=4,
+                        fillnan = 0):
     
         """
         parameters
@@ -364,6 +367,7 @@ class AggMap(Base):
         scale: bool, if True, we will apply MinMax scaling by the precomputed values
         scale_method: {'minmax', 'standard'}
         n_jobs: number of parallel
+        fillnan: fill nan value, default: 0
         """
         
         if not self.isfit:
@@ -376,7 +380,8 @@ class AggMap(Base):
         P = Parallel(n_jobs=n_jobs)
         res = P(delayed(self.transform)(arr_1d, 
                                         scale,
-                                        scale_method) for arr_1d in tqdm(array_2d, ascii=True)) 
+                                        scale_method,
+                                        fillnan) for arr_1d in tqdm(array_2d, ascii=True)) 
         X = np.stack(res) 
         
         return X
