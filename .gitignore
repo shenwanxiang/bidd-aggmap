@@ -2,8 +2,13 @@
 __pycache__
 tmpignore
 *.gzip
+orgpaper
 
 
 */.ipynb_checkpoints/*
 */__pycache__/*
 */tempignore/*
+
+*/org_paper/*
+
+
