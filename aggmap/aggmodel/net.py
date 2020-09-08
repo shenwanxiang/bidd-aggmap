@@ -60,7 +60,7 @@ def AggMapNet(input_shape,
     dense_avf: activation function for dense layers
     last_avf: activation function for last layer
     """
-    
+    tf.keras.backend.clear_session()
     assert len(input_shape) == 3
     inputs = Input(input_shape)
     
@@ -107,7 +107,7 @@ def AggMapDualPathNet(molmap1_size,
     dense_avf: activation function for dense layers
     last_avf: activation function for last layer
     """
-    
+    tf.keras.backend.clear_session()
     ## first inputs
     d_inputs1 = Input(molmap1_size)
     d_conv1 = Conv2D(48, conv1_kernel_size, padding = 'same', activation='relu', strides = 1)(d_inputs1)
@@ -159,7 +159,7 @@ def AggMapAddPathNet(molmap_shape,  additional_shape,
     dense_avf: activation function for dense layers
     last_avf: activation function for last layer
     """
-    
+    tf.keras.backend.clear_session()
     assert len(molmap_shape) == 3
     inputs = Input(molmap_shape)
     inputs_actvie_amount = Input(additional_shape)
@@ -213,7 +213,7 @@ def AggMapResNet(input_shape,
     dense_avf: activation function for dense layers
     last_avf: activation function for last layer
     """
-    
+    tf.keras.backend.clear_session()
     inputs = tf.keras.Input(input_shape) #input_shape = (24, 24, 3)
 #     x = layers.Conv2D(32, 11, activation='relu')(inputs)
 #     x = layers.Conv2D(64, 3, activation='relu')(x)
