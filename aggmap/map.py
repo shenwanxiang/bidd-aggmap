@@ -9,7 +9,7 @@ main aggmap code
 
 """
 from aggmap.utils.logtools import print_info, print_warn, print_error
-from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array 
+from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array, smartpadding 
 from aggmap.utils import vismap, summary, calculator
 
 
@@ -199,6 +199,9 @@ class AggMap(Base):
         self.emb_method = emb_method
         self.lnk_method = lnk_method
         
+        if fmap_shape != None:
+            assert len(fmap_shape) == 2, "fmap_shape must be a tuple with two elements!"
+        
         # flist and distance
         flist = self.info_scale[self.info_scale['var'] > self.var_thr].index.tolist()
         
@@ -309,8 +312,12 @@ class AggMap(Base):
         
         ## fit flag
         self.isfit = True
-        self.fmap_shape = self._S.fmap_shape        
-        
+        if self.fmap_shape == None:
+            self.fmap_shape = self._S.fmap_shape        
+        else:
+            m, n = self.fmap_shape
+            p, q = self._S.fmap_shape
+            assert (m >= p) & (n >=q), "fmap_shape's width must >= %s, height >= %s " % (p, q)
         return self
         
 
@@ -342,12 +349,21 @@ class AggMap(Base):
         
         df = pd.DataFrame(arr_1d).T
         df.columns = self.alist
-        
+
         df = df[self.flist]
         vector_1d = df.values[0] #shape = (N, )
-        fmap = self._S.transform(vector_1d)    
+        fmap = self._S.transform(vector_1d)  
+        p, q, c = fmap.shape
         
-        
+        if self.fmap_shape != None:        
+            m, n = self.fmap_shape
+            if (m > p) | (n > q):
+                fps = []
+                for i in range(c):
+                    fp = smartpadding(fmap[:,:,i], self.fmap_shape)
+                    fps.append(fp)
+                fmap = np.stack(fps, axis=-1)        
+
         return np.nan_to_num(fmap, nan = fillnan)   
     
     
