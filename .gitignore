@@ -3,7 +3,7 @@ __pycache__
 tmpignore
 *.gzip
 orgpaper
-
+*.h5 #ignore the model files
 
 */.ipynb_checkpoints/*
 */__pycache__/*
