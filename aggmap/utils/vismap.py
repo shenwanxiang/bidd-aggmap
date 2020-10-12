@@ -109,9 +109,9 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
     
     
     
-    m,n = mp.fmap_shape
+    m,n = mp._S.fmap_shape
     colormaps = mp.colormaps
-    position = np.zeros(mp.fmap_shape, dtype='O').reshape(m*n,)
+    position = np.zeros(mp._S.fmap_shape, dtype='O').reshape(m*n,)
     position[mp._S.col_asses] = mp.flist
     position = position.reshape(m, n)
     
@@ -139,18 +139,18 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
     H.set_options('title', {'text': title})
     H.set_options('subtitle', {'text': subtitle})
 #     H.set_options('xAxis', {'title': '', 
-#                             'min': 0, 'max': mp.fmap_shape[1]-1,
+#                             'min': 0, 'max': mp._S.fmap_shape[1]-1,
 #                             'allowDecimals':False,
 #                             'labels':{'style':{'fontSize':20}}})
     
 #     H.set_options('yAxis', {'title': '', 'tickPosition': 'inside', 
-#                             'min': 0, 'max': mp.fmap_shape[0]-1,
+#                             'min': 0, 'max': mp._S.fmap_shape[0]-1,
 #                             'reversed': True,
 #                             'allowDecimals':False,
 #                             'labels':{'style':{'fontSize':20}}})
 
     H.set_options('xAxis', {'title': None,                         
-                            'min': 0, 'max': mp.fmap_shape[1]-1,
+                            'min': 0, 'max': mp._S.fmap_shape[1]-1,
                             'startOnTick': False,
                             'endOnTick': False,    
                             'allowDecimals':False,
@@ -162,7 +162,7 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
                             'endOnTick': False,
                             'gridLineWidth': 0,
                             'reversed': True,
-                            'min': 0, 'max': mp.fmap_shape[0]-1,
+                            'min': 0, 'max': mp._S.fmap_shape[0]-1,
                             'allowDecimals':False,
                             'labels':{'style':{'fontSize':20}}})
     

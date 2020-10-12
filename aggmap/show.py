@@ -7,18 +7,8 @@ Created on Tue Aug 18 13:01:00 2020
 
 
 
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Aug 16 17:10:53 2020
-
-@author: wanxiang.shen@u.nus.edu
-"""
-
 import warnings
 warnings.filterwarnings("ignore")
-
-
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -26,9 +16,8 @@ import seaborn as sns
 
 
 
-def imshow(x_arr,  ax, mode = 'dark',  
-           color_list = ['#ff0c00','#25ff00', '#1300ff','#d000ff','#e2ff00',
-                         '#00fff6', '#ff8800', '#fccde5','#178b66', '#8a0075'], 
+def imshow(x_arr,  ax, mode = 'dark',  color_list = ['#1300ff','#ff0c00','#25ff00', '#d000ff','#e2ff00', 
+                                                     '#00fff6', '#ff8800', '#fccde5','#178b66', '#8a0075'],
            x_max = 255, vmin = -1, vmax = 1,):
     
     
@@ -64,7 +53,7 @@ def imshow(x_arr,  ax, mode = 'dark',
         ax.axvline(x=0, color='grey',lw=2, ls =  '--')
 
 
-def imshow_wrap(x,  mode = 'dark', color_list = ['#ff0c00','#25ff00', '#1300ff','#d000ff','#e2ff00', 
+def imshow_wrap(x,  mode = 'dark', color_list = ['#1300ff','#ff0c00','#25ff00', '#d000ff','#e2ff00', 
                                                  '#00fff6', '#ff8800', '#fccde5','#178b66', '#8a0075'], 
                 x_max = 255, vmin = -1, vmax = 1,):
     

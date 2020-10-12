@@ -12,7 +12,7 @@ from aggmap.utils.logtools import print_info, print_warn, print_error
 from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array, smartpadding 
 from aggmap.utils import vismap, summary, calculator
 
-
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.manifold import TSNE, MDS
 from sklearn.utils import shuffle
 from joblib import Parallel, delayed, load, dump
@@ -49,12 +49,29 @@ class Base:
     
 
     
+def _cluster_model2linkage_matrix(model):    
+    counts = np.zeros(model.children_.shape[0])
+    n_samples = len(model.labels_)
+    for i, merge in enumerate(model.children_):
+        current_count = 0
+        for child_idx in merge:
+            if child_idx < n_samples:
+                current_count += 1  # leaf node
+            else:
+                current_count += counts[child_idx - n_samples]
+        counts[i] = current_count
+
+    linkage_matrix = np.column_stack([model.children_, model.distances_,
+                                      counts]).astype(float)
+    return linkage_matrix
+
 
 class AggMap(Base):
     
+    
     def __init__(self, 
                  dfx,
-                 metric = 'correlation' 
+                 metric = 'correlation',
                 ):
         
         """
@@ -63,7 +80,6 @@ class AggMap(Base):
         dfx: pandas DataFrame
         metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation', measurement of feature distance
 
-        
         """
         
         assert type(dfx) == pd.core.frame.DataFrame, 'input dfx mush be pandas DataFrame!'
@@ -73,7 +89,7 @@ class AggMap(Base):
         self.isfit = False
         self.alist = dfx.columns.tolist()
         self.ftype = 'feature points'
-        self.cluster_flag = False
+
         
         ## calculating distance
         print_info('Calculating distance ...')
@@ -90,6 +106,11 @@ class AggMap(Base):
             res.append(r)
         dfs = pd.DataFrame(res, index = self.alist)
         self.info_scale = dfs
+        
+        print_info('Applying the Agglomerative Clustering ...')
+        cluster_model = AgglomerativeClustering(distance_threshold=0, n_clusters=None)
+        cluster_model.fit(dfx.values.T)
+        self._intrinsic_Z = _cluster_model2linkage_matrix(cluster_model)        
         
         
         
@@ -157,7 +178,7 @@ class AggMap(Base):
 
     def fit(self, 
             feature_group_list = [],
-            cluster_channels = 3,
+            cluster_channels = 4,
             var_thr = -1, 
             split_channels = True, 
             fmap_type = 'grid',  
@@ -168,7 +189,7 @@ class AggMap(Base):
             verbose = 2, 
             random_state = 32,
             group_color_dict  = {},
-            lnk_method = 'complete',
+            lnk_method = 'ward',
             **kwargs): 
         """
         parameters
@@ -181,7 +202,7 @@ class AggMap(Base):
         fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
         emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
         group_color_dict: dict of the group colors, keys are the group names, values are the colors
-        lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
+        lnk_method: {'ward','complete', 'average', 'single'}, linkage method
         kwargs: the extra parameters for the conresponding embedding method
         """
             
@@ -218,12 +239,11 @@ class AggMap(Base):
         self.x_max = self.info_scale['max'].values
         
    
-                
         #bitsinfo
         dfb = pd.DataFrame(self.alist, columns = ['IDs'])
         if feature_group_list != []:
-            
-            self.cluster_flag = False
+
+            self.Z = self._intrinsic_Z
             
             assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
             self.cluster_channels = len(set(feature_group_list))
@@ -244,9 +264,12 @@ class AggMap(Base):
             
             self.cluster_channels = cluster_channels
             print_info('applying hierarchical clustering to obtain group information ...')
-            self.cluster_flag = True
-            
-            Z = linkage(squareform(dfd.values),  lnk_method)
+
+            if self.lnk_method != 'ward':
+                Z = linkage(squareform(dfd.values),  lnk_method)
+            else:
+                Z = self._intrinsic_Z
+                
             labels = fcluster(Z, cluster_channels, criterion='maxclust')
             
             feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
@@ -268,8 +291,7 @@ class AggMap(Base):
         colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
         colormaps.update({'NaN': '#000000'})
         self.colormaps = colormaps
-
-        
+  
         if fmap_type == 'grid':
             S = Scatter2Grid()
         else:
@@ -433,26 +455,24 @@ class AggMap(Base):
     def plot_tree(self, figsize=(16,8), add_leaf_labels = True, leaf_font_size = 18, leaf_rotation = 90):
 
         fig = plt.figure(figsize=figsize)
-        
-        if self.cluster_flag:
-            
-            Z = self.Z
-            
+     
+        Z = self.Z
 
-            D_leaf_colors = self.bitsinfo['colors'].to_dict() 
-            link_cols = {}
-            for i, i12 in enumerate(Z[:,:2].astype(int)):
-                c1, c2 = (link_cols[x] if x > len(Z) else D_leaf_colors[x] for x in i12)
-                link_cols[i+1+len(Z)] = c1
-            
-            if add_leaf_labels:
-                labels = self.alist
-            else:
-                labels = None
-            P =dendrogram(Z, labels = labels, 
-                          leaf_rotation = leaf_rotation, 
-                          leaf_font_size = leaf_font_size, 
-                          link_color_func=lambda x: link_cols[x])
+        D_leaf_colors = self.bitsinfo['colors'].to_dict() 
+        link_cols = {}
+        for i, i12 in enumerate(Z[:,:2].astype(int)):
+            c1, c2 = (link_cols[x] if x > len(Z) else D_leaf_colors[x] for x in i12)
+            link_cols[i+1+len(Z)] = c1
+
+        if add_leaf_labels:
+            labels = self.alist
+        else:
+            labels = None
+
+        P =dendrogram(Z, labels = labels, 
+                      leaf_rotation = leaf_rotation, 
+                      leaf_font_size = leaf_font_size, 
+                      link_color_func=lambda x: link_cols[x])
         
         return fig
         

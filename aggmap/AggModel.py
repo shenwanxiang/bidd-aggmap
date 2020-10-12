@@ -5,7 +5,7 @@ Created on Sun Aug 16 17:10:53 2020
 @author: wanxiang.shen@u.nus.edu
 """
 
-import warnings
+import warnings, os
 warnings.filterwarnings("ignore")
 
 
@@ -56,6 +56,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                  patience = 10000,
                  verbose = 0, 
                  random_state = 32,
+                 gpuid = 0,
                  name = "AggMap Regression Estimator"
                 ):
         
@@ -70,6 +71,8 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.metric = metric
         self.patience = patience
         
+        self.gpuid = str(gpuid)
+        os.environ["CUDA_VISIBLE_DEVICES"]= self.gpuid
         
         self.verbose = verbose
         self.random_state = random_state
@@ -92,6 +95,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                         "random_state":self.random_state,
                         "verbose":self.verbose,
                         "name":self.name,
+                        "gpuid": self.gpuid,
                        }
 
         return model_paras
@@ -229,7 +233,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                  patience = 10000,
                  verbose = 0, 
                  random_state = 32,
-                 name = "AggMap MultiClass Estimator"
+                 name = "AggMap MultiClass Estimator",
+                 gpuid=0,
                 ):
         
         
@@ -243,6 +248,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         self.metric = metric
         self.patience = patience
         
+        self.gpuid = str(gpuid)
+        os.environ["CUDA_VISIBLE_DEVICES"]= self.gpuid
         
         self.verbose = verbose
         self.random_state = random_state
@@ -266,6 +273,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                         "random_state":self.random_state,
                         "verbose":self.verbose,
                         "name":self.name,
+                        "gpuid": self.gpuid,
                        }
 
         return model_paras
@@ -425,7 +433,9 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                  patience = 10000,
                  verbose = 0, 
                  random_state = 32,
-                 name = "AggMap MultiLabels Estimator"
+                 name = "AggMap MultiLabels Estimator",
+                 gpuid = 0,
+                 
                 ):
         
         
@@ -438,7 +448,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.monitor = monitor
         self.metric = metric
         self.patience = patience
-        
+        self.gpuid = str(gpuid)
+        os.environ["CUDA_VISIBLE_DEVICES"]= self.gpuid        
         
         self.verbose = verbose
         self.random_state = random_state
@@ -462,6 +473,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                         "random_state":self.random_state,
                         "verbose":self.verbose,
                         "name":self.name,
+                        "gpuid": self.gpuid,
                        }
 
         return model_paras
