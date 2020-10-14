@@ -528,7 +528,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                                                                     last_avf=None,
                                                                     verbose = self.verbose,)
 
-        model.fit(X, y, 
+        history = model.fit(X, y, 
                   batch_size=self.batch_size, 
                   epochs= self.epochs, verbose= 0, shuffle = True, 
                   validation_data = (X_valid, y_valid), 
@@ -537,6 +537,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self._model = model
         self._performance = performance
         # Return the classifier
+        self.history = history
         return self
 
 
