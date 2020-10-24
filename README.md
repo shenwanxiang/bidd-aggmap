@@ -1,7 +1,7 @@
-# bidd-aggmap
+# AggMap
 
 
-## AggMap - Enhancing Feature Representation Ability by Unsupervised Agglomeration and Multi-Channel Operations
+## Mapping and Agglomeration High-dimensional Data into Structured Fmaps for Convolutional Models
 
 
 ### 2D signature map
