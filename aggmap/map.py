@@ -157,7 +157,7 @@ class AggMap(Base):
 
     def fit(self, 
             feature_group_list = [],
-            cluster_channels = 3,
+            cluster_channels = 5,
             var_thr = -1, 
             split_channels = True, 
             fmap_type = 'grid',  

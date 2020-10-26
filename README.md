@@ -1,7 +1,7 @@
 # AggMap
 
 
-## Mapping and Agglomeration High-dimensional Data into Structured Fmaps for Convolutional Models
+## A Fully Automated and Fast Flow to Generate 2D Biometric Signatures for Convolutional Models
 
 
 ### 2D signature map
@@ -34,7 +34,7 @@ from aggmap import AggMap
 mp = AggMap(dfx, metric = 'correlation')
 
 #fit AggMap
-mp.fit(cluster_channels = 3)
+mp.fit(cluster_channels = 5)
 
 #transform
 X = mp.transform(dfx.values)
