@@ -4,7 +4,7 @@ tmpignore
 *.gzip
 zip.ipynb
 paper.old
-
+*.h5
 *.h5 #ignore the model files
 
 */.ipynb_checkpoints/*

@@ -286,7 +286,12 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
         
 
-    def fit(self, X, y,  X_valid = None, y_valid = None):
+    def fit(self, X, y,  
+            X_valid = None, y_valid = None, 
+            loss = 'categorical_crossentropy', 
+            last_avf = 'softmax', 
+            class_weight = None,
+           ):
 
         # Check that X and y have correct shape
         
@@ -319,19 +324,19 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
         
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = 'categorical_crossentropy', metrics = ['accuracy'])
+        model.compile(optimizer = opt, loss = loss, metrics = ['accuracy'])
         performance = aggmodel.cbks.CLA_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
-                                                                    last_avf="softmax",
+                                                                    last_avf= last_avf,
                                                                     verbose = 0,)
 
         history = model.fit(X, y, 
                   batch_size=self.batch_size, 
                   epochs= self.epochs, verbose= self.verbose, shuffle = True, 
-                  validation_data = (X_valid, y_valid), 
+                  validation_data = (X_valid, y_valid), class_weight = class_weight, 
                   callbacks=[performance]) 
 
         self._model = model
