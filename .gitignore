@@ -6,6 +6,8 @@ zip.ipynb
 paper.old
 *.h5
 *.h5 #ignore the model files
+CRC_stage.mp
+
 
 */.ipynb_checkpoints/*
 */__pycache__/*
