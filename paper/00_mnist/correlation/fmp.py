@@ -22,7 +22,7 @@ def islice(lst, n):
 
 
 def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification', 
-                sigmoidy = False, apply_scale_smothing = True, kernel_size = 5, sigma = 1.6):
+                sigmoidy = False, apply_scale_smothing = True, kernel_size = 3, sigma = 1.2):
     '''
     Forward prop. Feature importance
     
@@ -98,7 +98,7 @@ def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification',
             smax = np.nanmax(s[s != np.inf])
             s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
             a = scaler.fit_transform(s)
-            a = a.reshape(*mp.fmap_shape)
+            a = a.reshape(*mp._S.fmap_shape)
             IMPM = conv2(a, kernel_size=kernel_size, sigma=sigma)
             results = IMPM.reshape(-1,).tolist()
 
@@ -106,5 +106,67 @@ def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification',
         
     df = pd.DataFrame(final_res)
     df.columns = df.columns + '_importance'
+    df = df_grid.join(df)
+    return df
+
+
+
+def CalcFeatImpEach(model, mp, arrX, dfY, task_type = 'classification', sigmoidy = False,  
+                    apply_scale_smothing = True, kernel_size = 3, sigma = 1.2):
+    '''
+    Forward prop. Feature importance
+    '''
+    
+    assert len(arrX) == 1, 'each for only one image!'
+    
+    if task_type == 'classification':
+        f = log_loss
+    else:
+        f = mean_squared_error
+        
+    def sigmoid(x):
+        return 1 / (1 + np.exp(-x))
+    
+    scaler = StandardScaler()
+    
+    grid = mp.plot_grid()
+    Y_true = dfY.values
+    df_grid = mp.df_grid.sort_values(['y', 'x']).reset_index(drop=True)
+    Y_prob = model.predict(arrX)
+    N, W, H, C = arrX.shape
+
+    if (sigmoidy) & (task_type == 'classification'):
+        Y_prob = sigmoid(Y_prob)
+
+    results = []
+    loss = f(Y_true.ravel().tolist(),  Y_prob.ravel().tolist())
+    for i in tqdm(range(len(df_grid)), ascii= True):
+        ts = df_grid.iloc[i]
+        y = ts.y
+        x = ts.x
+        X1 = np.array(arrX)
+        X1[:, y, x,:] = np.full(X1[:, y, x,:].shape, fill_value = arrX.min())
+        #Y1 = model.predict(X1)
+        Y_pred_prob = model.predict(X1)
+        if (sigmoidy) & (task_type == 'classification'):
+            Y_pred_prob = sigmoid(Y_pred_prob)
+        mut_loss = f(Y_true.ravel().tolist(), Y_pred_prob.ravel().tolist()) 
+        res =  mut_loss - loss # if res > 0, important, othervise, not important
+        results.append(res)
+
+    ## apply smothing and scalings
+    if apply_scale_smothing:
+        s = np.log(pd.DataFrame(results)).values
+        smin = np.nanmin(s[s != -np.inf])
+        smax = np.nanmax(s[s != np.inf])
+        s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
+        a = scaler.fit_transform(s)
+        a = a.reshape(*mp._S.fmap_shape)
+        IMPM = conv2(a, kernel_size=kernel_size, sigma=sigma)
+        results = IMPM.reshape(-1,).tolist()
+            
+            
+    df = pd.DataFrame(results, columns = ['imp'])
+    #df.columns = df.columns + '_importance'
     df = df_grid.join(df)
     return df
