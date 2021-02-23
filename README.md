@@ -1,5 +1,10 @@
 # AggMap
 
+![alt text](./doc/aggmap_logo.svg)
+
+
+
+
 
 ## A Fully Automated and Fast Flow to Generate 2D Biometric Signatures for Convolutional Models
 
