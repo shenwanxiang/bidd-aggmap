@@ -1,6 +1,6 @@
 # AggMap
 
-![alt text](./doc/aggmap_logo.svg)
+![alt text](./doc/logo.png)
 
 
 
