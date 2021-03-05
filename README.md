@@ -1,6 +1,6 @@
 # AggMap
 
-![alt text](./doc/logo.png =50x50)
+![alt text](./doc/logo.png  | width=100)
 
 
 
