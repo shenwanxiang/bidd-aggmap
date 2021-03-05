@@ -3,7 +3,9 @@ from tensorflow.keras.utils import plot_model
 from tensorflow.keras import Model, Input, layers
 from tensorflow.keras.layers import MaxPool2D, GlobalMaxPool2D, BatchNormalization, Activation
 from tensorflow.keras.layers import Conv2D, Concatenate,Flatten, Dense, Dropout
+from tensorflow.keras.regularizers import l2, l1
 
+#from tensorflow_addons.layers import  GroupNormalization
 
 def count_trainable_params(model):
     p = 0
@@ -42,13 +44,13 @@ def Inception(inputs, units = 8, strides = 1):
 
 
 
-
 def AggMapNet(input_shape,  
-                n_outputs = 1, 
-                conv1_kernel_size = 11,
-                dense_layers = [128, 32], 
-                dense_avf = 'relu', 
-                last_avf = None):
+              n_outputs = 1, 
+              conv1_kernel_size = 13,
+              dense_layers = [128, 32], 
+              dense_avf = 'relu', 
+              dropout = 0,
+              last_avf = None):
     
     
     """
@@ -59,6 +61,7 @@ def AggMapNet(input_shape,
     dense_layers: list, how many dense layers and units
     dense_avf: activation function for dense layers
     last_avf: activation function for last layer
+    dropout: dropout of the dense layers
     """
     tf.keras.backend.clear_session()
     assert len(input_shape) == 3
@@ -81,6 +84,9 @@ def AggMapNet(input_shape,
     for units in dense_layers:
         x = Dense(units, activation = dense_avf)(x)
         #x = BatchNormalization()(x)
+        if dropout:
+            x = Dropout(rate = dropout)(x)
+            
     #last layer
     outputs = Dense(n_outputs,activation=last_avf)(x)
     
@@ -88,6 +94,58 @@ def AggMapNet(input_shape,
     
     return model
 
+
+def AggMapNet2(input_shape,  
+               n_outputs = 1, 
+               conv1_kernel_size = 11,
+               batch_norm = False,
+               n_inception = 2,
+               dense_layers = [128, 32], 
+               dense_avf = 'relu', 
+               dropout = 0,
+               last_avf = None):
+
+    """
+    parameters
+    ----------------------
+    molmap_shape: w, h, c
+    n_outputs: output units
+    n_inception: number of the inception layers
+    dense_layers: list, how many dense layers and units
+    dense_avf: activation function for dense layers
+    last_avf: activation function for last layer
+    dropout: dropout of the dense layers
+    """
+    tf.keras.backend.clear_session()
+    assert len(input_shape) == 3
+    inputs = Input(input_shape)
+    
+    if batch_norm:
+        conv1 = Conv2D(48,  conv1_kernel_size, padding = 'same', strides = 1)(inputs) #activation='relu',  use_bias=False, kernel_regularizer=l1(1e-3)     
+        conv1 = BatchNormalization(axis=-1, epsilon=1e-5, momentum=0.8)(conv1)
+        incept = Activation("relu")(conv1)    
+    else:
+        incept = Conv2D(48,  conv1_kernel_size, padding = 'same', activation='relu', strides = 1)(inputs)
+    
+    for i in range(n_inception):
+        incept = MaxPool2D(pool_size = 3, strides = 2, padding = 'same')(incept) #p1
+        incept = Inception(incept, strides = 1, units = 32*(2**i))
+
+    #flatten
+    x = GlobalMaxPool2D()(incept)
+    
+    ## dense layer
+    for units in dense_layers:
+        x = Dense(units, activation = dense_avf)(x)
+        if dropout:
+            x = Dropout(rate = dropout)(x)
+
+    #last layer
+    outputs = Dense(n_outputs,activation=last_avf)(x)
+    
+    model = tf.keras.Model(inputs=inputs, outputs=outputs)
+    
+    return model
 
 
 def AggMapDualPathNet(molmap1_size, 
