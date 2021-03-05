@@ -29,7 +29,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     """ An AggMap CNN Regression estimator (each sample belongs to only one class) 
     Parameters
     ----------
-    epochs : int, default = 100
+    epochs : int, default = 200
         A parameter used for training epochs. 
     conv1_kernel_size: int, default = 13
         A parameter used for the kernel size of first covolutional layers
@@ -262,7 +262,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     """ An AggMap CNN MultiClass estimator (each sample belongs to only one class) 
     Parameters
     ----------
-    epochs : int, default = 100
+    epochs : int, default = 200
         A parameter used for training epochs. 
     conv1_kernel_size: int, default = 13
         A parameter used for the kernel size of first covolutional layers
@@ -300,7 +300,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     
     
     def __init__(self, 
-                 epochs = 100,  
+                 epochs = 200,  
                  conv1_kernel_size = 13,
                  dense_layers = [128],  
                  dense_avf = 'relu',
@@ -523,7 +523,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     """ An AggMap CNN MultiLabel estimator (each sample belongs to only one class) 
     Parameters
     ----------
-    epochs : int, default = 100
+    epochs : int, default = 200
         A parameter used for training epochs. 
     conv1_kernel_size: int, default = 13
         A parameter used for the kernel size of first covolutional layers
@@ -560,7 +560,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     """
     
     def __init__(self, 
-                 epochs = 100,  
+                 epochs = 200,  
                  conv1_kernel_size = 13,
                  dense_layers = [128],  
                  dense_avf = 'relu',
