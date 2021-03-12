@@ -17,12 +17,18 @@ from sklearn.metrics import mean_squared_error, log_loss
 from sklearn.preprocessing import StandardScaler
 
 
+
+
 def islice(lst, n):
     return [lst[i:i + n] for i in range(0, len(lst), n)]
 
 
 def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification', 
-                sigmoidy = False, apply_scale_smothing = True, kernel_size = 3, sigma = 1.2):
+                sigmoidy = False, 
+                apply_logrithm = False,
+                apply_smoothing = False, 
+                kernel_size = 5, 
+                sigma = 1.6):
     '''
     Forward prop. Feature importance
     
@@ -91,17 +97,22 @@ def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification',
                 tmp_X = []
             flag += 1
 
-        ## step 4: apply smothing and scalings
-        if apply_scale_smothing:
-            s = np.log(pd.DataFrame(results)).values
-            smin = np.nanmin(s[s != -np.inf])
-            smax = np.nanmax(s[s != np.inf])
-            s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
-            a = scaler.fit_transform(s)
-            a = a.reshape(*mp._S.fmap_shape)
-            IMPM = conv2(a, kernel_size=kernel_size, sigma=sigma)
-            results = IMPM.reshape(-1,).tolist()
-
+        ## step 4:apply scaling or smothing 
+        s = pd.DataFrame(results).values
+        if apply_logrithm:
+            s = np.log(s)
+        smin = np.nanmin(s[s != -np.inf])
+        smax = np.nanmax(s[s != np.inf])
+        s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
+        a = scaler.fit_transform(s)
+        a = a.reshape(*mp._S.fmap_shape)
+        if apply_smoothing:
+            covda = conv2(a, kernel_size=kernel_size, sigma=sigma)
+            results = covda.reshape(-1,).tolist()
+        else:
+            results = a.reshape(-1,).tolist()
+        
+        
         final_res.update({col:results})
         
     df = pd.DataFrame(final_res)
@@ -111,8 +122,12 @@ def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification',
 
 
 
-def CalcFeatImpEach(model, mp, arrX, dfY, task_type = 'classification', sigmoidy = False,  
-                    apply_scale_smothing = True, kernel_size = 3, sigma = 1.2):
+def CalcFeatImpEach(model, mp, arrX, dfY, 
+                    task_type = 'classification', 
+                    sigmoidy = False,  
+                    apply_logrithm = False, 
+                    apply_smoothing = False,
+                    kernel_size = 3, sigma = 1.2):
     '''
     Forward prop. Feature importance
     '''
@@ -155,16 +170,21 @@ def CalcFeatImpEach(model, mp, arrX, dfY, task_type = 'classification', sigmoidy
         results.append(res)
 
     ## apply smothing and scalings
-    if apply_scale_smothing:
-        s = np.log(pd.DataFrame(results)).values
-        smin = np.nanmin(s[s != -np.inf])
-        smax = np.nanmax(s[s != np.inf])
-        s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
-        a = scaler.fit_transform(s)
-        a = a.reshape(*mp._S.fmap_shape)
-        IMPM = conv2(a, kernel_size=kernel_size, sigma=sigma)
-        results = IMPM.reshape(-1,).tolist()
-            
+    s = pd.DataFrame(results).values
+    if apply_logrithm:
+        s = np.log(s)
+    smin = np.nanmin(s[s != -np.inf])
+    smax = np.nanmax(s[s != np.inf])
+    s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
+    a = scaler.fit_transform(s)
+    a = a.reshape(*mp._S.fmap_shape)
+    if apply_smoothing:
+        covda = conv2(a, kernel_size=kernel_size, sigma=sigma)
+        results = covda.reshape(-1,).tolist()
+    else:
+        results = a.reshape(-1,).tolist()
+        
+    
             
     df = pd.DataFrame(results, columns = ['imp'])
     #df.columns = df.columns + '_importance'
