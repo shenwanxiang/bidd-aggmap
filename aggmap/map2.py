@@ -7,6 +7,7 @@ Created on Sun Aug 25 20:29:36 2019
 
 main aggmap code
 
+
 """
 from aggmap.utils.logtools import print_info, print_warn, print_error
 from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array, smartpadding 
@@ -68,6 +69,14 @@ def _cluster_model2linkage_matrix(model):
 
 class AggMap(Base):
     
+    
+    '''
+    Note: t-SNE initialize method should be changed into 'pca': https://www.nature.com/articles/s41587-020-00809-z
+    
+    >>> mp = AggMap(dfx)
+    >>> mp.fit(emb_method = 'tsne', init = 'pca')
+    
+    '''
     
     def __init__(self, 
                  dfx,
