@@ -13,6 +13,7 @@
 
 ![how-it-works](./doc/how-it-works.png)
 
+----
 ### Proof-of-Concepts on MNIST Dataset
 
 - It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data
