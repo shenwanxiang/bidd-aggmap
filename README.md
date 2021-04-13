@@ -3,18 +3,18 @@
 
 # AggMap
 
-## A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
+### A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
 
 
-## How It Works?
+### How It Works?
 
-- AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps
+- AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
 
 ![how-it-works](./doc/how-it-works.png)
 
-## Proof-of-Concepts on MNIST Dataset
+### Proof-of-Concepts on MNIST Dataset
 
--- It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data
+- It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data
 
 ![reconstruction](./doc/reconstruction.png)
 
@@ -23,7 +23,7 @@ the original, randomized, and reconstructed MNIST. Org1: the original grayscale 
 
 
 
-## Installation
+### Installation
 
 install aggmap by:
 
@@ -40,7 +40,7 @@ source ~/.bashrc
 ```
 
 
-## Usage
+### Usage
 
 
 ```python
