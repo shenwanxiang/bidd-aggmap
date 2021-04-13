@@ -8,7 +8,7 @@
 
 ## How It Works?
 
--- AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps
+- AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps
 
 ![how-it-works](./doc/how-it-works.png)
 
