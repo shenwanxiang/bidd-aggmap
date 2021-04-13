@@ -1,11 +1,12 @@
 
 <a href="url"><img src="./doc/logo.png" align="left" height="170" width="140" ></a>
 
-## AggMap
+# AggMap
 
-### A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
+## A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
 
 
+----
 ### How It Works?
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
