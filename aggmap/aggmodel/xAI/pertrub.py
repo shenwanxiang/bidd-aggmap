@@ -155,6 +155,8 @@ def CalcFeatImpEach(model, mp, arrX, dfY,
 
     results = []
     loss = f(Y_true.ravel().tolist(),  Y_prob.ravel().tolist())
+    
+    all_X1 = []
     for i in tqdm(range(len(df_grid)), ascii= True):
         ts = df_grid.iloc[i]
         y = ts.y
@@ -162,7 +164,13 @@ def CalcFeatImpEach(model, mp, arrX, dfY,
         X1 = np.array(arrX)
         X1[:, y, x,:] = np.full(X1[:, y, x,:].shape, fill_value = arrX.min())
         #Y1 = model.predict(X1)
-        Y_pred_prob = model.predict(X1)
+        #Y_pred_prob = model.predict(X1)
+        all_X1.append(X1)
+        
+    all_X = np.concatenate(all_X1)
+    all_Y_pred_prob = model.predict(all_X)
+
+    for Y_pred_prob in all_Y_pred_prob:
         if (sigmoidy) & (task_type == 'classification'):
             Y_pred_prob = sigmoid(Y_pred_prob)
         mut_loss = f(Y_true.ravel().tolist(), Y_pred_prob.ravel().tolist()) 
@@ -184,8 +192,7 @@ def CalcFeatImpEach(model, mp, arrX, dfY,
     else:
         results = a.reshape(-1,).tolist()
         
-    
-            
+
     df = pd.DataFrame(results, columns = ['imp'])
     #df.columns = df.columns + '_importance'
     df = df_grid.join(df)
