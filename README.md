@@ -6,6 +6,16 @@
 ## A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
 
 
+## How It Works?
+![how-it-works](./doc/how-it-works.png)
+
+
+It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data
+![reconstruction](./doc/reconstruction.png)
+
+
+## Proof-of-Concepts on MNIST Dataset
+
 
 
 ## Installation
