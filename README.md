@@ -1,5 +1,6 @@
 ![alt text](./doc/logo.png)
 
+<a href="url"><img src="./doc/logo.png" align="left" height="45" width="40" ></a>
 
 ## AggMap
 
