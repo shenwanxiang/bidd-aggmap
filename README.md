@@ -1,5 +1,5 @@
 
-<a href="url"><img src="./doc/logo.png" align="left" height="170" width="140" ></a>
+<a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
 
 # AggMap
 
