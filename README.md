@@ -23,6 +23,15 @@
 
 ----
 
+### Example for Restructured Fmaps
+
+- The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/00_example_breast_cancer/03_BCD_feature_maps.ipynb) to find out more!
+
+![Fmap](./doc/WDBC.png)
+
+
+----
+
 ### Installation
 
 install aggmap by:
