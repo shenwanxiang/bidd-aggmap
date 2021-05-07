@@ -15,15 +15,15 @@
 
 
 ## **References**
-* [1]	LeCun, Y. The MNIST database of handwritten digits. http://yannlecuncom/exdb/mnist/ (1998).
-* [2]	Xiao, H., Rasul, K. & Vollgraf, R. Fashion-mnist: a novel image dataset for benchmarking machine learning algorithms. arXiv preprint arXiv:170807747 (2017).
-* [3]	Dua, D. & Graff, C. UCI machine learning repository, Wisconsin Diagnostic Breast Cancer (WDBC)  Data Set. URL http://archiveicsuciedu/ml 37 (2019).
-* [4]	Lyu, B. & Haque, A. Deep learning based tumor type classification using gene expression data. in Proceedings of the 2018 ACM international conference on bioinformatics, computational biology, and health informatics. 89-96 (2018).
-* [5]	Smith, A. M. et al. Standard machine learning approaches outperform deep representation learning on phenotype prediction from transcriptomics data. BMC bioinformatics 21, 1-18 (2020).
-* [6]	Nachtigall, F. M., Pereira, A., Trofymchuk, O. S. & Santos, L. S. Detection of SARS-CoV-2 in nasal swabs using MALDI-MS. Nature biotechnology 38, 1168-1173 (2020).
-* [7]	Shen, B. et al. Proteomic and metabolomic characterization of COVID-19 patient sera. Cell 182, 59-72. e15 (2020).
-* [8]	Wirbel, J. et al. Meta-analysis of fecal metagenomes reveals global microbial signatures that are specific for colorectal cancer. Nature medicine 25, 679-689 (2019).
-* [9]	Yachida, S. et al. Metagenomic and metabolomic analyses reveal distinct stage-specific phenotypes of the gut microbiota in colorectal cancer. Nature medicine 25, 968-976 (2019).
+* [1]	LeCun, Y. The MNIST database of handwritten digits. http://yannlecuncom/exdb/mnist/ (**1998**).
+* [2]	Xiao, H., Rasul, K. & Vollgraf, R. Fashion-mnist: a novel image dataset for benchmarking machine learning algorithms. arXiv preprint arXiv:170807747 (**2017**).
+* [3]	Dua, D. & Graff, C. UCI machine learning repository, Wisconsin Diagnostic Breast Cancer (WDBC)  Data Set. URL http://archiveicsuciedu/ml 37 (**2019**).
+* [4]	Lyu, B. & Haque, A. Deep learning based tumor type classification using gene expression data. in Proceedings of the 2018 ACM international conference on bioinformatics, computational biology, and health informatics. 89-96 (**2018**).
+* [5]	Smith, A. M. et al. Standard machine learning approaches outperform deep representation learning on phenotype prediction from transcriptomics data. BMC bioinformatics 21, 1-18 (**2020**).
+* [6]	Nachtigall, F. M., Pereira, A., Trofymchuk, O. S. & Santos, L. S. Detection of SARS-CoV-2 in nasal swabs using MALDI-MS. Nature biotechnology 38, 1168-1173 (**2020**).
+* [7]	Shen, B. et al. Proteomic and metabolomic characterization of COVID-19 patient sera. Cell 182, 59-72. e15 (**2020**).
+* [8]	Wirbel, J. et al. Meta-analysis of fecal metagenomes reveals global microbial signatures that are specific for colorectal cancer. Nature medicine 25, 679-689 (**2019**).
+* [9]	Yachida, S. et al. Metagenomic and metabolomic analyses reveal distinct stage-specific phenotypes of the gut microbiota in colorectal cancer. Nature medicine 25, 968-976 (**2019**).
 
 
 
