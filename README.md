@@ -16,7 +16,7 @@
 ----
 ### Proof-of-Concepts on MNIST Dataset
 
-- It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data, the original, randomized, and reconstructed MNIST:
+- It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data:
 ![reconstruction](./doc/reconstruction.png)
 
 `Org1`: the original grayscale images (channel = 1), `OrgRP1`: the randomized images of Org1 (channel = 1), `RPAgg1, 5`: the reconstructed images of `OrgPR1` by AggMap feature restructuring (channel = 1, 5 respectively, each color represents features of one channel). `RPAgg5-tkb`: the original images with the pixels divided into 5 groups according to the 5-channels of `RPAgg5` and colored in the same way as `RPAgg5`.
