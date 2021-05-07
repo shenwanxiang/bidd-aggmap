@@ -1,4 +1,4 @@
-## **DataSet** 
+### **DataSet** 
 
 | **Project**               | **Data type**                                                                                                                                                                                               | **Datasets**                                                                                                                                  | **\# of samples**                                                                                                                                                                                                         | **\# of features**                                   | **Data & Code Path**        |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------- |
@@ -14,7 +14,7 @@
 
 
 
-## **References**
+### **References**
 * [1]	LeCun, Y. The MNIST database of handwritten digits. http://yannlecuncom/exdb/mnist/ (**1998**).
 * [2]	Xiao, H., Rasul, K. & Vollgraf, R. Fashion-mnist: a novel image dataset for benchmarking machine learning algorithms. arXiv preprint arXiv:170807747 (**2017**).
 * [3]	Dua, D. & Graff, C. UCI machine learning repository, Wisconsin Diagnostic Breast Cancer (WDBC)  Data Set. URL http://archiveicsuciedu/ml 37 (**2019**).
