@@ -6,7 +6,7 @@
 ## A Robust Multi-Channel and Explainable Omics Deep Learning Toolbox
 
 ----
-### How It Works and Applications?
+### How It Works and Uses?
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
 
