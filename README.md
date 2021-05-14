@@ -3,18 +3,19 @@
 
 # AggMap
 
-## A Fully Automatic and Fast Flow to Generate 2D Multi-Channel Biometric Signatures for Convolutional Models
-
+## A Robust Multi-Channel and Explainable Omics Deep Learning Toolbox
 
 ----
-### How It Works?
+### How It Works and Applications?
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
 
 ![how-it-works](./doc/how-it-works.png)
+**a**, AggMap flowchart of feature mapping and aggregation into ordered (spatially-correlated) channel-split feature maps (Fmaps). **b**, proof-of-concept illustration of AggMap restructuring of unordered data (randomized MNIST) into clustered channel-split Fmaps (reconstructed MNIST) for CNN-based learning and important feature analysis. **c**, typical biomedical applications of AggMap in restructuring omics data into channel-split Fmaps for multi-channel CNN-based diagnosis and biomarker discovery (explanation `saliency-map` of important features).
+
 
 ----
-### Proof-of-Concepts on MNIST Dataset
+### Proof-of-Concepts of reconstruction ability on MNIST Dataset
 
 - It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data:
 ![reconstruction](./doc/reconstruction.png)
