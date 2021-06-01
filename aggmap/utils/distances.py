@@ -15,6 +15,16 @@ def euclidean(x, y):
         result += (x[i] - y[i]) ** 2
     return np.sqrt(result)
 
+@numba.njit(fastmath=True)
+def sqeuclidean(x, y):
+    """Standard euclidean distance. l2 distance
+    ..math::
+        D(x, y) = \sqrt{\sum_i (x_i - y_i)^2}
+    """
+    result = 0.0
+    for i in range(x.shape[0]):
+        result += (x[i] - y[i]) ** 2
+    return result
 
 
 
@@ -211,6 +221,7 @@ def correlation(x, y):
     
     
 descriptors_dist = [(euclidean,'euclidean'),
+                    (sqeuclidean,'sqeuclidean'),
                     (manhattan,'manhattan'),
                     (canberra,'canberra'),
                     (chebyshev,'chebyshev'),
