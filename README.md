@@ -1,9 +1,9 @@
 
 <a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
 
-# AggMap
+# Jigsaw-liked AggMap
 
-## A Robust Multi-Channel and Explainable Omics Deep Learning Toolbox
+## A Robust Multi-Channel and Explainable Omics Deep Learning Tool
 
 ----
 ### How It Works and Uses?
