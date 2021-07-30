@@ -18,10 +18,34 @@ from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import get_scorer, SCORERS
 
-
-
 from aggmap import aggmodel
 
+from joblib import dump, load
+from  copy import copy
+from tensorflow.keras.models import load_model as load_tf_model
+
+
+def save_model(model, model_path):
+    if not os.path.exists(model_path):
+        os.makedirs(model_path)
+    print('saving model to %s' % model_path)
+    model_new = copy(model)
+    model_new._model.save(os.path.join(model_path, 'inner_model.h5'))
+    model_new._model = None
+    model_new._performance = None
+    dump(model_new,  os.path.join(model_path, 'outer_model.est'))
+    
+    
+def load_model(model_path, gpuid=0):
+    '''
+    gpuid: load model to specific gpu
+    '''
+    gpuid = str(gpuid)
+    os.environ["CUDA_VISIBLE_DEVICES"]= gpuid
+    model = load(os.path.join(model_path, 'outer_model.est'))
+    model.gpuid = gpuid
+    model._model = load_tf_model(os.path.join(model_path, 'inner_model.h5'))
+    return model
 
 
 
