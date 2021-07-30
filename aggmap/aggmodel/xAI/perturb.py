@@ -23,7 +23,7 @@ def islice(lst, n):
     return [lst[i:i + n] for i in range(0, len(lst), n)]
 
 
-def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification', 
+def GetGlobalIMP(model, mp, arrX, dfY, task_type = 'classification', 
                 sigmoidy = False, 
                 apply_logrithm = False,
                 apply_smoothing = False, 
@@ -122,7 +122,7 @@ def CalcFeatImp(model, mp, arrX, dfY, task_type = 'classification',
 
 
 
-def CalcFeatImpEach(model, mp, arrX, dfY, 
+def GetLocalIMP(model, mp, arrX, dfY, 
                     task_type = 'classification', 
                     sigmoidy = False,  
                     apply_logrithm = False, 
