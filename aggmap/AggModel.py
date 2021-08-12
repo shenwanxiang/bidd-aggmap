@@ -10,6 +10,7 @@ warnings.filterwarnings("ignore")
 
 
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -65,6 +66,8 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         A parameter used for the batch size.
     lr: float, default: 1e-4
         A parameter used for the learning rate.
+    loss:string or function, default: 'mse'
+        A parameter used for the loss function
     batch_norm: bool, default: False
         batch normalization after convolution layers.
     n_inception: int, default:2
@@ -99,6 +102,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                  dense_avf = 'relu',
                  batch_size = 128,  
                  lr = 1e-4, 
+                 loss = 'mse',
                  batch_norm = False,
                  n_inception = 2,
                  dropout = 0.0,
@@ -118,6 +122,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.dense_avf = dense_avf
         self.batch_size = batch_size
         self.lr = lr
+        self.loss = loss
         self.batch_norm = batch_norm
         self.n_inception = n_inception
         self.dropout = dropout
@@ -140,6 +145,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 
         model_paras =  {"epochs": self.epochs, 
                         "lr":self.lr, 
+                        "loss":self.loss,
                         "conv1_kernel_size": self.conv1_kernel_size,
                         "dense_layers": self.dense_layers, 
                         "dense_avf":self.dense_avf, 
@@ -201,7 +207,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 
 
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = 'mse')
+        model.compile(optimizer = opt, loss = self.loss)
         performance = aggmodel.cbks.Reg_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
@@ -298,6 +304,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         A parameter used for the batch size.
     lr: float, default: 1e-4
         A parameter used for the learning rate.
+    loss: string or function, default: 'categorical_crossentropy'
+        A parameter used for the loss function
     batch_norm: bool, default: False
         batch normalization after convolution layers.
     n_inception: int, default:2
@@ -332,6 +340,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                  dense_avf = 'relu',
                  batch_size = 128,  
                  lr = 1e-4, 
+                 loss = 'categorical_crossentropy', 
                  batch_norm = False,
                  n_inception = 2,                 
                  dropout = 0.0,
@@ -339,6 +348,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                  metric = 'ROC',
                  patience = 10000,
                  verbose = 0, 
+                 last_avf = 'softmax', 
                  random_state = 32,
                  name = "AggMap MultiClass Estimator",
                  gpuid=0,
@@ -351,6 +361,9 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         self.dense_avf = dense_avf
         self.batch_size = batch_size
         self.lr = lr
+        self.loss = loss
+        self.last_avf = last_avf
+        
         self.batch_norm = batch_norm
         self.n_inception = n_inception      
         self.dropout = dropout
@@ -374,9 +387,11 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
         model_paras =  {"epochs": self.epochs, 
                         "lr":self.lr, 
+                        "loss":self.loss,
                         "conv1_kernel_size": self.conv1_kernel_size,
                         "dense_layers": self.dense_layers, 
                         "dense_avf":self.dense_avf, 
+                        "last_avf":self.last_avf,
                         "batch_size":self.batch_size, 
                         "dropout":self.dropout,
                         "batch_norm":self.batch_norm,
@@ -402,8 +417,6 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     def fit(self, X, y,  
             X_valid = None,
             y_valid = None, 
-            loss = 'categorical_crossentropy', 
-            last_avf = 'softmax', 
             class_weight = None,
            ):
 
@@ -438,17 +451,17 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                                         dense_layers = self.dense_layers, 
                                         dense_avf = self.dense_avf, 
                                         dropout = self.dropout,
-                                        last_avf = last_avf)
+                                        last_avf = self.last_avf)
 
 
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = loss, metrics = ['accuracy'])
+        model.compile(optimizer = opt, loss = self.loss, metrics = ['accuracy'])
         performance = aggmodel.cbks.CLA_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
-                                                                    last_avf= last_avf,
+                                                                    last_avf= self.last_avf,
                                                                     verbose = 0,)
 
         history = model.fit(X, y, 
@@ -497,7 +510,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     
 
     def predict(self, X):
-        y_pred = np.round(self.predict_proba(X))
+        probs = self.predict_proba(X)
+        y_pred = np.argmax(probs, axis=1)
         return y_pred
     
     
@@ -559,6 +573,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         A parameter used for the batch size.
     lr: float, default: 1e-4
         A parameter used for the learning rate.
+    loss: string or function, default: tf.nn.sigmoid_cross_entropy_with_logits
+        A parameter used for the loss function
     batch_norm: bool, default: False
         batch normalization after convolution layers.
     n_inception: int, default:2
@@ -592,6 +608,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                  dense_avf = 'relu',
                  batch_size = 128,  
                  lr = 1e-4, 
+                 loss = tf.nn.sigmoid_cross_entropy_with_logits, 
                  batch_norm = False,
                  n_inception = 2,                     
                  dropout = 0.0,                 
@@ -611,6 +628,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.dense_avf = dense_avf
         self.batch_size = batch_size
         self.lr = lr
+        self.loss = loss
         self.batch_norm = batch_norm
         self.n_inception = n_inception
         self.dropout = dropout
@@ -632,6 +650,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
         model_paras =  {"epochs": self.epochs, 
                         "lr":self.lr, 
+                        "loss":self.loss,
                         "conv1_kernel_size": self.conv1_kernel_size,
                         "dense_layers": self.dense_layers, 
                         "dense_avf":self.dense_avf, 
@@ -693,7 +712,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                                         last_avf = None)
         
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = aggmodel.loss.cross_entropy)
+        model.compile(optimizer = opt, loss = self.loss)
         performance = aggmodel.cbks.CLA_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
