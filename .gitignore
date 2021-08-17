@@ -4,8 +4,12 @@ tmpignore
 *.gzip
 zip.ipynb
 paper.old
+
+#ignore model files, too large
 *.h5
-*.h5 #ignore the model files
+*.est
+
+#ignore large mp object
 CRC_stage.mp
 pan-cancer.mp
 
