@@ -34,8 +34,8 @@ def save_model(model, model_path):
     model_new._model.save(os.path.join(model_path, 'inner_model.h5'))
     model_new._model = None
     model_new._performance = None
-    dump(model_new,  os.path.join(model_path, 'outer_model.est'))
-    
+    res = dump(model_new,  os.path.join(model_path, 'outer_model.est'))
+    return res
     
 def load_model(model_path, gpuid=None):
     '''
@@ -137,9 +137,10 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.random_state = random_state
         self.is_fit = False        
         self.name = name
-
+    
         print(self.get_params())
         
+        self.history = {}
         
     def get_params(self, deep=True):
 
@@ -214,14 +215,16 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                                                                     criteria = self.monitor,
                                                                     verbose = self.verbose,)
 
-        model.fit(X, y, 
-                  batch_size=self.batch_size, 
-                  epochs= self.epochs, verbose= 0, shuffle = True, 
-                  validation_data = (X_valid, y_valid), 
-                  callbacks=[performance]) 
+        history = model.fit(X, y, 
+                            batch_size=self.batch_size, 
+                            epochs= self.epochs, verbose= 0, shuffle = True, 
+                            validation_data = (X_valid, y_valid), 
+                            callbacks=[performance]) 
 
         self._model = model
         self._performance = performance
+        self.history = self._performance.history
+        
         self.is_fit = True
         # Return the classifier
         return self
@@ -287,6 +290,14 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
             print('Please fit first!')
     
     
+
+    def save_model(self, model_path):
+        return save_model(self, model_path)
+
+    
+    def load_model(self, model_path, gpuid=None):
+        self = load_model(model_path, gpuid=gpuid)
+        return self
     
     
 class MultiClassEstimator(BaseEstimator, ClassifierMixin):
@@ -381,7 +392,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         self.name = name
         self.is_fit = False        
         print(self.get_params())
-        
+        self.history = {}        
         
     def get_params(self, deep=True):
 
@@ -472,7 +483,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
         self._model = model
         self._performance = performance
-        self.history = history
+        self.history = self._performance.history
         self.is_fit = True        
         # Return the classifier
         return self
@@ -556,7 +567,16 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         else:
             print('Please fit first!')    
     
+    
+    def save_model(self, model_path):
+        return save_model(self, model_path)
 
+    
+    def load_model(self, model_path, gpuid=None):
+        self = load_model(model_path, gpuid=gpuid)
+        return self
+    
+    
 class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
 
@@ -644,6 +664,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.name = name
         
         print(self.get_params())
+        self.history = {}
         
         
     def get_params(self, deep=True):
@@ -729,8 +750,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
         self._model = model
         self._performance = performance
-        # Return the classifier
-        self.history = history
+        self.history = self._performance.history
         self.is_fit = True
         
         return self
@@ -811,3 +831,12 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                        dpi=dpi)
         else:
             print('Please fit first!')
+            
+
+    def save_model(self, model_path):
+        return save_model(self, model_path)
+
+    
+    def load_model(self, model_path, gpuid=None):
+        self = load_model(model_path, gpuid=gpuid)
+        return self
