@@ -1,12 +1,12 @@
 
 <a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
 
-# Jigsaw-liked AggMap
+# Jigsaw-like AggMap
 
 ## A Robust Multi-Channel and Explainable Omics Deep Learning Tool
 
 ----
-### How It Works and Uses?
+### How It Works?
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
 
