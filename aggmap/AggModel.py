@@ -20,10 +20,13 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import get_scorer, SCORERS
 
 from aggmap import aggmodel
+from aggmap.aggmodel.explain import GlobalIMP, LocalIMP
+
 
 from joblib import dump, load
 from  copy import copy
 from tensorflow.keras.models import load_model as load_tf_model
+
 
 
 def save_model(model, model_path):
@@ -296,8 +299,47 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 
     
     def load_model(self, model_path, gpuid=None):
-        self = load_model(model_path, gpuid=gpuid)
-        return self
+        return load_model(model_path, gpuid=gpuid)
+
+    
+    def explain_model(self, mp, X, y, 
+                      explain_format = 'global',
+                      apply_logrithm = False, 
+                      apply_smoothing = False, 
+                      kernel_size = 3, sigma = 1.2):
+        '''
+        Feature importance calculation
+        Parameters
+        --------------
+        mp: aggmap object
+        X: trianing or test set X arrays
+        y: trianing or test set y arrays
+        explain_format: {'local', 'global'}, default: 'global'
+            local or global feature importance, if local, then X must be one sample
+        apply_logrithm: {True, False}, default: False
+            whether apply a logarithm transformation on the importance values
+        apply_smoothing: {True, False}, default: False
+            whether apply a smoothing transformation on the importance values
+        kernel_size: odd number, the kernel size to perform the smoothing
+        sigma: float, sigma for gaussian smoothing
+        
+        Returns
+        ------------        
+        DataFrame of feature importance
+        '''
+        
+        if explain_format == 'global':
+            explain_func = GlobalIMP
+        else:
+            explain_func = LocalIMP
+        
+        dfe = explain_func(self._model, mp, X, y, 
+                        task_type = 'regression', 
+                        sigmoidy = False,  
+                        apply_logrithm = apply_logrithm, 
+                        apply_smoothing = apply_smoothing,
+                        kernel_size = kernel_size, sigma = sigma)
+        return dfe    
     
     
 class MultiClassEstimator(BaseEstimator, ClassifierMixin):
@@ -573,8 +615,51 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
     
     def load_model(self, model_path, gpuid=None):
-        self = load_model(model_path, gpuid=gpuid)
-        return self
+        return load_model(model_path, gpuid=gpuid)
+
+    
+    def explain_model(self, mp, X, y, 
+                      binary_task = False,
+                      explain_format = 'global',
+                      apply_logrithm = False, 
+                      apply_smoothing = False, 
+                      kernel_size = 3, sigma = 1.2):
+        
+        '''
+        Feature importance calculation
+        Parameters
+        --------------
+        mp: aggmap object
+        X: trianing or test set X arrays
+        y: trianing or test set y arrays
+        binary_task: {True, False}
+            whether the task is binary, if True, the feature importance will be calculated for one class only
+        explain_format: {'local', 'global'}, default: 'global'
+            local or global feature importance, if local, then X must be one sample
+        apply_logrithm: {True, False}, default: False
+            whether apply a logarithm transformation on the importance values
+        apply_smoothing: {True, False}, default: False
+            whether apply a smoothing transformation on the importance values
+        kernel_size: odd number, the kernel size to perform the smoothing
+        sigma: float, sigma for gaussian smoothing
+        
+        Returns
+        ------------        
+        DataFrame of feature importance
+        '''
+        if explain_format == 'global':
+            explain_func = GlobalIMP
+        else:
+            explain_func = LocalIMP
+        
+        dfe = explain_func(self._model, mp, X, y, 
+                           binary_task = binary_task,
+                           task_type = 'classification',                            
+                           sigmoidy = False,  
+                           apply_logrithm = apply_logrithm, 
+                           apply_smoothing = apply_smoothing,
+                           kernel_size = kernel_size, sigma = sigma)
+        return dfe
     
     
 class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
@@ -838,5 +923,51 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
     
     def load_model(self, model_path, gpuid=None):
-        self = load_model(model_path, gpuid=gpuid)
-        return self
+        return load_model(model_path, gpuid=gpuid)
+    
+    
+    def explain_model(self, mp, 
+                      X, 
+                      y, 
+                      explain_format = 'global',
+                      apply_logrithm = False, 
+                      apply_smoothing = False, 
+                      kernel_size = 3, sigma = 1.2):
+        '''
+        Feature importance calculation
+        Parameters
+        --------------
+        mp: aggmap object
+        X: trianing or test set X arrays
+        y: trianing or test set y arrays
+            whether the task is binary, if True, the feature importance will be calculated for one class only
+        explain_format: {'local', 'global'}, default: 'global'
+            local or global feature importance, if local, then X must be one sample
+        apply_logrithm: {True, False}, default: False
+            whether apply a logarithm transformation on the importance values
+        apply_smoothing: {True, False}, default: False
+            whether apply a smoothing transformation on the importance values
+        kernel_size: odd number, the kernel size to perform the smoothing
+        sigma: float, sigma for gaussian smoothing
+        
+        Returns
+        ------------        
+        DataFrame of feature importance
+        '''
+        if explain_format == 'global':
+            explain_func = GlobalIMP
+        else:
+            explain_func = LocalIMP
+        
+        dfe = explain_func(self._model, mp, X, y, 
+                           task_type = 'classification',
+                           binary_task = False,
+                           sigmoidy = True,  
+                           apply_logrithm = apply_logrithm, 
+                           apply_smoothing = apply_smoothing,
+                           kernel_size = kernel_size, sigma = sigma)
+        return dfe    
+    
+    
+    
+    
