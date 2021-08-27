@@ -24,7 +24,7 @@
 
 ----
 
-### The number of channels effects on model performance
+### The effect of the number of channels on model performance 
 
 - Multi-channel Fmaps can boost the model performance notably:
 ![channel_effect](./doc/channel_effect.png)
