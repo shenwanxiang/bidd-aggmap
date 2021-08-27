@@ -24,6 +24,16 @@
 
 ----
 
+### The number of channels effects on model performance
+
+- Multi-channel Fmaps can boost the model performance notably:
+![channel_effect](./doc/channel_effect.png)
+
+The performance of AggMapNet using different number of channels on the `TCGA-T (a)` and `COV-D (b)`. For `TCGA-T`, ten-fold cross validation average performance, for `COV-D`, a fivefold cross validation was performed and repeat 5 rounds using different random seeds (total 25 training times), their average performances of the validation set were reported.
+
+----
+
+
 ### Example for Restructured Fmaps
 
 - The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/00_example_breast_cancer/03_BCD_feature_maps.ipynb) to find out more!
