@@ -141,7 +141,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.is_fit = False        
         self.name = name
     
-        print(self.get_params())
+        #print(self.get_params())
         
         self.history = {}
         
@@ -433,7 +433,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         
         self.name = name
         self.is_fit = False        
-        print(self.get_params())
+        #print(self.get_params())
         self.history = {}        
         
     def get_params(self, deep=True):
@@ -748,7 +748,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.is_fit = False        
         self.name = name
         
-        print(self.get_params())
+        #print(self.get_params())
         self.history = {}
         
         
