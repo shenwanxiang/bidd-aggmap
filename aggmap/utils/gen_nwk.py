@@ -47,9 +47,10 @@ def _getNewick(node, newick, parentdist, leaf_names):
         newick = "(%s" % (newick)
         return newick
     
-def mp2newick(mp, treefile = 'phenotype_tree'):
-
-    leaf_names = mp.alist
+def mp2newick(mp, treefile = 'phenotype_tree', leaf_names = None):
+    
+    if leaf_names == None:
+        leaf_names = mp.alist
     linkage_matrix = mp.Z
     tree = to_tree(linkage_matrix, rd=False)
     newick = _getNewick(tree, "", tree.dist, leaf_names = leaf_names)

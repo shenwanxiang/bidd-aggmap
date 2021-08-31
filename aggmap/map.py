@@ -11,6 +11,7 @@ main aggmap code
 from aggmap.utils.logtools import print_info, print_warn, print_error
 from aggmap.utils.matrixopt import Scatter2Grid, Scatter2Array, smartpadding 
 from aggmap.utils import vismap, summary, calculator
+from aggmap.utils.gen_nwk import mp2newick
 
 
 from sklearn.manifold import TSNE, MDS
@@ -463,6 +464,13 @@ class AggMap(Base):
                           link_color_func=lambda x: link_cols[x])
         
         return fig
+        
+        
+    def to_nwk_tree(self, treefile = 'mytree', leaf_names = None):
+        '''
+        convert mp object to newick tree and the data file to submit to itol sever
+        '''
+        return mp2newick(self, treefile = treefile, leaf_names=leaf_names)
         
         
     def copy(self):
