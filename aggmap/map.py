@@ -229,7 +229,7 @@ class AggMap(Base):
    
                 
         #bitsinfo
-        dfb = pd.DataFrame(self.alist, columns = ['IDs'])
+        dfb = pd.DataFrame(self.flist, columns = ['IDs'])
         if feature_group_list != []:
             
             self.cluster_flag = False
@@ -237,8 +237,7 @@ class AggMap(Base):
             assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
             self.cluster_channels = len(set(feature_group_list))
             self.feature_group_list = feature_group_list
-            
-            dfb['Subtypes'] = feature_group_list
+            dfb['Subtypes'] = dfb['IDs'].map(pd.Series(feature_group_list, index = self.alist))
             
             if set(feature_group_list).issubset(set(group_color_dict.keys())):
                 self.group_color_dict = group_color_dict
@@ -255,7 +254,7 @@ class AggMap(Base):
             print_info('applying hierarchical clustering to obtain group information ...')
             self.cluster_flag = True
             
-            Z = linkage(squareform(dfd.values),  lnk_method)
+            Z = linkage(squareform(dist_matrix.values),  lnk_method)
             labels = fcluster(Z, cluster_channels, criterion='maxclust')
             
             feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
