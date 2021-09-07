@@ -49,8 +49,14 @@ def _getNewick(node, newick, parentdist, leaf_names):
     
 def mp2newick(mp, treefile = 'phenotype_tree', leaf_names = None):
     
+    df = mp.df_embedding[['colors','Subtypes']]
+    
     if leaf_names == None:
-        leaf_names = mp.alist
+        leaf_names = mp.flist #use final list only
+    else:
+        assert len(leaf_names) == len(df), 'leaf names should be a list with a length of %s' % len(df)
+        df.index = leaf_names
+        
     linkage_matrix = mp.Z
     tree = to_tree(linkage_matrix, rd=False)
     newick = _getNewick(tree, "", tree.dist, leaf_names = leaf_names)
@@ -60,7 +66,6 @@ def mp2newick(mp, treefile = 'phenotype_tree', leaf_names = None):
         f.write(newick)
 
     # write dataset file for itol
-    df = mp.df_embedding[['colors','Subtypes']]
     df['TYPE'] = 'clade'
     df['STYLE'] = 'normal'
     df = df[['TYPE', 'colors', 'STYLE']]
