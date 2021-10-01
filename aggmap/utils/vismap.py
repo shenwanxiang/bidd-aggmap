@@ -29,15 +29,9 @@ def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2, enabled_data_
         
     filename = os.path.join(htmlpath, name)
     print_info('generate file: %s' % filename)
-        
-    
-    xy = mp.embedded.embedding_
+
     colormaps = mp.colormaps
-    
-    df = pd.DataFrame(xy, columns = ['x', 'y'])
-    bitsinfo = mp.bitsinfo.set_index('IDs')
-    df = df.join(bitsinfo.loc[mp.flist].reset_index())
-    df['colors'] = df['Subtypes'].map(colormaps)
+    df = mp.df_scatter
 
     H = Highchart(width=1000, height=850)
     H.set_options('chart', {'type': 'scatter', 'zoomType': 'xy'})    
@@ -83,7 +77,7 @@ def plot_scatter(mp, htmlpath = './', htmlname = None, radius = 2, enabled_data_
         H.add_data_set(data, 'scatter', subtype, color=color)
     H.save_file(filename)
     print_info('save html file to %s' % filename)
-    return df, H
+    return H
 
 
 
@@ -106,33 +100,9 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
     
     filename = os.path.join(htmlpath, name)
     print_info('generate file: %s' % filename)
-    
-    
-    
-    m,n = mp._S.fmap_shape
+
     colormaps = mp.colormaps
-    position = np.zeros(mp._S.fmap_shape, dtype='O').reshape(m*n,)
-    position[mp._S.col_asses] = mp.flist
-    position = position.reshape(m, n)
-    
-
-    
-    x = []
-    for i in range(n):
-        x.extend([i]*m)
-        
-    y = list(range(m))*n
-        
-        
-    v = position.reshape(m*n, order = 'f')
-
-    df = pd.DataFrame(list(zip(x,y, v)), columns = ['x', 'y', 'v'])
-    bitsinfo = mp.bitsinfo
-    subtypedict = bitsinfo.set_index('IDs')['Subtypes'].to_dict()
-    subtypedict.update({0:'NaN'})
-    df['Subtypes'] = df.v.map(subtypedict)
-    df['colors'] = df['Subtypes'].map(colormaps) 
-
+    df = mp.df_grid
     
     H = Highchart(width=1000, height=850)
     H.set_options('chart', {'type': 'heatmap', 'zoomType': 'xy'})
@@ -199,7 +169,7 @@ def plot_grid(mp, htmlpath = './', htmlname = None, enabled_data_labels = False)
     H.save_file(filename)
     print_info('save html file to %s' % filename)
     
-    return df, H
+    return H
 
 
 

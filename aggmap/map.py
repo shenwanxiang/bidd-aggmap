@@ -48,7 +48,50 @@ class Base:
         return (x-xmean) / (xstd + 1e-8) 
     
 
+def _get_df_scatter(mp):
+    xy = mp.embedded.embedding_
+    colormaps = mp.colormaps
+    df = pd.DataFrame(xy, columns = ['x', 'y'])
+    bitsinfo = mp.bitsinfo.set_index('IDs')
+    df = df.join(bitsinfo.loc[mp.flist].reset_index())
+    df['colors'] = df['Subtypes'].map(colormaps)
+    return df
+
+
+def _get_df_grid(mp):
+
+    if mp.fmap_type != 'grid':
+        return
+
+    m,n = mp._S.fmap_shape
+    position = np.zeros(mp._S.fmap_shape, dtype='O').reshape(m*n,)
+    position[mp._S.col_asses] = mp.flist
+    position = position.reshape(m, n)
+
+    x = []
+    for i in range(n):
+        x.extend([i]*m)
+    y = list(range(m))*n
+    v = position.reshape(m*n, order = 'f')
+
+    df = pd.DataFrame(list(zip(x,y, v)), columns = ['x', 'y', 'v'])
+    bitsinfo = mp.bitsinfo
+    subtypedict = bitsinfo.set_index('IDs')['Subtypes'].to_dict()
+    subtypedict.update({0:'NaN'})
+    df['Subtypes'] = df.v.map(subtypedict)
+    df['colors'] = df['Subtypes'].map(mp.colormaps) 
+    return df
     
+
+def _get_reshape_feature_names(mp):
+    feature_list = mp.df_grid_reshape.v
+    feature_names = []
+    for i, j in feature_list.items():
+        if j == 0:
+            j = 'NaN-' + str(i)
+        feature_names.append(j)
+    return feature_names
+
 
 class AggMap(Base):
     
@@ -326,9 +369,26 @@ class AggMap(Base):
             m, n = self.fmap_shape
             p, q = self._S.fmap_shape
             assert (m >= p) & (n >=q), "fmap_shape's width must >= %s, height >= %s " % (p, q)
+
+    
+
+        self.df_scatter = _get_df_scatter(self)
+        self.df_grid = _get_df_grid(self)
+        self.df_grid_reshape = self.df_grid.sort_values(['y', 'x']).reset_index(drop=True)
+        self.feature_names_reshape = _get_reshape_feature_names(self)
+        
         return self
         
 
+    def transform_mpX_to_df(self, X):
+        '''
+        input 4D X, output 2D dataframe
+        '''
+        n, w,h, c = X.shape
+        X_2D = X.sum(axis=-1).reshape(n, w*h)
+        return pd.DataFrame(X_2D, columns = self.feature_names_reshape)    
+
+    
     def transform(self, 
                   arr_1d, 
                   scale = True, 
@@ -413,13 +473,11 @@ class AggMap(Base):
     
     def plot_scatter(self, htmlpath='./', htmlname=None, radius = 2, enabled_data_labels = False):
         """radius: the size of the scatter, must be int"""
-        df_scatter, H_scatter = vismap.plot_scatter(self,  
-                                                    htmlpath=htmlpath, 
-                                                    htmlname=htmlname,
-                                                    radius = radius,
-                                                    enabled_data_labels = enabled_data_labels)
-        
-        self.df_scatter = df_scatter
+        H_scatter = vismap.plot_scatter(self,  
+                                        htmlpath=htmlpath, 
+                                        htmlname=htmlname,
+                                        radius = radius,
+                                        enabled_data_labels = enabled_data_labels)
         return H_scatter   
         
         
@@ -428,12 +486,10 @@ class AggMap(Base):
         if self.fmap_type != 'grid':
             return
         
-        df_grid, H_grid = vismap.plot_grid(self,
-                                           htmlpath=htmlpath, 
-                                           htmlname=htmlname,
-                                           enabled_data_labels = enabled_data_labels)
-        
-        self.df_grid = df_grid
+        H_grid = vismap.plot_grid(self,
+                                  htmlpath=htmlpath, 
+                                  htmlname=htmlname,
+                                  enabled_data_labels = enabled_data_labels)
         return H_grid       
         
         
