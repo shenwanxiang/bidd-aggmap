@@ -1,1 +1,1 @@
-from aggmap.aggmodel import cbks, loss, net, importance
+from aggmap.aggmodel import cbks, loss, net, explainer

@@ -20,8 +20,8 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import get_scorer, SCORERS
 
 from aggmap import aggmodel
-from aggmap.aggmodel.explain import GlobalIMP, LocalIMP
-
+from aggmap.aggmodel.explain_dev import GlobalIMP, LocalIMP
+from aggmap.aggmodel.explainer import  shapley_explainer, simply_explainer
 
 from joblib import dump, load
 from  copy import copy
@@ -89,7 +89,6 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         A parameter used for specific gpu card
     verbose: int, default = 0
     random_state, int, default: 32
-    name: str 
 
     Examples
     --------
@@ -115,7 +114,6 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                  verbose = 0, 
                  random_state = 32,
                  gpuid = 0,
-                 name = "AggMap Regression Estimator"
                 ):
         
         
@@ -139,7 +137,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.verbose = verbose
         self.random_state = random_state
         self.is_fit = False        
-        self.name = name
+        self.name = "AggMap Regression Estimator"
     
         #print(self.get_params())
         
@@ -333,7 +331,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         else:
             explain_func = LocalIMP
         
-        dfe = explain_func(self._model, mp, X, y, 
+        dfe = explain_func(self, mp, X, y, 
                         task_type = 'regression', 
                         sigmoidy = False,  
                         apply_logrithm = apply_logrithm, 
@@ -377,7 +375,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         A parameter used for specific gpu card
     verbose: int, default = 0
     random_state, int, default: 32
-    name: str 
+
 
     Examples
     --------
@@ -403,7 +401,6 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                  verbose = 0, 
                  last_avf = 'softmax', 
                  random_state = 32,
-                 name = "AggMap MultiClass Estimator",
                  gpuid=0,
                 ):
         
@@ -431,7 +428,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         self.verbose = verbose
         self.random_state = random_state
         
-        self.name = name
+        self.name = "AggMap MultiClass Estimator"
         self.is_fit = False        
         #print(self.get_params())
         self.history = {}        
@@ -652,7 +649,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         else:
             explain_func = LocalIMP
         
-        dfe = explain_func(self._model, mp, X, y, 
+        dfe = explain_func(self, mp, X, y, 
                            binary_task = binary_task,
                            task_type = 'classification',                            
                            sigmoidy = False,  
@@ -722,7 +719,6 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                  patience = 10000,
                  verbose = 0, 
                  random_state = 32,
-                 name = "AggMap MultiLabels Estimator",
                  gpuid = 0,
                 ):
         
@@ -746,7 +742,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.verbose = verbose
         self.random_state = random_state
         self.is_fit = False        
-        self.name = name
+        self.name = "AggMap MultiLabels Estimator"
         
         #print(self.get_params())
         self.history = {}
@@ -959,7 +955,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         else:
             explain_func = LocalIMP
         
-        dfe = explain_func(self._model, mp, X, y, 
+        dfe = explain_func(self, mp, X, y, 
                            task_type = 'classification',
                            binary_task = False,
                            sigmoidy = True,  
