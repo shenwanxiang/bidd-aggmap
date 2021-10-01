@@ -196,9 +196,9 @@ class simply_explainer:
         self.df_grid = df_grid
         
         if self.estimator.name == 'AggMap Regression Estimator':
-            self._f = log_loss
-        else:
             self._f = mean_squared_error
+        else:
+            self._f = log_loss
         
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
