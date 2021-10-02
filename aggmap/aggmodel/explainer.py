@@ -26,9 +26,10 @@ class shapley_explainer:
     '''
     limiations:https://christophm.github.io/interpretable-ml-book/shapley.html#disadvantages-16
     Problems with Shapley-value-based explanations as feature importance measures
+    The SHAP values do not identify causality
     '''
 
-    def __init__(self, estimator, mp, backgroud = 'min', link='logit', **args):
+    def __init__(self, estimator, mp, backgroud = 'min', k_means_sampling = True, link='identity', **args):
         '''
         Parameters
         -------------------
@@ -36,9 +37,13 @@ class shapley_explainer:
             model with a predict or predict_probe method
         mp:
             aggmap object
-        backgroud: 
-            {'min', 'all'}, if 'all' use all of the train data as the backgroud data for shap
-            
+        backgroud: string or int
+            {'min', 'all', int}.
+            if min, then use the min value as the backgroud data (equals to 1 sample)
+            if int, then sample the K samples as the backgroud data
+            if 'all' use all of the train data as the backgroud data for shap,
+        k_means_sampling: bool,
+            whether use the k-mean to sample the backgroud values or not
         link : 
             {"identity", "logit"}. A generalized linear model link to connect the feature importance values to the model output. 
             Since the feature importance values, phi, sum up to the model output, it often makes sense to connect them 
@@ -50,12 +55,23 @@ class shapley_explainer:
         self.estimator = estimator
         self.mp = mp
         self.link = link
+        self.backgroud = backgroud
+        self.k_means_sampling = k_means_sampling
+        
         train_features = self.covert_mpX_to_shapely_df(self.estimator.X_)
-        if backgroud == 'min':
-            self.backgroud =  train_features.min().to_frame().T.values
+        
+        if type(backgroud) == int:
+            if self.k_means_sampling:
+                self.backgroud_data =  shap.kmeans(train_features, backgroud)
+            else:
+                self.backgroud_data =  shap.sample(train_features, backgroud)
+            
         else:
-            self.backgroud =  train_features
-        self.explainer = shap.KernelExplainer(self._predict_warpper, self.backgroud, link=self.link, **args)
+            if backgroud == 'min':
+                self.backgroud_data =  train_features.min().to_frame().T.values
+            else:
+                self.backgroud_data =  train_features
+        self.explainer = shap.KernelExplainer(self._predict_warpper, self.backgroud_data, link=self.link, **args)
         self.feature_names = train_features.columns.tolist() # mp.alist
 
         
@@ -183,11 +199,11 @@ class simply_explainer:
         self.apply_smoothing = apply_smoothing
         self.kernel_size = kernel_size
         self.sigma = sigma
-
+        self.backgroud = backgroud
         if backgroud == 'min':
-            self.backgroud =  mp.transform_mpX_to_df(self.estimator.X_).min().values
+            self.backgroud_data =  mp.transform_mpX_to_df(self.estimator.X_).min().values
         else:
-            self.backgroud =  np.zeros(shape=(len(mp.df_grid_reshape),))
+            self.backgroud_data =  np.zeros(shape=(len(mp.df_grid_reshape),))
 
         self.scaler = StandardScaler()
 
@@ -250,7 +266,7 @@ class simply_explainer:
                 ## step 1: make permutaions
                 X1 = np.array(X)
                 #x_min = X[:, y, x,:].min()
-                vmin = self.backgroud[i]
+                vmin = self.backgroud_data[i]
                 X1[:, y, x,:] = np.full(X1[:, y, x,:].shape, fill_value = vmin)
                 tmp_X.append(X1)
 
@@ -338,7 +354,7 @@ class simply_explainer:
             y = ts.y
             x = ts.x
             X1 = np.array(X)
-            vmin = self.backgroud[i]
+            vmin = self.backgroud_data[i]
             X1[:, y, x,:] = np.full(X1[:, y, x,:].shape, fill_value = vmin)
             all_X1.append(X1)
 
