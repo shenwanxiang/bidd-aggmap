@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://www.highcharts.com/highslide/highslide.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/highcharts.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/highcharts-more.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/modules/heatmap.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/modules/exporting.js"></script>
+    </head>
+    <body style="margin:0;padding:0">
+                <div id="container" style="width:1000px;height:850px;">Loading....</div>
+
+
+    <script>
+        $(function(){
+
+
+
+
+
+            Highcharts.setOptions({"global": {}, "lang": {}});
+            var option = {"chart": {"renderTo": "container", "width": 1000, "height": 850, "type": "scatter", "zoomType": "xy"}, "colors": {}, "credits": {"enabled": false}, "drilldown": {}, "exporting": {}, "labels": {}, "legend": {"align": "right", "layout": "vertical", "margin": 1, "verticalAlign": "top", "y": 40, "symbolHeight": 12, "floating": false}, "loading": {}, "navigation": {}, "pane": {}, "plotOptions": {"scatter": {"marker": {"radius": 5, "states": {"hover": {"enabled": true, "lineColor": "rgb(100,100,100)"}}}, "states": {"hover": {"marker": {"enabled": false}}}, "tooltip": {"headerFormat": "<b>{series.name}</b><br>", "pointFormat": "{point.IDs}"}}, "series": {"turboThreshold": 5000, "dataLabels": {"enabled": true, "format": "{point.IDs}"}}}, "series": {}, "subtitle": {"text": "number of feature points: 30, metric method: correlation"}, "title": {"text": "2D emmbedding of feature points based on umap method"}, "tooltip": {}, "xAxis": {"title": {"enabled": true, "text": "X", "style": {"fontSize": 20}}, "labels": {"style": {"fontSize": 20}}, "gridLineWidth": 1, "startOnTick": true, "endOnTick": true, "showLastLabel": true}, "yAxis": {"title": {"text": "Y", "style": {"fontSize": 20}}, "labels": {"style": {"fontSize": 20}}, "gridLineWidth": 1}};
+
+
+ 
+
+            var chart = new Highcharts.Chart(option);
+
+            var data = [{"data": [{"x": -0.454972505569458, "y": 3.759800910949707, "IDs": "mean texture", "Subtypes": "cluster_01", "colors": "#fcf500"}, {"x": 0.08069445192813873, "y": 3.978410005569458, "IDs": "worst texture", "Subtypes": "cluster_01", "colors": "#fcf500"}], "type": "scatter", "color": "#fcf500", "name": "cluster_01"}, {"data": [{"x": -1.1963168382644653, "y": 2.146005153656006, "IDs": "mean radius", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.6962073445320129, "y": 1.7575602531433105, "IDs": "mean perimeter", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -1.0454785823822021, "y": 2.5391175746917725, "IDs": "mean area", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 1.1696709394454956, "y": 3.62967586517334, "IDs": "mean concavity", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 0.923276960849762, "y": 2.9992165565490723, "IDs": "mean concave points", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 0.08761594444513321, "y": 2.4819135665893555, "IDs": "radius error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.25573623180389404, "y": 2.9786744117736816, "IDs": "perimeter error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.16285645961761475, "y": 2.6569483280181885, "IDs": "area error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.9147253036499023, "y": 2.0657689571380615, "IDs": "worst radius", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.46826234459877014, "y": 2.276212215423584, "IDs": "worst perimeter", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": -0.2838268578052521, "y": 1.8473268747329712, "IDs": "worst area", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 1.4916863441467285, "y": 3.1962413787841797, "IDs": "worst concave points", "Subtypes": "cluster_02", "colors": "#08ff00"}], "type": "scatter", "color": "#08ff00", "name": "cluster_02"}, {"data": [{"x": 2.6489334106445312, "y": 4.776002407073975, "IDs": "mean smoothness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 1.795491099357605, "y": 3.883009910583496, "IDs": "mean compactness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 1.4911054372787476, "y": 4.6695098876953125, "IDs": "mean symmetry", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 2.2053558826446533, "y": 5.226743698120117, "IDs": "mean fractal dimension", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 2.697239875793457, "y": 4.369154453277588, "IDs": "worst smoothness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 2.4882633686065674, "y": 3.827083110809326, "IDs": "worst compactness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 2.004859209060669, "y": 3.5401949882507324, "IDs": "worst concavity", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 1.7856119871139526, "y": 4.295353889465332, "IDs": "worst symmetry", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 2.3012642860412598, "y": 4.290512561798096, "IDs": "worst fractal dimension", "Subtypes": "cluster_03", "colors": "#00fff6"}], "type": "scatter", "color": "#00fff6", "name": "cluster_03"}, {"data": [{"x": 2.2544105052948, "y": 6.473321437835693, "IDs": "compactness error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 1.8116477727890015, "y": 6.359106540679932, "IDs": "concavity error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 1.3319799900054932, "y": 6.301941394805908, "IDs": "concave points error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 1.7353713512420654, "y": 5.857929229736328, "IDs": "fractal dimension error", "Subtypes": "cluster_04", "colors": "#0010ff"}], "type": "scatter", "color": "#0010ff", "name": "cluster_04"}, {"data": [{"x": 0.31445154547691345, "y": 4.797434329986572, "IDs": "texture error", "Subtypes": "cluster_05", "colors": "#ee00ff"}, {"x": 1.193922996520996, "y": 5.494920253753662, "IDs": "smoothness error", "Subtypes": "cluster_05", "colors": "#ee00ff"}, {"x": 1.045711874961853, "y": 5.07195520401001, "IDs": "symmetry error", "Subtypes": "cluster_05", "colors": "#ee00ff"}], "type": "scatter", "color": "#ee00ff", "name": "cluster_05"}];
+            var dataLen = data.length;
+            for (var ix = 0; ix < dataLen; ix++) {
+                chart.addSeries(data[ix]);
+            }
+ 
+
+
+
+
+
+
+
+        
+    });
+        </script>
+
+    </body>
+</html>

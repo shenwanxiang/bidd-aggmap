@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://www.highcharts.com/highslide/highslide.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/highcharts.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/highcharts-more.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/modules/heatmap.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/6/modules/exporting.js"></script>
+    </head>
+    <body style="margin:0;padding:0">
+                <div id="container" style="width:1000px;height:850px;">Loading....</div>
+
+
+    <script>
+        $(function(){
+
+
+
+
+
+            Highcharts.setOptions({"global": {}, "lang": {}});
+            var option = {"chart": {"renderTo": "container", "width": 1000, "height": 850, "type": "heatmap", "zoomType": "xy"}, "colors": {}, "credits": {"enabled": false}, "drilldown": {}, "exporting": {}, "labels": {}, "legend": {"align": "right", "layout": "vertical", "margin": 1, "verticalAlign": "top", "y": 60, "symbolHeight": 12, "floating": false}, "loading": {}, "navigation": {}, "pane": {}, "plotOptions": {"series": {"turboThreshold": 5000, "dataLabels": {"enabled": true, "format": "{point.v}", "style": {"textOutline": false, "color": "black"}}}}, "series": {}, "subtitle": {"text": "number of feature points: 30, metric method: correlation"}, "title": {"text": "Assignment of feature points by umap emmbedding result"}, "tooltip": {"headerFormat": "<b>{series.name}</b><br>", "pointFormat": "{point.v}"}, "xAxis": {"min": 0, "max": 4, "startOnTick": false, "endOnTick": false, "allowDecimals": false, "labels": {"style": {"fontSize": 20}}}, "yAxis": {"title": {"text": " ", "style": {"fontSize": 20}}, "startOnTick": false, "endOnTick": false, "gridLineWidth": 0, "reversed": true, "min": 0, "max": 5, "allowDecimals": false, "labels": {"style": {"fontSize": 20}}}};
+
+
+ 
+
+            var chart = new Highcharts.Chart(option);
+
+            var data = [{"data": [{"x": 0, "y": 4, "v": "mean texture", "Subtypes": "cluster_01", "colors": "#fcf500"}, {"x": 1, "y": 3, "v": "worst texture", "Subtypes": "cluster_01", "colors": "#fcf500"}], "type": "heatmap", "color": "#fcf500", "name": "cluster_01"}, {"data": [{"x": 0, "y": 0, "v": "worst radius", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 0, "y": 1, "v": "mean radius", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 0, "y": 2, "v": "mean area", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 0, "y": 3, "v": "perimeter error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 1, "y": 0, "v": "mean perimeter", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 1, "y": 1, "v": "worst perimeter", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 1, "y": 2, "v": "area error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 2, "y": 0, "v": "worst area", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 2, "y": 1, "v": "radius error", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 2, "y": 2, "v": "mean concavity", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 3, "y": 0, "v": "mean concave points", "Subtypes": "cluster_02", "colors": "#08ff00"}, {"x": 3, "y": 1, "v": "worst concave points", "Subtypes": "cluster_02", "colors": "#08ff00"}], "type": "heatmap", "color": "#08ff00", "name": "cluster_02"}, {"data": [{"x": 2, "y": 3, "v": "mean symmetry", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 3, "y": 2, "v": "mean compactness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 3, "y": 3, "v": "worst symmetry", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 3, "y": 4, "v": "mean fractal dimension", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 4, "y": 0, "v": "worst concavity", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 4, "y": 1, "v": "worst compactness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 4, "y": 2, "v": "worst fractal dimension", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 4, "y": 3, "v": "worst smoothness", "Subtypes": "cluster_03", "colors": "#00fff6"}, {"x": 4, "y": 4, "v": "mean smoothness", "Subtypes": "cluster_03", "colors": "#00fff6"}], "type": "heatmap", "color": "#00fff6", "name": "cluster_03"}, {"data": [{"x": 1, "y": 5, "v": "concave points error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 2, "y": 5, "v": "fractal dimension error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 3, "y": 5, "v": "concavity error", "Subtypes": "cluster_04", "colors": "#0010ff"}, {"x": 4, "y": 5, "v": "compactness error", "Subtypes": "cluster_04", "colors": "#0010ff"}], "type": "heatmap", "color": "#0010ff", "name": "cluster_04"}, {"data": [{"x": 0, "y": 5, "v": "texture error", "Subtypes": "cluster_05", "colors": "#ee00ff"}, {"x": 1, "y": 4, "v": "symmetry error", "Subtypes": "cluster_05", "colors": "#ee00ff"}, {"x": 2, "y": 4, "v": "smoothness error", "Subtypes": "cluster_05", "colors": "#ee00ff"}], "type": "heatmap", "color": "#ee00ff", "name": "cluster_05"}];
+            var dataLen = data.length;
+            for (var ix = 0; ix < dataLen; ix++) {
+                chart.addSeries(data[ix]);
+            }
+ 
+
+
+
+
+
+
+
+        
+    });
+        </script>
+
+    </body>
+</html>
