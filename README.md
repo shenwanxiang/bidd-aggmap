@@ -36,8 +36,7 @@ The performance of AggMapNet using different number of channels on the `TCGA-T (
 
 
 ### Example for Restructured Fmaps
-
-- The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/00_example_breast_cancer/03_BCD_feature_maps.ipynb) to find out more!
+- The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/example/00_example_breast_cancer/03_BCD_feature_maps.ipynb) to find out more!
 ![Fmap](./doc/WDBC.png)
 
 ----
