@@ -99,7 +99,7 @@ y = dfy.values
 # AggMapNet training, validation, early stopping, and saving
 clf = AggMapNet.MultiClassEstimator(epochs=50, gpuid=0)
 clf.fit(X, y, X_valid=None, y_valid=None)
-clf.save_model(('agg.model'))
+clf.save_model('agg.model')
 
 # Model explaination by simply-explainer: global, local
 simp_explainer = AggMapNet.simply_explainer(clf, mp)
