@@ -6,6 +6,78 @@
 ## A Robust Multi-Channel and Explainable Omics Deep Learning Tool
 
 ----
+
+### Installation
+
+install aggmap by:
+```bash
+# create an aggmap env
+conda create --n aggmap python=3.8
+
+# clone repo. and install requirements
+git clone https://github.com/shenwanxiang/bidd-aggmap.git
+cd bidd-aggmap
+your_conda_path/envs/aggmap/bin/pip install -r requirements.txt --user
+
+# add molmap to PYTHONPATH
+echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
+
+# init bashrc
+source ~/.bashrc
+
+# activate env
+conda activate aggmap
+
+# now you can import aggmap in the aggmap env: 
+your_conda_path/envs/aggmap/bin/python
+your_conda_path/envs/aggmap/bin/ipython
+your_conda_path/envs/aggmap/bin/jupyter-lab
+```
+
+
+### Usage
+
+```python
+import pandas as pd
+from sklearn.datasets import load_breast_cancer
+from aggmap import AggMap, AggMapNet
+
+# Data loading
+data = load_breast_cancer()
+dfx = pd.DataFrame(data.data, columns=data.feature_names)
+dfy = pd.get_dummies(pd.Series(data.target))
+
+# AggMap object definition, fitting, and saving 
+mp = AggMap(dfx, metric = 'correlation')
+mp.fit(cluster_channels=5, emb_method = 'umap', verbose=0)
+mp.save('agg.mp')
+
+# AggMap visulizations: Hierarchical tree, embeddng scatter and grid
+mp.plot_tree()
+mp.plot_scatter(enabled_data_labels=True, radius=5)
+mp.plot_grid(enabled_data_labels=True)
+
+# Transoformation of 1d vectors to 3D Fmaps (-1, w, h, c) by AggMap
+X = mp.batch_transform(dfx.values, n_jobs=4, scale_method = 'minmax')
+y = dfy.values
+
+# AggMapNet training, validation, early stopping, and saving
+clf = AggMapNet.MultiClassEstimator(epochs=50, gpuid=0)
+clf.fit(X, y, X_valid=None, y_valid=None)
+clf.save_model(('agg.model'))
+
+# Model explaination by simply-explainer: global, local
+simp_explainer = AggMapNet.simply_explainer(clf, mp)
+global_simp_importance = simp_explainer.global_explain(clf.X_, clf.y_)
+local_simp_importance = simp_explainer.local_explain(clf.X_[[0]], clf.y_[[0]])
+
+# Model explaination by shapley-explainer: global, local
+shap_explainer = AggMapNet.shapley_explainer(clf, mp)
+global_shap_importance = shap_explainer.global_explain(clf.X_)
+local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
+```
+----
+
 ### How It Works?
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
@@ -30,65 +102,12 @@
 ![channel_effect](./doc/channel_effect.png)
 
 The performance of AggMapNet using different number of channels on the `TCGA-T (a)` and `COV-D (b)`. For `TCGA-T`, ten-fold cross validation average performance, for `COV-D`, a fivefold cross validation was performed and repeat 5 rounds using different random seeds (total 25 training times), their average performances of the validation set were reported.
-
 ----
 
 
 ### Example for Restructured Fmaps
 
 - The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/00_example_breast_cancer/03_BCD_feature_maps.ipynb) to find out more!
-
 ![Fmap](./doc/WDBC.png)
 
 
-----
-
-### Installation
-
-install aggmap by:
-
-```bash
-
-# create an aggmap env
-conda create --n aggmap python=3.8
-
-# clone repo. and install requirements
-git clone https://github.com/shenwanxiang/bidd-aggmap.git
-cd bidd-aggmap
-your_conda_path/envs/aggmap/bin/pip install -r requirements.txt --user
-
-# add molmap to PYTHONPATH
-echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
-
-# init bashrc
-source ~/.bashrc
-
-
-# activate env
-conda activate aggmap
-
-# now you can import aggmap in the aggmap env: 
-your_conda_path/envs/aggmap/bin/python
-your_conda_path/envs/aggmap/bin/ipython
-your_conda_path/envs/aggmap/bin/jupyter-lab
-```
-
-
-### Usage
-
-
-```python
-from aggmap import AggMap
-
-#create AggMap object
-mp = AggMap(dfx, metric = 'correlation')
-
-#fit AggMap
-mp.fit(cluster_channels = 5)
-
-#transform
-X = mp.transform(dfx.values)
-
-#save AggMap object
-mp.save('./test.mp')
-```
