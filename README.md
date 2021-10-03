@@ -48,15 +48,29 @@ The performance of AggMapNet using different number of channels on the `TCGA-T (
 install aggmap by:
 
 ```bash
+
+# create an aggmap env
+conda create --n aggmap python=3.8
+
+# clone repo. and install requirements
 git clone https://github.com/shenwanxiang/bidd-aggmap.git
 cd bidd-aggmap
-pip install -r requirements.txt --user
+your_conda_path/envs/aggmap/bin/pip install -r requirements.txt --user
 
 # add molmap to PYTHONPATH
 echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
 
 # init bashrc
 source ~/.bashrc
+
+
+# activate env
+conda activate aggmap
+
+# now you can import aggmap in the aggmap env: 
+your_conda_path/envs/aggmap/bin/python
+your_conda_path/envs/aggmap/bin/ipython
+your_conda_path/envs/aggmap/bin/jupyter-lab
 ```
 
 
