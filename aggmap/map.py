@@ -60,37 +60,40 @@ def _get_df_scatter(mp):
 
 def _get_df_grid(mp):
 
-    if mp.fmap_type != 'grid':
-        return
-
-    m,n = mp._S.fmap_shape
-    position = np.zeros(mp._S.fmap_shape, dtype='O').reshape(m*n,)
+    p,q = mp._S.fmap_shape
+    position = np.zeros(mp._S.fmap_shape, dtype='O').reshape(p*q,)
     position[mp._S.col_asses] = mp.flist
-    position = position.reshape(m, n)
-
+    position = position.reshape(p, q)
+    if mp.fmap_shape != None:  
+        m, n = mp.fmap_shape
+        if (m > p) | (n > q):
+            position = smartpadding(position, (m,n), constant_values=0)        
+    M, N = position.shape
+    
     x = []
-    for i in range(n):
-        x.extend([i]*m)
-    y = list(range(m))*n
-    v = position.reshape(m*n, order = 'f')
+    y = []
+    for i in range(M):
+        for j in range(N):
+            x.append(j) #, position[j,i]
+            y.append(i)
+    v = position.reshape(M*N,)
 
     df = pd.DataFrame(list(zip(x,y, v)), columns = ['x', 'y', 'v'])
+
     bitsinfo = mp.bitsinfo
     subtypedict = bitsinfo.set_index('IDs')['Subtypes'].to_dict()
     subtypedict.update({0:'NaN'})
     df['Subtypes'] = df.v.map(subtypedict)
     df['colors'] = df['Subtypes'].map(mp.colormaps) 
-    return df
     
-
-def _get_reshape_feature_names(mp):
-    feature_list = mp.df_grid_reshape.v
+    feature_list = df.v
     feature_names = []
     for i, j in feature_list.items():
         if j == 0:
             j = 'NaN-' + str(i)
         feature_names.append(j)
-    return feature_names
+    df.v = feature_names
+    return df
 
 
 class AggMap(Base):
@@ -212,7 +215,6 @@ class AggMap(Base):
             cluster_channels = 5,
             var_thr = -1, 
             split_channels = True, 
-            fmap_type = 'grid',  
             fmap_shape = None, 
             emb_method = 'umap', 
             min_dist = 0.1, 
@@ -229,8 +231,7 @@ class AggMap(Base):
         cluster_channels: int, number of the channels(clusters) if feature_group_list is empty
         var_thr: float, defalt is -1, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
-        fmap_type:{'scatter', 'grid'}, default: 'gird', if 'scatter', will return a scatter mol map without an assignment to a grid
-        fmap_shape: None or tuple, size of molmap, only works when fmap_type is 'scatter', if None, the size of feature map will be calculated automatically
+        fmap_shape: None or tuple, size of molmap, if None, the size of feature map will be calculated automatically
         emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
         group_color_dict: dict of the group colors, keys are the group names, values are the colors
         lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
@@ -243,10 +244,9 @@ class AggMap(Base):
             
         ## embedding  into a 2d 
         assert emb_method in ['tsne', 'umap', 'mds'], 'No Such Method Supported: %s' % emb_method
-        assert fmap_type in ['scatter', 'grid'], 'No Such Feature Map Type Supported: %s'   % fmap_type     
+
         self.var_thr = var_thr
         self.split_channels = split_channels
-        self.fmap_type = fmap_type
         self.fmap_shape = fmap_shape
         self.emb_method = emb_method
         self.lnk_method = lnk_method
@@ -319,18 +319,7 @@ class AggMap(Base):
         colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
         colormaps.update({'NaN': '#000000'})
         self.colormaps = colormaps
-
-        
-        if fmap_type == 'grid':
-            S = Scatter2Grid()
-        else:
-            if fmap_shape == None:
-                N = len(self.flist)
-                l = np.int(np.sqrt(N))*2
-                fmap_shape = (l, l)                
-            S = Scatter2Array(fmap_shape)
-        
-        self._S = S
+        self._S = Scatter2Grid()
 
         ## 2d embedding first
         embedded = self._fit_embedding(dist_matrix,
@@ -349,17 +338,10 @@ class AggMap(Base):
         df['Channels'] = df['Subtypes']
         self.df_embedding = df
       
-        if self.fmap_type == 'scatter':
-            ## naive scatter algorithm
-            print_info('Applying naive scatter feature map...')
-            self._S.fit(self.df_embedding, self.split_channels, channel_col = 'Channels')
-            print_info('Finished')
-            
-        else:
-            ## linear assignment algorithm 
-            print_info('Applying grid feature map(assignment), this may take several minutes(1~30 min)')
-            self._S.fit(self.df_embedding, self.split_channels, channel_col = 'Channels')
-            print_info('Finished')
+        ## linear assignment algorithm 
+        print_info('Applying grid feature map(assignment), this may take several minutes(1~30 min)')
+        self._S.fit(self.df_embedding, self.split_channels, channel_col = 'Channels')
+        print_info('Finished')
         
         ## fit flag
         self.isfit = True
@@ -371,12 +353,10 @@ class AggMap(Base):
             assert (m >= p) & (n >=q), "fmap_shape's width must >= %s, height >= %s " % (p, q)
 
     
-
         self.df_scatter = _get_df_scatter(self)
         self.df_grid = _get_df_grid(self)
-        self.df_grid_reshape = self.df_grid.sort_values(['y', 'x']).reset_index(drop=True)
-        self.feature_names_reshape = _get_reshape_feature_names(self)
-        
+        self.df_grid_reshape = _get_df_grid(self)
+        self.feature_names_reshape = self.df_grid.v.tolist()
         return self
         
 
@@ -482,9 +462,6 @@ class AggMap(Base):
         
         
     def plot_grid(self, htmlpath='./', htmlname=None, enabled_data_labels = False):
-        
-        if self.fmap_type != 'grid':
-            return
         
         H_grid = vismap.plot_grid(self,
                                   htmlpath=htmlpath, 
