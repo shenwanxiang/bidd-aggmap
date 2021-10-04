@@ -1,5 +1,6 @@
 shap==0.39.0
 numpy==1.19.2
+pandas==1.1.5 #pandas 1.3.x has bugs
 seaborn
 scikit-learn
 scipy
