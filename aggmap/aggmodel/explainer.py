@@ -294,7 +294,7 @@ class simply_explainer:
             smax = np.nanmax(s[s != np.inf])
             s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
             a = self.scaler.fit_transform(s)
-            a = a.reshape(*self.mp._S.fmap_shape)
+            a = a.reshape(*self.mp.fmap_shape)
             if self.apply_smoothing:
                 covda = conv2(a, kernel_size=self.kernel_size, sigma=self.sigma)
                 results = covda.reshape(-1,).tolist()
@@ -376,7 +376,7 @@ class simply_explainer:
         smax = np.nanmax(s[s != np.inf])
         s = np.nan_to_num(s, nan=smin, posinf=smax, neginf=smin) #fillna with smin
         a = self.scaler.fit_transform(s)
-        a = a.reshape(*self.mp._S.fmap_shape)
+        a = a.reshape(*self.mp.fmap_shape)
         if self.apply_smoothing:
             covda = conv2(a, kernel_size=self.kernel_size, sigma=self.sigma)
             results = covda.reshape(-1,).tolist()
