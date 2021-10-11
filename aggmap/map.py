@@ -101,6 +101,7 @@ class AggMap(Base):
     def __init__(self, 
                  dfx,
                  metric = 'correlation',
+                 by_scipy = False,
                  n_cpus = 16,
                  info_distance = None,
                 ):
@@ -111,17 +112,22 @@ class AggMap(Base):
         dfx: pandas DataFrame
         metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation'
                 measurement of feature distance
-        n_cpus: int, default: 16
-                number of cpu cores to use to calculate the distance.
+
         info_distance: a vector-form distance vector of the feature points, shape should be: (n*(n-1)/2), where n is the number of the features, defalt: None
-                        It can be useful when you want to calculate the distance by yourself:
-                        info_distance = pdist(dfx.T, metric = 'euclidean'), the output of pdist fuction is the vector-form distance
-                        or if you have you own vector-form distance to pass
+                        It can be useful when you have you own vector-form distance to pass
+        by_scipy: bool, defalt: False.
+                  calculate the distance by using the scipy pdist fuction.
+                  It can bu useful when dfx.shape[1] > 20000, i.e., the number of features is very large
+                  Using pdist will increase the speed to calculate the distance, but may result a lower precision
+            
+        n_cpus: int, default: 16
+                number of cpu cores to use to calculate the distance.        
         """
         
         assert type(dfx) == pd.core.frame.DataFrame, 'input dfx must be pandas DataFrame!'
         super().__init__()
         self.metric = metric
+        self.by_scipy = by_scipy
         self.isfit = False
         self.alist = dfx.columns.tolist()
         self.ftype = 'feature points'
@@ -138,10 +144,16 @@ class AggMap(Base):
 
         else:
             print_info('Calculating distance ...')
-            D = calculator.pairwise_distance(dfx.values, n_cpus=n_cpus, method=metric)
-            D = np.nan_to_num(D,copy=False)
-            D_ = squareform(D)
-            self.info_distance = D_.clip(0, np.inf)
+            
+            if self.by_scipy:
+                D = pdist(dfx.T, metric=metric)
+                D = np.nan_to_num(D,copy=False)
+                self.info_distance = D.clip(0, np.inf)
+            else:
+                D = calculator.pairwise_distance(dfx.values, n_cpus=n_cpus, method=metric)
+                D = np.nan_to_num(D,copy=False)
+                D_ = squareform(D)
+                self.info_distance = D_.clip(0, np.inf)
             
         ## statistic info
         S = summary.Summary(n_jobs = 10)
@@ -298,7 +310,6 @@ class AggMap(Base):
                 dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
                 self.group_color_dict = group_color_dict
         else:
-            
             self.cluster_channels = cluster_channels
             print_info('applying hierarchical clustering to obtain group information ...')
             self.cluster_flag = True
