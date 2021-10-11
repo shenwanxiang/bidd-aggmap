@@ -27,6 +27,7 @@ class shapley_explainer:
     limiations:https://christophm.github.io/interpretable-ml-book/shapley.html#disadvantages-16
     Problems with Shapley-value-based explanations as feature importance measures
     The SHAP values do not identify causality
+    Global mean absolute Deep SHAP feature importance is the average impact on model output magnitude
     '''
 
     def __init__(self, estimator, mp, backgroud = 'min', k_means_sampling = True, link='identity', **args):
