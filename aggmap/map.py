@@ -16,7 +16,7 @@ from aggmap.utils.gen_nwk import mp2newick
 
 from sklearn.manifold import TSNE, MDS
 from joblib import Parallel, delayed, load, dump
-from scipy.spatial.distance import squareform
+from scipy.spatial.distance import squareform, cdist, pdist
 from scipy.cluster.hierarchy import fcluster, linkage, dendrogram
 import matplotlib.pylab as plt
 import seaborn as sns
@@ -101,6 +101,7 @@ class AggMap(Base):
     def __init__(self, 
                  dfx,
                  metric = 'correlation',
+                 n_cpus = 16,
                  info_distance = None,
                 ):
         
@@ -108,14 +109,18 @@ class AggMap(Base):
         paramters
         -----------------
         dfx: pandas DataFrame
-        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation', measurement of feature distance
-        info_distance: a vector-form distance vector of the feature points, shape should be: (n*(n-1)/2), where n is the number of the features
-        
+        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation'
+                measurement of feature distance
+        n_cpus: int, default: 16
+                number of cpu cores to use to calculate the distance.
+        info_distance: a vector-form distance vector of the feature points, shape should be: (n*(n-1)/2), where n is the number of the features, defalt: None
+                        It can be useful when you want to calculate the distance by yourself:
+                        info_distance = pdist(dfx.T, metric = 'euclidean'), the output of pdist fuction is the vector-form distance
+                        or if you have you own vector-form distance to pass
         """
         
-        assert type(dfx) == pd.core.frame.DataFrame, 'input dfx mush be pandas DataFrame!'
+        assert type(dfx) == pd.core.frame.DataFrame, 'input dfx must be pandas DataFrame!'
         super().__init__()
-
         self.metric = metric
         self.isfit = False
         self.alist = dfx.columns.tolist()
@@ -123,16 +128,17 @@ class AggMap(Base):
         self.cluster_flag = False
         m,n = dfx.shape
         info_distance_length = int(n*(n-1)/2)
+        assert len(dfx.columns.unique()) == n, 'the column names of dataframe must be unique !'        
         
         ## calculating distance
         if np.array(info_distance).any():
             assert len(info_distance) == info_distance_length, 'shape of info_distance must be (%s,)' % info_distance_length
-            print_info('skip to calculate the distance')
+            print_info('Skipping the distance calculation, using the customized vector-form distance...')
             self.info_distance = np.array(info_distance)
 
         else:
             print_info('Calculating distance ...')
-            D = calculator.pairwise_distance(dfx.values, n_cpus=16, method=metric)
+            D = calculator.pairwise_distance(dfx.values, n_cpus=n_cpus, method=metric)
             D = np.nan_to_num(D,copy=False)
             D_ = squareform(D)
             self.info_distance = D_.clip(0, np.inf)
