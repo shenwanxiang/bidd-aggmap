@@ -88,6 +88,8 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     gpuid: int, default=0,
         A parameter used for specific gpu card
     verbose: int, default = 0
+        if positive, then the log infomation of AggMapNet will be print
+        if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
 
     Examples
@@ -144,6 +146,16 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self.history = {}
         self.history_model = {}
         
+        if self.verbose > 0:
+            self.verbose1 = self.verbose
+            self.verbose2 = 0
+        elif self.verbose ==0:
+            self.verbose1 = 0
+            self.verbose2 = 0
+        elif self.verbose < 0:
+            self.verbose1 = 0
+            self.verbose2 = abs(self.verbose)
+            
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -210,16 +222,16 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 
 
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
-        model.compile(optimizer = opt, loss = self.loss)
+        model.compile(optimizer = opt, loss = self.loss)        
         performance = aggmodel.cbks.Reg_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
                                                                     criteria = self.monitor,
-                                                                    verbose = self.verbose,)
+                                                                    verbose = self.verbose1,)
 
         history = model.fit(X, y, 
                             batch_size=self.batch_size, 
-                            epochs= self.epochs, verbose= 0, shuffle = True, 
+                            epochs= self.epochs, verbose= self.verbose2, shuffle = True, 
                             validation_data = (X_valid, y_valid), 
                             callbacks=[performance]) 
 
@@ -375,6 +387,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     gpuid: int, default=0,
         A parameter used for specific gpu card
     verbose: int, default = 0
+        if positive, then the log infomation of AggMapNet will be print
+        if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
 
 
@@ -434,7 +448,17 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         #print(self.get_params())
         self.history = {}        
         self.history_model = {}
-        
+
+        if self.verbose > 0:
+            self.verbose1 = self.verbose
+            self.verbose2 = 0
+        elif self.verbose ==0:
+            self.verbose1 = 0
+            self.verbose2 = 0
+        elif self.verbose < 0:
+            self.verbose1 = 0
+            self.verbose2 = abs(self.verbose)
+            
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -508,17 +532,18 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
         opt = tf.keras.optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #
         model.compile(optimizer = opt, loss = self.loss, metrics = ['accuracy'])
+            
         performance = aggmodel.cbks.CLA_EarlyStoppingAndPerformance((X, y), 
                                                                     (X_valid, y_valid), 
                                                                     patience = self.patience, 
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
                                                                     last_avf= self.last_avf,
-                                                                    verbose = self.verbose,)
+                                                                    verbose = self.verbose1,)
 
         history = model.fit(X, y, 
                   batch_size=self.batch_size, 
-                  epochs= self.epochs, verbose= 0, shuffle = True, 
+                  epochs= self.epochs, verbose= self.verbose2, shuffle = True, 
                   validation_data = (X_valid, y_valid), class_weight = class_weight, 
                   callbacks=[performance]) 
 
@@ -697,6 +722,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     gpuid: int, default=0,
         A parameter used for specific gpu card
     verbose: int, default = 0
+        if positive, then the log infomation of AggMapNet will be print
+        if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
     name: str 
 
@@ -751,6 +778,16 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.history = {}
         self.history_model = {}        
         
+        if self.verbose > 0:
+            self.verbose1 = self.verbose
+            self.verbose2 = 0
+        elif self.verbose ==0:
+            self.verbose1 = 0
+            self.verbose2 = 0
+        elif self.verbose < 0:
+            self.verbose1 = 0
+            self.verbose2 = abs(self.verbose)
+            
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -824,11 +861,11 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
                                                                     last_avf = None,
-                                                                    verbose = self.verbose,)
+                                                                    verbose = self.verbose1,)
 
         history = model.fit(X, y, 
                   batch_size=self.batch_size, 
-                  epochs= self.epochs, verbose= 0, shuffle = True, 
+                  epochs= self.epochs, verbose= self.verbose2, shuffle = True, 
                   validation_data = (X_valid, y_valid), 
                   callbacks=[performance]) 
 
