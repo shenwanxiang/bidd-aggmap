@@ -142,6 +142,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         #print(self.get_params())
         
         self.history = {}
+        self.history_model = {}
         
     def get_params(self, deep=True):
 
@@ -197,7 +198,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         tf.compat.v1.set_random_seed(self.random_state)
         
 
-        model = aggmodel.net.AggMapNet2(X.shape[1:],
+        model = aggmodel.net._AggMapNet(X.shape[1:],
                                        n_outputs = y.shape[-1], 
                                        conv1_kernel_size = self.conv1_kernel_size,
                                        batch_norm = self.batch_norm,
@@ -225,7 +226,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         self._model = model
         self._performance = performance
         self.history = self._performance.history
-        
+        self.history_model = history.history
         self.is_fit = True
         # Return the classifier
         return self
@@ -366,8 +367,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     dropout: float, default: 0
         A parameter used for the dropout of the dense layers.
     monitor: str, default: 'val_loss'
-        {'val_loss', 'val_auc'}, a monitor for model selection
-    metric: str, default: 'ROC'
+        {'val_loss', 'val_metric'}, a monitor for model selection
+    metric: str, default: 'ACC'
         {'ROC', 'ACC', 'PRC'},  a matric parameter
     patience: int, default = 10000, 
         A parameter used for early stopping
@@ -396,7 +397,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                  n_inception = 2,                 
                  dropout = 0.0,
                  monitor = 'val_loss', 
-                 metric = 'ROC',
+                 metric = 'ACC',
                  patience = 10000,
                  verbose = 0, 
                  last_avf = 'softmax', 
@@ -432,6 +433,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         self.is_fit = False        
         #print(self.get_params())
         self.history = {}        
+        self.history_model = {}
         
     def get_params(self, deep=True):
 
@@ -493,7 +495,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         tf.compat.v1.set_random_seed(self.random_state)
 
 
-        model = aggmodel.net.AggMapNet2(X.shape[1:],
+        model = aggmodel.net._AggMapNet(X.shape[1:],
                                         n_outputs = y.shape[-1], 
                                         conv1_kernel_size = self.conv1_kernel_size,
                                         batch_norm = self.batch_norm,
@@ -512,17 +514,18 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                                                                     criteria = self.monitor,
                                                                     metric = self.metric,  
                                                                     last_avf= self.last_avf,
-                                                                    verbose = 0,)
+                                                                    verbose = self.verbose,)
 
         history = model.fit(X, y, 
                   batch_size=self.batch_size, 
-                  epochs= self.epochs, verbose= self.verbose, shuffle = True, 
+                  epochs= self.epochs, verbose= 0, shuffle = True, 
                   validation_data = (X_valid, y_valid), class_weight = class_weight, 
                   callbacks=[performance]) 
 
         self._model = model
         self._performance = performance
         self.history = self._performance.history
+        self.history_model = history.history
         self.is_fit = True        
         # Return the classifier
         return self
@@ -686,7 +689,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     dropout: float, default: 0
         A parameter used for the dropout of the dense layers, such as 0.1, 0.3, 0.5.
     monitor: str, default: 'val_loss'
-        {'val_loss', 'val_auc'}, a monitor for model selection
+        {'val_loss', 'val_metric'}, a monitor for model selection
     metric: str, default: 'ROC'
         {'ROC', 'ACC', 'PRC'},  a matric parameter
     patience: int, default = 10000, 
@@ -746,7 +749,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         
         #print(self.get_params())
         self.history = {}
-        
+        self.history_model = {}        
         
     def get_params(self, deep=True):
 
@@ -803,7 +806,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         tf.compat.v1.set_random_seed(self.random_state)
 
             
-        model = aggmodel.net.AggMapNet2(X.shape[1:],
+        model = aggmodel.net._AggMapNet(X.shape[1:],
                                         n_outputs = y.shape[-1], 
                                         conv1_kernel_size = self.conv1_kernel_size,
                                         batch_norm = self.batch_norm,
@@ -832,6 +835,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self._model = model
         self._performance = performance
         self.history = self._performance.history
+        self.history_model = history.history
         self.is_fit = True
         
         return self

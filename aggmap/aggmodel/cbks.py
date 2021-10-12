@@ -197,24 +197,35 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
     def __init__(self, train_data, valid_data, MASK = -1, patience=5, criteria = 'val_loss', metric = 'ROC', last_avf = None, verbose = 0):
         super(CLA_EarlyStoppingAndPerformance, self).__init__()
         
-        sp = ['val_loss', 'val_auc']
+        sp = ['val_loss', 'val_metric']
         assert criteria in sp, 'not support %s ! only %s' % (criteria, sp)
+        ms = ['ROC', 'PRC', 'ACC']
+        assert metric in ms, 'not support %s ! only %s' % (metric, ms)        
+        ms_dict = {'ROC':'roc_auc', 'PRC':'prc_auc', 'ACC':'accuracy'}
+        
+        metric = ms_dict[metric]
+        val_metric = 'val_%s' % metric
+        self.metric = metric
+        self.val_metric = val_metric
+        
         self.x, self.y  = train_data
         self.x_val, self.y_val = valid_data
         self.last_avf = last_avf
         
+        
+        
         self.history = {'loss':[],
                         'val_loss':[],
-                        'auc':[],
-                        'val_auc':[],
-                        
+                        self.metric:[],
+                        self.val_metric:[],
                         'epoch':[]}
         self.MASK = MASK
         self.patience = patience
         # best_weights to store the weights at which the minimum loss occurs.
         self.best_weights = None
         self.criteria = criteria
-        self.metric = metric
+
+        
         self.best_epoch = 0
         self.verbose = verbose
         
@@ -237,11 +248,11 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
             y_true_one_class = y_true[:, i]
             mask = ~(y_true_one_class == self.MASK)
             try:
-                if self.metric == 'ROC':
+                if self.metric == 'roc_auc':
                     auc = roc_auc_score(y_true_one_class[mask], y_pred_one_class[mask]) #ROC_AUC
-                elif self.metric == 'PRC': 
+                elif self.metric == 'prc_auc': 
                     auc = prc_auc_score(y_true_one_class[mask], y_pred_one_class[mask]) #PRC_AUC
-                elif self.metric == 'ACC':
+                elif self.metric == 'accuracy':
                     auc = accuracy_score(y_true_one_class[mask], np.round(y_pred_one_class[mask])) #ACC
             except:
                 auc = np.nan
@@ -260,11 +271,8 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
             self.best = np.Inf  
         else:
             self.best = -np.Inf
-            
 
-        
- 
-        
+            
     def on_epoch_end(self, epoch, logs={}):
         
         y_pred = self.model.predict(self.x)
@@ -277,10 +285,9 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         
         self.history['loss'].append(logs.get('loss'))
         self.history['val_loss'].append(logs.get('val_loss'))
-        self.history['auc'].append(roc_mean)
-        self.history['val_auc'].append(roc_val_mean)
+        self.history[self.metric].append(roc_mean)
+        self.history[self.val_metric].append(roc_val_mean)
         self.history['epoch'].append(epoch)
-        
         
         eph = str(epoch+1).zfill(4)        
         loss = '{0:.4f}'.format((logs.get('loss')))
@@ -289,20 +296,13 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
         auc_val = '{0:.4f}'.format(roc_val_mean)    
         
         if self.verbose:
-            if self.metric == 'ACC':
-                print('\repoch: %s, loss: %s - val_loss: %s; acc: %s - val_acc: %s' % (eph,
-                                                                                   loss, 
-                                                                                   val_loss, 
-                                                                                   auc,
-                                                                                   auc_val), end=100*' '+'\n')
-
-            else:
-                print('\repoch: %s, loss: %s - val_loss: %s; auc: %s - val_auc: %s' % (eph,
-                                                                                   loss, 
-                                                                                   val_loss, 
-                                                                                   auc,
-                                                                                   auc_val), end=100*' '+'\n')
-
+            print('\repoch: %s, loss: %s - val_loss: %s; %s: %s - %s: %s' % (eph,
+                                                                             loss, 
+                                                                             val_loss, 
+                                                                             self.metric,
+                                                                             auc,
+                                                                             self.val_metric,
+                                                                             auc_val), end=100*' '+'\n')
 
         if self.criteria == 'val_loss':
             current = logs.get(self.criteria)
