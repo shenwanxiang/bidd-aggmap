@@ -450,10 +450,7 @@ class AggMap(Base):
         self.df_grid = _get_df_grid(self)
         self.df_grid_reshape = _get_df_grid(self)
         self.feature_names_reshape = self.df_grid.v.tolist()
-
-    
-    
-    
+        return self
     
     def transform_mpX_to_df(self, X):
         '''
