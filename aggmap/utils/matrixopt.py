@@ -22,7 +22,6 @@ class Scatter2Grid:
         self.fmap_shape = None
         self.indices = None
         self.indices_list = None
-
         
     def fit(self, df, split_channels = True, channel_col = 'Channels'):
         """
@@ -53,9 +52,7 @@ class Scatter2Grid:
         self.col_asses = col_asses
         self.fmap_shape = grid_size
         self.indices = col_asses
-        
-        
-        
+
         self.channel_col = channel_col
         self.split_channels = split_channels
         df['indices'] = self.indices
@@ -70,6 +67,28 @@ class Scatter2Grid:
             self.channels = channels
             self.indices_list = indices_list
 
+            
+    def refit_c(self, df):
+        """
+        parameters
+        ------------------
+        df: dataframe with x, y columns
+      
+        
+        """
+        df['idx'] = range(len(df))
+        df['indices'] = self.indices
+        self.df = df
+        
+        if self.split_channels:
+            def _apply_split(x):
+                return x[['idx', 'indices']].to_dict('list')
+            sidx = df.groupby(self.channel_col).apply(_apply_split)      
+            channels = sidx.index.tolist()
+            indices_list = sidx.tolist()            
+            self.channels = channels
+            self.indices_list = indices_list
+            
             
     def transform(self, vector_1d):
         """vector_1d: extracted features

@@ -22,7 +22,7 @@ import matplotlib.pylab as plt
 import seaborn as sns
 from umap import UMAP
 from tqdm import tqdm
-from copy import copy
+from copy import copy, deepcopy
 import pandas as pd
 import numpy as np
 
@@ -286,9 +286,7 @@ class AggMap(Base):
         
         self.x_min = self.info_scale['min'].values
         self.x_max = self.info_scale['max'].values
-        
-   
-                
+     
         #bitsinfo
         dfb = pd.DataFrame(self.flist, columns = ['IDs'])
         if feature_group_list != []:
@@ -356,7 +354,7 @@ class AggMap(Base):
         self.df_embedding = df
       
         ## linear assignment algorithm 
-        print_info('Applying grid feature map(assignment), this may take several minutes(1~30 min)')
+        print_info('Applying grid assignment of feature points, this may take several minutes(1~30 min)')
         self._S.fit(self.df_embedding, self.split_channels, channel_col = 'Channels')
         print_info('Finished')
         
@@ -376,7 +374,87 @@ class AggMap(Base):
         self.feature_names_reshape = self.df_grid.v.tolist()
         return self
         
+    
+    def refit_c(self, cluster_channels = 10, lnk_method = 'complete', group_color_dict = {}):
+        """
+        re-fit the aggmap object to update the number of channels
+        parameters
+        --------------------
+        cluster_channels: int, number of the channels(clusters)
+        group_color_dict: dict of the group colors, keys are the group names, values are the colors
+        lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
+        """
+        
+        if not self.isfit:
+            print_error('please fit first!')
+            return
+            
 
+        self.split_channels = True
+        self.lnk_method = lnk_method
+        self.cluster_channels = cluster_channels
+        
+        dfd = pd.DataFrame(squareform(self.info_distance),
+                           index=self.alist,
+                           columns=self.alist)
+        dist_matrix = dfd.loc[self.flist][self.flist]
+
+        dfb = pd.DataFrame(self.flist, columns = ['IDs'])
+        print_info('applying hierarchical clustering to obtain group information ...')
+        self.cluster_flag = True
+
+        Z = linkage(squareform(dist_matrix.values),  self.lnk_method)
+        labels = fcluster(Z, self.cluster_channels, criterion='maxclust')
+
+        feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
+        dfb['Subtypes'] = feature_group_list
+        dfb = dfb.sort_values('Subtypes')
+        unique_types = dfb['Subtypes'].unique()
+
+        if not set(unique_types).issubset(set(group_color_dict.keys())):
+            color_list = sns.color_palette("hsv", len(unique_types)).as_hex()
+            group_color_dict = dict(zip(unique_types, color_list))
+
+        dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
+        self.group_color_dict = group_color_dict           
+        self.Z = Z
+        self.feature_group_list = feature_group_list
+
+        # update self.bitsinfo
+        self.bitsinfo = dfb
+        colormaps = dfb.set_index('Subtypes')['colors'].to_dict()
+        colormaps.update({'NaN': '#000000'})
+        self.colormaps = colormaps
+
+        # update self.df_embedding
+        df = pd.DataFrame(self.embedded.embedding_, index = self.flist,columns=['x', 'y'])
+        typemap = self.bitsinfo.set_index('IDs')
+        df = df.join(typemap)
+        df['Channels'] = df['Subtypes']
+        self.df_embedding = df
+
+        ## linear assignment not performed, only refit the channel number 
+        print_info('skipping grid assignment of feature points, fitting to target channel number')
+        self._S.refit_c(self.df_embedding)
+        print_info('Finished')
+
+        if self.fmap_shape == None:
+            self.fmap_shape = self._S.fmap_shape        
+        else:
+            m, n = self.fmap_shape
+            p, q = self._S.fmap_shape
+            assert (m >= p) & (n >=q), "fmap_shape's width must >= %s, height >= %s " % (p, q)
+
+
+        self.df_scatter = _get_df_scatter(self)
+        self.df_grid = _get_df_grid(self)
+        self.df_grid_reshape = _get_df_grid(self)
+        self.feature_names_reshape = self.df_grid.v.tolist()
+
+    
+    
+    
+    
     def transform_mpX_to_df(self, X):
         '''
         input 4D X, output 2D dataframe
@@ -523,7 +601,7 @@ class AggMap(Base):
         
         
     def copy(self):
-        return copy(self)
+        return deepcopy(self)
         
         
     def load(self, filename):
