@@ -21,7 +21,7 @@ from sklearn.metrics import get_scorer, SCORERS
 
 from aggmap import aggmodel
 from aggmap.aggmodel.explain_dev import GlobalIMP, LocalIMP
-from aggmap.aggmodel.explainer import  shapley_explainer, simply_explainer
+from aggmap.aggmodel.explainer import shapley_explainer, simply_explainer
 
 from joblib import dump, load
 from  copy import copy
