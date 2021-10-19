@@ -27,7 +27,6 @@ import pandas as pd
 import numpy as np
 
 
-
 class Base:
     
     def __init__(self):

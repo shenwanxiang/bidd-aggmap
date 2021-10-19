@@ -27,8 +27,20 @@ from joblib import dump, load
 from  copy import copy
 from tensorflow.keras.models import load_model as load_tf_model
 
+import gc
+import tensorflow.keras.backend as K
+import tensorflow as tf
 
 
+def clean(clf): 
+    del clf._model
+    del clf._performance
+    del clf
+    gc.collect()
+    K.clear_session()
+    tf.compat.v1.reset_default_graph() # TF graph isn't same as Keras graph
+    
+    
 def save_model(model, model_path):
     if not os.path.exists(model_path):
         os.makedirs(model_path)
@@ -352,6 +364,10 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                         kernel_size = kernel_size, sigma = sigma)
         return dfe    
     
+    @property
+    def clean(self):
+        clean(self)
+        
     
 class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
@@ -686,7 +702,11 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                            kernel_size = kernel_size, sigma = sigma)
         return dfe
     
-    
+    @property
+    def clean(self):
+        clean(self)
+        
+        
 class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
 
@@ -1005,6 +1025,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                            kernel_size = kernel_size, sigma = sigma)
         return dfe    
     
-    
+    @property
+    def clean(self):
+        clean(self)    
     
     
