@@ -47,7 +47,7 @@ The performance of AggMapNet using different number of channels on the `TCGA-T (
 install aggmap by:
 ```bash
 # create an aggmap env
-conda create --n aggmap python=3.8
+conda create -n aggmap python=3.8
 
 # clone repo. and install requirements
 git clone https://github.com/shenwanxiang/bidd-aggmap.git
