@@ -140,7 +140,7 @@ class AggMap(Base):
             assert len(info_distance) == info_distance_length, 'shape of info_distance must be (%s,)' % info_distance_length
             print_info('Skipping the distance calculation, using the customized vector-form distance...')
             self.info_distance = np.array(info_distance)
-
+            self.metric = 'precomputed'
         else:
             print_info('Calculating distance ...')
             
