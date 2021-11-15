@@ -11,4 +11,4 @@ tqdm
 colored
 colorlog==4.0.2
 lapjv==1.3.1
-tensorflow-gpu==2.4.0 #or 2.5.0, 2.5.0 > is more slowly
+tensorflow-gpu==2.5.2 #or 2.5.0, 2.5.0 > is more slowly
