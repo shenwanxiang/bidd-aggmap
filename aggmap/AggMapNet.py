@@ -166,8 +166,9 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
             self.verbose2 = 0
         elif self.verbose < 0:
             self.verbose1 = 0
-            self.verbose2 = abs(self.verbose)
-            
+            self.verbose2 = abs(self.verbose)    
+        print(self)
+        
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -181,6 +182,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                         "batch_norm":self.batch_norm,
                         "n_inception":self.n_inception,
                         "monitor": self.monitor,
+                        "metric":self.metric,
                         "patience":self.patience,
                         "random_state":self.random_state,
                         "verbose":self.verbose,
@@ -475,6 +477,8 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
             self.verbose1 = 0
             self.verbose2 = abs(self.verbose)
             
+        print(self)
+        
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -489,6 +493,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
                         "batch_norm":self.batch_norm,
                         "n_inception":self.n_inception,                        
                         "monitor": self.monitor,
+                        "metric":self.metric,
                         "patience":self.patience,
                         "random_state":self.random_state,
                         "verbose":self.verbose,
@@ -807,7 +812,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         elif self.verbose < 0:
             self.verbose1 = 0
             self.verbose2 = abs(self.verbose)
-            
+        print(self)
+        
     def get_params(self, deep=True):
 
         model_paras =  {"epochs": self.epochs, 
@@ -821,6 +827,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                         "batch_norm":self.batch_norm,
                         "n_inception":self.n_inception,                        
                         "monitor": self.monitor,
+                        "metric":self.metric,
                         "patience":self.patience,
                         "random_state":self.random_state,
                         "verbose":self.verbose,
