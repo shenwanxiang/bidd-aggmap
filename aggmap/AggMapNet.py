@@ -209,9 +209,6 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
             
         if  y.ndim != 2:
             raise ValueError("Found array y with dim %d. %s expected == 2." % (y.ndim, self.name))    
-    
-        # Store the classes seen during fit
-        self.classes_ = unique_labels(y)
 
         self.X_ = X
         self.y_ = y
@@ -269,8 +266,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         Returns
         -------
         T : array-like of shape (n_samples, n_classes)
-            Returns the probability of the sample for each class in the model,
-            where classes are ordered as they are in ``self.classes_``.
+            Returns the predicted values
         """
         y_pred = self._model.predict(X)
         return y_pred
