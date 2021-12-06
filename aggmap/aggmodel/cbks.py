@@ -249,7 +249,7 @@ class CLA_EarlyStoppingAndPerformance(tf.keras.callbacks.Callback):
             mask = ~(y_true_one_class == self.MASK)
             try:
                 if self.metric == 'roc_auc':
-                    auc = roc_auc_score(y_true_one_class[mask], y_pred_one_class[mask]) #ROC_AUC
+                    auc = roc_auc_score(y_true_one_class[mask], y_pred_one_class[mask], average='weighted') #ROC_AUC
                 elif self.metric == 'prc_auc': 
                     auc = prc_auc_score(y_true_one_class[mask], y_pred_one_class[mask]) #PRC_AUC
                 elif self.metric == 'accuracy':
