@@ -14,7 +14,8 @@ from aggmap.utils import vismap, summary, calculator
 from aggmap.utils.gen_nwk import mp2newick
 
 
-from sklearn.manifold import TSNE, MDS
+from sklearn.manifold import TSNE, MDS, Isomap, LocallyLinearEmbedding, SpectralEmbedding
+        
 from joblib import Parallel, delayed, load, dump
 from scipy.spatial.distance import squareform, cdist, pdist
 from scipy.cluster.hierarchy import fcluster, linkage, dendrogram
@@ -46,7 +47,25 @@ class Base:
     def StandardScaler(self, x, xmean, xstd):
         return (x-xmean) / (xstd + 1e-8) 
     
+    
+class Random_2DEmbedding:
+    
+    def __init__(self, random_state=123, n_components=2):
+        self.random_state=random_state
+        self.n_components = n_components
 
+    def fit(self, X):
+        M, N = X.shape
+        np.random.seed(self.random_state)
+        rho = np.sqrt(np.random.uniform(0, 1, N))
+        phi = np.random.uniform(0, 4*np.pi, N)
+        x = rho * np.cos(phi)
+        y = rho * np.sin(phi)
+        rd = pd.DataFrame([x,y]).T.sample(frac=1, random_state=123).reset_index(drop=True)
+        self.embedding_ = rd.values
+        return self
+        
+        
 def _get_df_scatter(mp):
     xy = mp.embedded.embedding_
     colormaps = mp.colormaps
@@ -182,7 +201,8 @@ class AggMap(Base):
         method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
         kwargs: the extra parameters for the conresponding algorithm
         """
-
+        
+        affinity_dist = np.exp(-dist_matrix**2)  #make more uniformly embedding  
         if 'metric' in kwargs.keys():
             metric = kwargs.get('metric')
             kwargs.pop('metric')
@@ -196,6 +216,8 @@ class AggMap(Base):
                             metric = metric,
                             verbose = verbose,
                             **kwargs)
+            embedded = embedded.fit(dist_matrix)
+            
         elif method == 'umap':
             embedded = UMAP(n_components = n_components, 
                             n_neighbors = n_neighbors,
@@ -203,6 +225,7 @@ class AggMap(Base):
                             verbose = verbose,
                             random_state=random_state, 
                             metric = metric, **kwargs)
+            embedded = embedded.fit(dist_matrix)
             
         elif method =='mds':
             if 'metric' in kwargs.keys():
@@ -218,15 +241,39 @@ class AggMap(Base):
                            verbose = verbose,
                            dissimilarity = dissimilarity, 
                            random_state = random_state, **kwargs)
+            embedded = embedded.fit(dist_matrix)        
         
-        embedded = embedded.fit(dist_matrix)    
-        
-        return embedded
-    
-    
-   
+        elif method == 'random':
+            embedded = Random_2DEmbedding(random_state=random_state, 
+                                          n_components=n_components)
+            embedded = embedded.fit(dist_matrix)
             
+        elif method == 'isomap':
+            embedded = Isomap(n_neighbors = n_neighbors,
+                              n_components=n_components, 
+                              metric = metric,
+                              **kwargs)
+            embedded = embedded.fit(dist_matrix)
+            
+        elif method == 'lle':
+            embedded = LocallyLinearEmbedding(random_state=random_state, 
+                                              n_neighbors = n_neighbors,
+                                              n_components=n_components, 
+                                              **kwargs)
+            embedded = embedded.fit(dist_matrix)
+            
+        elif method == 'se':
+            embedded = SpectralEmbedding(random_state=random_state, 
+                                          n_neighbors = n_neighbors,
+                                          n_components=n_components, 
+                                          affinity = metric,
+                                          **kwargs)
+            embedded = embedded.fit(affinity_dist)    
+    
+        return embedded
 
+
+    
     def fit(self, 
             feature_group_list = [],
             cluster_channels = 5,
@@ -249,7 +296,7 @@ class AggMap(Base):
         var_thr: float, defalt is -1, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
         fmap_shape: None or tuple, size of molmap, if None, the size of feature map will be calculated automatically
-        emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
+        emb_method: {'tsne', 'umap', 'mds', 'isomap', 'random', 'lle', 'se'}, algorithm to embedd high-D to 2D
         group_color_dict: dict of the group colors, keys are the group names, values are the colors
         lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
         kwargs: the extra parameters for the conresponding embedding method
@@ -260,7 +307,7 @@ class AggMap(Base):
             
             
         ## embedding  into a 2d 
-        assert emb_method in ['tsne', 'umap', 'mds'], 'No Such Method Supported: %s' % emb_method
+        assert emb_method in ['tsne', 'umap', 'mds', 'isomap', 'random', 'lle', 'se'], 'No Such Method Supported: %s' % emb_method
 
         self.var_thr = var_thr
         self.split_channels = split_channels
