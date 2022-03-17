@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3999156.svg)](https://doi.org/10.5281/zenodo.3999156)
-[![Paper](https://img.shields.io/badge/paper-Nuclear%20Acid%20Research-brightgreen)](https://doi.org/10.1093/nar/gkac010)
-[![Example](https://img.shields.io/badge/example-MNIST-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
+[![Paper](https://img.shields.io/badge/Paper-Nuclear%20Acid%20Research-brightgreen)](https://doi.org/10.1093/nar/gkac010)
+[![Example](https://img.shields.io/badge/Example-MNIST-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 
 
 <a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
@@ -24,6 +24,7 @@
 ### Proof-of-Concepts of reconstruction ability on MNIST Dataset
 
 - It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data:
+![video](https://www.bilibili.com/video/BV1kZ4y1r7Nn/)
 ![reconstruction](./doc/reconstruction.png)
 
 `Org1`: the original grayscale images (channel = 1), `OrgRP1`: the randomized images of Org1 (channel = 1), `RPAgg1, 5`: the reconstructed images of `OrgPR1` by AggMap feature restructuring (channel = 1, 5 respectively, each color represents features of one channel). `RPAgg5-tkb`: the original images with the pixels divided into 5 groups according to the 5-channels of `RPAgg5` and colored in the same way as `RPAgg5`.
