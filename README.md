@@ -60,7 +60,9 @@ conda create -n aggmap python=3.7
 # clone repo. and install requirements
 git clone https://github.com/shenwanxiang/bidd-aggmap.git
 cd bidd-aggmap
-your_conda_path/envs/aggmap/bin/pip install -r requirements.txt --user
+conda activate aggmap
+pip install -r requirements.txt --user
+pip install numpy -U
 
 # add molmap to PYTHONPATH
 echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
