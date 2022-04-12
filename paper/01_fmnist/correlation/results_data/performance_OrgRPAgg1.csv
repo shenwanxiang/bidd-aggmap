@@ -1,2 +1,0 @@
-,train_size,valid_size,test_size,dense_layers,dense_avf,last_avf,trainable_params,batch_size,lr,best_epochs_in_valid,train_acc,valid_best_acc,test_acc,train_loss,valid_best_loss,test_loss
-0,54000,6000,10000,"[128, 64]",relu,softmax,303178,64,0.0001,86,0.9936666488647461,0.9194999933242798,0.9072999954223633,0.02515274741652387,0.34224405100693306,0.390473808606714

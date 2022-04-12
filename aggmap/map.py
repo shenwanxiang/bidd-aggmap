@@ -185,24 +185,24 @@ class AggMap(Base):
         
         
     def _fit_embedding(self, 
-                        dist_matrix,
-                        method = 'umap',  
-                        n_components = 2,
-                        random_state = 32,  
-                        verbose = 2,
-                        n_neighbors = 15,
-                        min_dist = 0.1,
-                        **kwargs):
+                       dist_matrix,
+                       emb_method = 'umap', 
+                       n_components = 2,
+                       random_state = 32,  
+                       verbose = 2,
+                       n_neighbors = 15,
+                       min_dist = 0.1,
+                       **kwargs):
         
         """
         parameters
         -----------------
         dist_matrix: distance matrix to fit
-        method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
+        emb_method: {'tsne', 'umap', 'mds'}, algorithm to embedd high-D to 2D
         kwargs: the extra parameters for the conresponding algorithm
         """
         
-        affinity_dist = np.exp(-dist_matrix**2)  #make more uniformly embedding  
+
         if 'metric' in kwargs.keys():
             metric = kwargs.get('metric')
             kwargs.pop('metric')
@@ -210,24 +210,24 @@ class AggMap(Base):
         else:
             metric = 'precomputed'
 
-        if method == 'tsne':
+        if emb_method == 'tsne':
             embedded = TSNE(n_components=n_components, 
                             random_state=random_state,
                             metric = metric,
                             verbose = verbose,
                             **kwargs)
-            embedded = embedded.fit(dist_matrix)
+            embedded = embedded.fit(dist_matrix)   
             
-        elif method == 'umap':
+        elif emb_method == 'umap':
             embedded = UMAP(n_components = n_components, 
                             n_neighbors = n_neighbors,
                             min_dist = min_dist,
                             verbose = verbose,
                             random_state=random_state, 
                             metric = metric, **kwargs)
-            embedded = embedded.fit(dist_matrix)
+            embedded = embedded.fit(dist_matrix)   
             
-        elif method =='mds':
+        elif emb_method =='mds':
             if 'metric' in kwargs.keys():
                 kwargs.pop('metric')
             if 'dissimilarity' in kwargs.keys():
@@ -241,34 +241,36 @@ class AggMap(Base):
                            verbose = verbose,
                            dissimilarity = dissimilarity, 
                            random_state = random_state, **kwargs)
-            embedded = embedded.fit(dist_matrix)        
+            embedded = embedded.fit(dist_matrix)          
         
-        elif method == 'random':
+        elif emb_method == 'random':
             embedded = Random_2DEmbedding(random_state=random_state, 
                                           n_components=n_components)
-            embedded = embedded.fit(dist_matrix)
+            embedded = embedded.fit(dist_matrix)   
             
-        elif method == 'isomap':
+        elif emb_method == 'isomap':
             embedded = Isomap(n_neighbors = n_neighbors,
                               n_components=n_components, 
                               metric = metric,
                               **kwargs)
-            embedded = embedded.fit(dist_matrix)
+            embedded = embedded.fit(dist_matrix)   
             
-        elif method == 'lle':
+        elif emb_method == 'lle':
             embedded = LocallyLinearEmbedding(random_state=random_state, 
                                               n_neighbors = n_neighbors,
                                               n_components=n_components, 
                                               **kwargs)
-            embedded = embedded.fit(dist_matrix)
+            embedded = embedded.fit(dist_matrix)   
             
-        elif method == 'se':
+        elif emb_method == 'se':
             embedded = SpectralEmbedding(random_state=random_state, 
                                           n_neighbors = n_neighbors,
                                           n_components=n_components, 
                                           affinity = metric,
                                           **kwargs)
-            embedded = embedded.fit(affinity_dist)    
+            affinity_matrix = np.exp(-dist_matrix**2)  #make more uniformly embedding  
+            
+            embedded = embedded.fit(affinity_matrix)    
     
         return embedded
 
@@ -384,7 +386,7 @@ class AggMap(Base):
 
         ## 2d embedding first
         embedded = self._fit_embedding(dist_matrix,
-                                       method = emb_method,
+                                       emb_method = emb_method,
                                        n_neighbors = n_neighbors,
                                        random_state = random_state,
                                        min_dist = min_dist, 
