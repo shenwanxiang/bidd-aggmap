@@ -1,6 +1,5 @@
-### Code for the paper published in NAR: https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkac010/6517966
-
-AggMapNet: enhanced and explainable low-sample omics deep learning with feature-aggregated multi-channel networks
+### Code for the paper published in NAR: 
+[AggMapNet: enhanced and explainable low-sample omics deep learning with feature-aggregated multi-channel networks](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkac010/6517966)
 
 **DataSet** 
 
