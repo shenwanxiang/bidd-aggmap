@@ -7,7 +7,7 @@
 
 # Jigsaw-like AggMap
 
-## A Robust Multi-Channel and Explainable Omics Deep Learning Tool
+## A Robust and Explainable Omics Deep Learning Tool
 
 ----
 
