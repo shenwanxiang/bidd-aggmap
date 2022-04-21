@@ -1,4 +1,7 @@
 [![Paper](https://img.shields.io/badge/Paper-Nuclear%20Acid%20Research-brightgreen)](https://doi.org/10.1093/nar/gkac010)
+
+[![Paper](https://img.shields.io/badge/DataSets-DOI-brightgreen)](https://doi.org/10.5281/zenodo.3999156)
+
 [![DataSets](https://zenodo.org/badge/DOI/10.5281/zenodo.3999156.svg)](https://doi.org/10.5281/zenodo.3999156)
 [![DOI](https://zenodo.org/badge/283439278.svg)](https://zenodo.org/badge/latestdoi/283439278)
 ### Code for the paper published in NAR: 
