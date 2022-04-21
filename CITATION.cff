@@ -1,0 +1,9 @@
+cff-version: 1.3.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Shen
+    given-names: WanXiang
+    orcid: https://orcid.org/0000-0001-7114-3664
+title: Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool
+version: v3
+date-released: 2022-4-21
