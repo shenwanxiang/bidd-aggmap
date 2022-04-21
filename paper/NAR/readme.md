@@ -1,10 +1,7 @@
 [![Paper](https://img.shields.io/badge/Paper-Nuclear%20Acid%20Research-brightgreen)](https://doi.org/10.1093/nar/gkac010)
+[![DataSets](https://img.shields.io/badge/DatDOI-10.5281/zenodo.3999156-blue)](https://doi.org/10.5281/zenodo.3999156)
+[![code](https://img.shields.io/badge/CodeDOI-10.5281/zenodo.6474351-blue)](https://zenodo.org/badge/latestdoi/283439278)
 
-[![DataSets](https://img.shields.io/badge/DataSets-10.5281/zenodo.3999156-blue)](https://doi.org/10.5281/zenodo.3999156)
-[![code](https://img.shields.io/badge/Code-https://zenodo.org/badge/latestdoi/283439278-blue)](https://zenodo.org/badge/latestdoi/283439278)
-
-[![DataSets](https://zenodo.org/badge/DOI/10.5281/zenodo.3999156.svg)](https://doi.org/10.5281/zenodo.3999156)
-[![DOI](https://zenodo.org/badge/283439278.svg)](https://zenodo.org/badge/latestdoi/283439278)
 
 ### Code for the paper published in NAR: 
 [AggMapNet: enhanced and explainable low-sample omics deep learning with feature-aggregated multi-channel networks](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkac010/6517966)
