@@ -2,7 +2,6 @@
 [![Example](https://img.shields.io/badge/Example-MNIST-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6474351.svg)](https://doi.org/10.5281/zenodo.6474351)
 
-
 <a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
 
 # Jigsaw-like AggMap
