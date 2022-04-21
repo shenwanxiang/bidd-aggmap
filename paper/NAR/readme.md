@@ -1,6 +1,6 @@
 [![Paper](https://img.shields.io/badge/Paper-Nuclear%20Acid%20Research-brightgreen)](https://doi.org/10.1093/nar/gkac010)
 
-[![DataSets](https://img.shields.io/badge/DataSets-https://doi.org/10.5281/zenodo.3999156-blue)](https://doi.org/10.5281/zenodo.3999156)
+[![DataSets](https://img.shields.io/badge/DataSets-10.5281/zenodo.3999156-blue)](https://doi.org/10.5281/zenodo.3999156)
 [![code](https://img.shields.io/badge/Code-https://zenodo.org/badge/latestdoi/283439278-blue)](https://zenodo.org/badge/latestdoi/283439278)
 
 [![DataSets](https://zenodo.org/badge/DOI/10.5281/zenodo.3999156.svg)](https://doi.org/10.5281/zenodo.3999156)
