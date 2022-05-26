@@ -1,134 +1,71 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Note: To use the 'upload' functionality of this file, you must:
-#   $ pipenv install twine --dev
-
-import io
-import os
 import sys
-from shutil import rmtree
+import os
+from setuptools import setup, find_packages
+from setuptools import Command
+from setuptools.command.test import test as TestCommand
+from datetime import datetime
+import aggmap
 
-from setuptools import find_packages, setup, Command
-
-# Package meta-data.
-NAME = 'bidd-aggmap'
-DESCRIPTION = 'AggMap: A Robust and Explainable Omics Deep Learning Tool'
-URL = 'https://github.com/shenwanxiang/bidd-aggmap/'
-EMAIL = 'wanxiang.shen@u.nus.edu'
-AUTHOR = 'Wan Xiang Shen'
-REQUIRES_PYTHON = '>=3.6.0'
-VERSION = '0.1.0'
-
-# What packages are required for this module to be executed?
 def parse_requirements(requirements):
     with open(requirements) as f:
         return [l.strip('\n') for l in f if l.strip('\n') and not l.startswith('#')]
 
-    
-REQUIRED = parse_requirements('./requirements.txt')
 
-# What packages are optional?
-EXTRAS = {
-    # 'fancy feature': ['django'],
-}
+with open("README.md", "r") as fh:
+    LONG_DESCRIPTION = fh.read()
 
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
+NAME = "aggmap"
+VERSION = aggmap.__version__
+AUTHOR = "WanXiang Shen"
+DESCRIPTION = "Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool"
+URL = "https://github.com/shenwanxiang/bidd-aggmap/tree/master"
+REQUIRED_PYTHON_VERSION = (3, 0)
+PACKAGES = find_packages()
+INSTALL_DEPENDENCIES = parse_requirements('./requirements.txt')
+SETUP_DEPENDENCIES = []
+TEST_DEPENDENCIES = ["pytest"]
+EXTRA_DEPENDENCIES = {"dev": ["pytest"]}
 
-here = os.path.abspath(os.path.dirname(__file__))
-
-# Import the README and use it as the long-description.
-# Note: this will only work if 'README.md' is present in your MANIFEST.in file!
-try:
-    with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-        long_description = '\n' + f.read()
-except FileNotFoundError:
-    long_description = DESCRIPTION
-
-# Load the package's __version__.py module as a dictionary.
-about = {}
-if not VERSION:
-    project_slug = NAME.lower().replace("-", "_").replace(" ", "_")
-    with open(os.path.join(here, project_slug, '__version__.py')) as f:
-        exec(f.read(), about)
-else:
-    about['__version__'] = VERSION
+if sys.version_info < REQUIRED_PYTHON_VERSION:
+    sys.exit("Python >= 3.0 is required. Your version:\n" + sys.version)
 
 
-class UploadCommand(Command):
-    """Support setup.py upload."""
+class PyTest(TestCommand):
+    """
+    Use pytest to run tests
+    """
 
-    description = 'Build and publish the package.'
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print('\033[1m{0}\033[0m'.format(s))
+    user_options = [("pytest-args=", "a", "Arguments to pass into py.test")]
 
     def initialize_options(self):
-        pass
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
 
     def finalize_options(self):
-        pass
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
 
-    def run(self):
-        try:
-            self.status('Removing previous builds…')
-            rmtree(os.path.join(here, 'dist'))
-        except OSError:
-            pass
+    def run_tests(self):
+        import pytest
 
-        self.status('Building Source and Wheel (universal) distribution…')
-        os.system('{0} setup.py sdist bdist_wheel --universal'.format(sys.executable))
-
-        self.status('Uploading the package to PyPI via Twine…')
-        os.system('twine upload dist/*')
-
-        self.status('Pushing git tags…')
-        os.system('git tag v{0}'.format(about['__version__']))
-        os.system('git push --tags')
-
-        sys.exit()
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 
-# Where the magic happens:
 setup(
     name=NAME,
-    version=about['__version__'],
     description=DESCRIPTION,
-    long_description=long_description,
-    long_description_content_type='text/markdown',
-    author=AUTHOR,
-    author_email=EMAIL,
-    python_requires=REQUIRES_PYTHON,
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     url=URL,
-    packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
-    # If your package is a single module, use this instead of 'packages':
-    # py_modules=['mypackage'],
-
-    # entry_points={
-    #     'console_scripts': ['mycli=mymodule:cli'],
-    # },
-    install_requires=REQUIRED,
-    extras_require=EXTRAS,
+    version=VERSION,
+    author=AUTHOR,
+    packages=PACKAGES,
     include_package_data=True,
-    license='MIT',
-    classifiers=[
-        # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
-    ],
-    # $ setup.py publish support.
-    cmdclass={
-        'upload': UploadCommand,
-    },
+    install_requires=INSTALL_DEPENDENCIES,
+    setup_requires=SETUP_DEPENDENCIES,
+    tests_require=TEST_DEPENDENCIES,
+    extras_require=EXTRA_DEPENDENCIES,
+    cmdclass={"test": PyTest},
 )

@@ -1,3 +1,14 @@
+Metadata-Version: 2.1
+Name: aggmap
+Version: 1.1.0
+Summary: Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool
+Home-page: https://github.com/shenwanxiang/bidd-aggmap/tree/master
+Author: WanXiang Shen
+License: UNKNOWN
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+
 
 [![Example](https://img.shields.io/badge/Example-MNIST-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6474351.svg)](https://doi.org/10.5281/zenodo.6474351)
@@ -64,4 +75,6 @@ shap_explainer = AggMapNet.shapley_explainer(clf, mp)
 global_shap_importance = shap_explainer.global_explain(clf.X_)
 local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 ```
+
+
 

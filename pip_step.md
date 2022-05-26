@@ -1,0 +1,5 @@
+- 1. config the setup.py
+- 2. python setup.py sdist
+- 3. python setup.py install # test, installed
+- 4. pip uninstall aggmap #uninstall
+- 5. twine upload dist/* #upload to pypi 
