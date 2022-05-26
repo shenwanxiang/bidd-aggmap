@@ -18,28 +18,11 @@ install aggmap by:
 ```bash
 # create an aggmap env
 conda create -n aggmap python=3.7
-
-# clone repo. and install requirements
-git clone https://github.com/shenwanxiang/bidd-aggmap.git
-cd bidd-aggmap
 conda activate aggmap
-pip install -r requirements.txt --user
-pip install numpy -U
-
-# add molmap to PYTHONPATH
-echo export PYTHONPATH="\$PYTHONPATH:`pwd`" >> ~/.bashrc
-
-# init bashrc
-source ~/.bashrc
-
-# activate env
-conda activate aggmap
-
-# now you can import aggmap in the aggmap env: 
-your_conda_path/envs/aggmap/bin/python
-your_conda_path/envs/aggmap/bin/ipython
-your_conda_path/envs/aggmap/bin/jupyter-lab
+pip install --upgrade pip
+pip install aggmap==1.1.0
 ```
+
 ----
 
 ### Usage
