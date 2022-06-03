@@ -7,7 +7,7 @@
 To transform high-dimensional and sparse metagenomic feature into image-like multi-channel color 2D-micribalprint.
 
 ----
-### MEG-MTS, How It Works?
+### MEGMA, How It Works?
 ![how-it-works](./cover/f2.png)
 
 **Generation of personal image-like multichannel 2D-microbiomeprint by MEGMA.** 
@@ -17,7 +17,7 @@ To transform high-dimensional and sparse metagenomic feature into image-like mul
 
 ----
 
-### MEG-MTS, What it can do?
+### MEGMA, What it can do?
 ![whatdo](./cover/f1.png)
 
 **Fig.1 | Metagenomic MEGMA and ConvNet-based AggMapNet for host disease prediction and replicable key marker identification.** 
