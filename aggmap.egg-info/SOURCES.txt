@@ -1,4 +1,7 @@
+CITATION.cff
+MANIFEST.in
 README.md
+requirements.txt
 setup.py
 aggmap/AggMapNet.py
 aggmap/__init__.py

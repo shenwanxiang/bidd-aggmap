@@ -19,7 +19,7 @@ VERSION = aggmap.__version__
 AUTHOR = "WanXiang Shen"
 DESCRIPTION = "Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool"
 URL = "https://github.com/shenwanxiang/bidd-aggmap/tree/master"
-REQUIRED_PYTHON_VERSION = (3, 0)
+REQUIRED_PYTHON_VERSION = (3, 7)
 PACKAGES = find_packages()
 INSTALL_DEPENDENCIES = parse_requirements('./requirements.txt')
 SETUP_DEPENDENCIES = []
@@ -27,7 +27,7 @@ TEST_DEPENDENCIES = ["pytest"]
 EXTRA_DEPENDENCIES = {"dev": ["pytest"]}
 
 if sys.version_info < REQUIRED_PYTHON_VERSION:
-    sys.exit("Python >= 3.0 is required. Your version:\n" + sys.version)
+    sys.exit("Python >= 3.7 is required. Your version:\n" + sys.version)
 
 
 class PyTest(TestCommand):

@@ -1,0 +1,9 @@
+include AUTHORS
+include LICENSE
+include CITATION.cff
+include DESCRIPTION
+include CHANGELOG.txt
+include README.rst
+include requirements.txt
+graft tornado_botocore
+global-exclude *.pyc
