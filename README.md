@@ -2,7 +2,7 @@
 [![Example](https://img.shields.io/badge/Usage-example-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
 
-<a href="url"><img src="./doc/logo.png" align="left" height="170" width="130" ></a>
+<a href="url"><img src="./docs/logo.png" align="left" height="170" width="130" ></a>
 
 # Jigsaw-like AggMap
 
