@@ -1,0 +1,55 @@
+{% set name = "aggmap" %}
+{% set version = "1.1.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/aggmap-{{ version }}.tar.gz
+  sha256: 70e00ffb4b89a052758f07adea7f8113b8fa789e012496f8a127b528810ea7fc
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - colored
+    - colorlog ==4.0.2
+    - joblib ==0.13.2
+    - lapjv
+    - numpy ==1.21.6
+    - pandas ==1.1.5
+    - python
+    - python-highcharts ==0.4.2
+    - scikit-learn ==0.22.2.post1
+    - scipy
+    - seaborn ==0.9.1
+    - shap ==0.39.0
+    - tensorflow-gpu ==2.9.1
+    - tqdm
+    - umap-learn ==0.3.10
+
+test:
+  imports:
+    - aggmap
+    - aggmap.aggmodel
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/shenwanxiang/bidd-aggmap/tree/master
+  summary: 'Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool'
+  license_file: PLEASE_ADD_LICENSE_FILE
+
+extra:
+  recipe-maintainers:
+    - shenwanxiang
