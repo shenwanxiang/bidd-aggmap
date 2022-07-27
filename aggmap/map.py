@@ -115,14 +115,6 @@ def _get_df_grid(mp):
 
 
 class AggMap(Base):
-    
-    def __init__(self, 
-                 dfx,
-                 metric = 'correlation',
-                 by_scipy = False,
-                 n_cpus = 16,
-                 info_distance = None,
-                ):
         
         """
         paramters
@@ -137,11 +129,19 @@ class AggMap(Base):
                   calculate the distance by using the scipy pdist fuction.
                   It can bu useful when dfx.shape[1] > 20000, i.e., the number of features is very large
                   Using pdist will increase the speed to calculate the distance, but may result a lower precision
-            
+
         n_cpus: int, default: 16
                 number of cpu cores to use to calculate the distance.        
         """
         
+    def __init__(self, 
+                 dfx,
+                 metric = 'correlation',
+                 by_scipy = False,
+                 n_cpus = 16,
+                 info_distance = None,
+                ):
+
         assert type(dfx) == pd.core.frame.DataFrame, 'input dfx must be pandas DataFrame!'
         super().__init__()
         self.metric = metric
