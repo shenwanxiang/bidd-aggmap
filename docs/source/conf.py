@@ -41,6 +41,19 @@ extensions = [
 ]
 
 
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/{.major}".format(sys.version_info), None),
+    "numpy": ("https://docs.scipy.org/doc/numpy/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/reference", None),
+    "matplotlib": ("https://matplotlib.org/", None),
+    "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
+    "sklearn": ("http://scikit-learn.org/stable/", None),
+    "bokeh": ("http://bokeh.pydata.org/en/latest/", None),
+}
+
+
+
 templates_path = ['_templates']
 exclude_patterns = []
 
