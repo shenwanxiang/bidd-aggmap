@@ -15,7 +15,6 @@ import seaborn as sns
 
 
 
-
 def imshow(x_arr,  ax, mode = 'dark',  color_list = ['#1300ff','#ff0c00','#25ff00', '#d000ff','#e2ff00', 
                                                      '#00fff6', '#ff8800', '#fccde5','#178b66', '#8a0075'],
            x_max = 255, vmin = -1, vmax = 1,):

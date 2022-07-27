@@ -24,22 +24,11 @@ Shen W X, Liu Y, Chen Y, et al. AggMapNet: enhanced and explainable low-sample o
 You can find the software `on github <https://github.com/shenwanxiang/bidd-aggmap/>`_.
 
 
-**Installation**
-----------
-PyPI install, presuming you have all its requirements installed:
 
-.. code:: bash
+.. toctree::
+   :caption: Installation
 
-    #create an aggmap env
-    conda create -n aggmap python=3.7
-    conda activate aggmap
-    pip install --upgrade pip
-    pip install aggmap    
-
-
-
-**Content**
-----------
+   install
 
 
 .. toctree::
@@ -52,8 +41,8 @@ PyPI install, presuming you have all its requirements installed:
 **Contribute**
 ----------
 
-- Issue Tracker: github.com/shenwanxiang/bidd-aggmap/issues
-- Source Code: github.com/shenwanxiang/bidd-aggmap/
+- Issue Tracker: https//github.com/shenwanxiang/bidd-aggmap/issues
+- Source Code: https//github.com/shenwanxiang/bidd-aggmap/
 
 **Support**
 -------
