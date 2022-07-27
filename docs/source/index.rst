@@ -4,7 +4,6 @@
    contain the root `toctree` directive.
 
 .. image:: ../images/logo.png
-  :width: 600
   :align: center
 
 Jigsaw-like aggmap: A Robust and Explainable Multi-Channel Omics Deep Learning Tool
@@ -25,11 +24,12 @@ Shen W X, Liu Y, Chen Y, et al. AggMapNet: enhanced and explainable low-sample o
 You can find the software `on github <https://github.com/shenwanxiang/bidd-aggmap/>`_.
 
 **Installation**
-
+----------
 PyPI install, presuming you have all its requirements installed:
 
 .. code:: bash
-    # create an aggmap env
+
+    #create an aggmap env
     conda create -n aggmap python=3.7
     conda activate aggmap
     pip install --upgrade pip
@@ -49,9 +49,10 @@ PyPI install, presuming you have all its requirements installed:
    :maxdepth: 2
    :caption: Examples of aggmap usage
 
-   MNIST/F-MNIST reconstruction
-   Multi-omcs based Covid-19 detection
-   Breast Cancer Detection 
+   image_reconstruction
+   WDBC_example
+   multi_omics
+
 
 .. toctree::
    :caption: API Reference:
