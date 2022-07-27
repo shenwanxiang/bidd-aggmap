@@ -115,25 +115,30 @@ def _get_df_grid(mp):
 
 
 class AggMap(Base):
+    
+    """ The feature restructuring class AggMap
+    
+    
+    Parameters
+    ----------
+    dfx: pandas DataFrame
+        Input data frame. 
         
-        """
-        paramters
-        -----------------
-        dfx: pandas DataFrame
-        metric: {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}, default: 'correlation'
-                measurement of feature distance
-
-        info_distance: a vector-form distance vector of the feature points, shape should be: (n*(n-1)/2), where n is the number of the features, defalt: None
-                        It can be useful when you have you own vector-form distance to pass
-        by_scipy: bool, defalt: False.
-                  calculate the distance by using the scipy pdist fuction.
-                  It can bu useful when dfx.shape[1] > 20000, i.e., the number of features is very large
-                  Using pdist will increase the speed to calculate the distance, but may result a lower precision
-
-        n_cpus: int, default: 16
-                number of cpu cores to use to calculate the distance.        
-        """
+    metric: string,  default: 'correlation'
+        measurement of feature distance, support {'cosine', 'correlation', 'euclidean', 'jaccard', 'hamming', 'dice'}
+    
+    info_distance: numpy array, defalt: None
+        a vector-form distance vector of the feature points, shape should be: (n*(n-1)/2), where n is the number of the features. It can be useful when you have you own vector-form distance to pass
         
+    by_scipy: bool, defalt: False.
+        calculate the distance by using the scipy pdist fuction.
+        It can bu useful when dfx.shape[1] > 20000, i.e., the number of features is very large
+        Using pdist will increase the speed to calculate the distance, but may result a lower precision
+    
+    n_cpus: int, default: 16
+        number of cpu cores to use to calculate the distance.        
+    """
+    
     def __init__(self, 
                  dfx,
                  metric = 'correlation',
@@ -141,7 +146,7 @@ class AggMap(Base):
                  n_cpus = 16,
                  info_distance = None,
                 ):
-
+        
         assert type(dfx) == pd.core.frame.DataFrame, 'input dfx must be pandas DataFrame!'
         super().__init__()
         self.metric = metric

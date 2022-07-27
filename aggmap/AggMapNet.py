@@ -104,6 +104,8 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
+        A parameter used for random seed.
+      
 
     Examples
     --------
@@ -407,7 +409,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
-
+        A parameter used for random seed.
 
     Examples
     --------
@@ -751,7 +753,9 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
-    name: str 
+        A parameter used for random seed.
+
+
 
     Examples
     --------
