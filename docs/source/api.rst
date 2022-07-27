@@ -24,12 +24,11 @@ A number of internal functions can also be accessed separately for more fine tun
 Useful Functions
 ----------------
 
-.. automodule:: aggmap.aggmodel.explainer
+.. automodule:: aggmap.aggmodel
    :members:
-   
+
+.. automodule:: aggmap.utils
+   :members:
+
 .. automodule:: aggmap.show
    :members:
-
-.. automodule:: aggmap.utils.vismap
-   :members:
-
