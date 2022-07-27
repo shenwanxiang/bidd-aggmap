@@ -1,4 +1,4 @@
-aggmap API Guide
+API Guide
 ==============
 
 aggmap has two major classes :class:`AggMap` and :class:`AggMapNet`.

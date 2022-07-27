@@ -1,7 +1,7 @@
 .ipynb_checkpoints
 __pycache__
 tmpignore
-#build
+build
 *.gzip
 zip.ipynb
 paper.old
