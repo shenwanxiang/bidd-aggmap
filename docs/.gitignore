@@ -1,0 +1,35 @@
+.ipynb_checkpoints
+__pycache__
+tmpignore
+#build
+*.gzip
+zip.ipynb
+paper.old
+
+
+#ignore model files, too large
+*.h5
+*.est
+*.csv
+*.html
+*.xlsx
+*.mp
+*.svg
+
+
+
+#ignore large mp object
+CRC_stage.mp
+pan-cancer.mp
+
+# ignore the frames file that generate video
+frames 
+
+
+*/.ipynb_checkpoints/*
+*/__pycache__/*
+*/tempignore/*
+
+*/org_paper/*
+
+

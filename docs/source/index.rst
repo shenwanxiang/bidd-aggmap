@@ -37,6 +37,8 @@ PyPI install, presuming you have all its requirements installed:
 
 
 
+**Content**
+----------
 
 .. toctree::
    :maxdepth: 2
