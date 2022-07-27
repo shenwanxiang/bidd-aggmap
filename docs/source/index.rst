@@ -3,11 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: ../images/logo.big.png
+.. image:: ../images/logo.png
   :width: 600
   :align: center
 
-Jigsaw-like AggMap: A Robust and Explainable Multi-Channel Omics Deep Learning Tool
+Jigsaw-like aggmap: A Robust and Explainable Multi-Channel Omics Deep Learning Tool
 ===========================================================================
 
 aggmap package is developed to enhance the learning of the unordered and unstructured omics data. aggmap includes theree major modules, they are:
@@ -25,7 +25,7 @@ Shen W X, Liu Y, Chen Y, et al. AggMapNet: enhanced and explainable low-sample o
 You can find the software `on github <https://github.com/shenwanxiang/bidd-aggmap/>`_.
 
 **Installation**
--------
+
 PyPI install, presuming you have all its requirements installed:
 
 .. code:: bash
@@ -36,9 +36,11 @@ PyPI install, presuming you have all its requirements installed:
     pip install aggmap    
 
 
+
+
 .. toctree::
    :maxdepth: 2
-   :caption: Background on UMAP:
+   :caption: Background on aggmap:
 
    how_aggmap_works
    performance
