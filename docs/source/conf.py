@@ -43,7 +43,7 @@ extensions = [
     "sphinx.ext.viewcode",
     'sphinx.ext.napoleon',
     #    'bokeh.sphinxext.bokeh_plot',
-    "sphinx_gallery.gen_gallery",
+    #"sphinx_gallery.gen_gallery",
 ]
 
 #extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
