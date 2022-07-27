@@ -23,6 +23,48 @@ Shen W X, Liu Y, Chen Y, et al. AggMapNet: enhanced and explainable low-sample o
 
 You can find the software `on github <https://github.com/shenwanxiang/bidd-aggmap/>`_.
 
+Look how easy it is to use:
+
+.. code:: python3
+
+    import pandas as pd
+    from sklearn.datasets import load_breast_cancer
+    from aggmap import AggMap, AggMapNet
+
+    # Data loading
+    data = load_breast_cancer()
+    dfx = pd.DataFrame(data.data, columns=data.feature_names)
+    dfy = pd.get_dummies(pd.Series(data.target))
+
+    # AggMap object definition, fitting, and saving 
+    mp = AggMap(dfx, metric = 'correlation')
+    mp.fit(cluster_channels=5, emb_method = 'umap', verbose=0)
+    mp.save('agg.mp')
+
+    # AggMap visulizations: Hierarchical tree, embeddng scatter and grid
+    mp.plot_tree()
+    mp.plot_scatter(enabled_data_labels=True, radius=5)
+    mp.plot_grid(enabled_data_labels=True)
+
+    # Transoformation of 1d vectors to 3D Fmaps (-1, w, h, c) by AggMap
+    X = mp.batch_transform(dfx.values, n_jobs=4, scale_method = 'minmax')
+    y = dfy.values
+
+    # AggMapNet training, validation, early stopping, and saving
+    clf = AggMapNet.MultiClassEstimator(epochs=50, gpuid=0)
+    clf.fit(X, y, X_valid=None, y_valid=None)
+    clf.save_model('agg.model')
+
+    # Model explaination by simply-explainer: global, local
+    simp_explainer = AggMapNet.simply_explainer(clf, mp)
+    global_simp_importance = simp_explainer.global_explain(clf.X_, clf.y_)
+    local_simp_importance = simp_explainer.local_explain(clf.X_[[0]], clf.y_[[0]])
+
+    # Model explaination by shapley-explainer: global, local
+    shap_explainer = AggMapNet.shapley_explainer(clf, mp)
+    global_shap_importance = shap_explainer.global_explain(clf.X_)
+    local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
+
 
 
 .. toctree::
