@@ -16,9 +16,7 @@ aggmap package is developed to enhance the learning of the unordered and unstruc
 - **Explainers**: the model explaination modules (Shapley-explainer and Simply-explainer), which are developed to calculate the local and global feature importance, and based on the 2D-grid of AggMap, we can generate the explaination saliency-map based on the the feature importance score 
 
 
-The details for the theory and usage can be found in our paper on 
-`NAR <https://academic.oup.com/nar/article/50/8/e45/6517966>`and `SSRN <http://dx.doi.org/10.2139/ssrn.4129422>`.
-
+The details for the theory and usage can be found in our paper on `NAR <https://academic.oup.com/nar/article/50/8/e45/6517966>`_ and `SSRN <http://dx.doi.org/10.2139/ssrn.4129422>`_ :
 - Shen W X, Liu Y, Chen Y, et al. AggMapNet: enhanced and explainable low-sample omics deep learning with feature-aggregated multi-channel networks[J]. Nucleic Acids Research, 2022, 50(8): e45-e45.
 - Shen, W. X., Liang, S. R., Jiang Y., et al. Enhanced Metagenomic Deep Learning for Disease Prediction and Reproducible Signature Identification by Restructured Microbiome 2D-Representations. SSRN: http://dx.doi.org/10.2139/ssrn.4129422, under review.
 
@@ -79,6 +77,11 @@ Look how easy it is to use:
    example_FMNIST   
    example_omics
    example_metagenomics
+   performance
+   module
+   aggmap
+   aggmap.utils
+   aggmap.aggmodel
    
 
 **Contribute**
