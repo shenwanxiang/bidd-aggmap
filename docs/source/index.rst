@@ -73,15 +73,10 @@ Look how easy it is to use:
 
    install
    api
-   example_MNIST
-   example_FMNIST   
-   example_omics
-   example_metagenomics
+   examples
    performance
    module
-   aggmap
-   aggmap.utils
-   aggmap.aggmodel
+
    
 
 **Contribute**
