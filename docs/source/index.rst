@@ -26,12 +26,14 @@ You can find the software `on github <https://github.com/shenwanxiang/bidd-aggma
 
 
 .. toctree::
+   :maxdepth: 1
    :caption: Installation
 
    install
 
 
 .. toctree::
+   :maxdepth: 3
    :caption: API Reference
 
    api
