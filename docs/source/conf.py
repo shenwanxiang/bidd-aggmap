@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 
-import sys
+import sys, os
 
-# sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- General configuration ------------------------------------------------
@@ -37,7 +37,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     #    'bokeh.sphinxext.bokeh_plot',
-    # "sphinx_gallery.gen_gallery",
+    "sphinx_gallery.gen_gallery",
 ]
 
 
@@ -52,6 +52,25 @@ intersphinx_mapping = {
     "bokeh": ("http://bokeh.pydata.org/en/latest/", None),
 }
 
+
+
+sphinx_gallery_conf = {
+    # path to your examples scripts
+    "examples_dirs": "../examples",
+    "ignore_pattern": r"(.*torus.*|inverse_transform.*)\.py",
+    # path where to save gallery generated examples
+    "gallery_dirs": "auto_examples",
+    "plot_gallery": False,  # Turn off running the examples for now
+    "reference_url": {
+        "python": "https://docs.python.org/{.major}".format(sys.version_info),
+        "numpy": "https://docs.scipy.org/doc/numpy/",
+        "scipy": "https://docs.scipy.org/doc/scipy/reference",
+        "matplotlib": "https://matplotlib.org/",
+        "pandas": "https://pandas.pydata.org/pandas-docs/stable/",
+        "sklearn": "http://scikit-learn.org/stable/",
+        "bokeh": "http://bokeh.pydata.org/en/latest/",
+    },
+}
 
 
 templates_path = ['_templates']

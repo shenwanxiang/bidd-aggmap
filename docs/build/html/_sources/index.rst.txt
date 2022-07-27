@@ -40,21 +40,6 @@ PyPI install, presuming you have all its requirements installed:
 **Content**
 ----------
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Background on aggmap:
-
-   how_aggmap_works
-   performance
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples of aggmap usage
-
-   image_reconstruction
-   WDBC_example
-   multi_omics
-
 
 .. toctree::
    :caption: API Reference:
