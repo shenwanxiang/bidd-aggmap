@@ -1,7 +1,7 @@
 aggmap API Guide
 ==============
 
-aggmap has only a single class :class:`AggMap`.
+aggmap has two major classes :class:`AggMap` and :class:`AggMapNet`.
 
 AggMap
 ----
