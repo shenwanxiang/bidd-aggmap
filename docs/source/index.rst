@@ -4,6 +4,7 @@
    contain the root `toctree` directive.
 
 .. image:: ../images/logo.png
+  :scale: 80 %
   :align: center
 
 Jigsaw-like aggmap: A Robust and Explainable Multi-Channel Omics Deep Learning Tool
