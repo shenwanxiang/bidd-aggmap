@@ -4,7 +4,7 @@ Examples
 aggmap usage examples
 
 
-MNIST reconstruction from pixel random permutation
+Unsupervised learning: MNIST reconstruction from pixel random permutation
 ----
 
 
@@ -15,7 +15,7 @@ MNIST reconstruction from pixel random permutation
 
 
 
-Fashion-MNIST reconstruction from pixel random permutation
+Unsupervised learning: Fashion-MNIST reconstruction from pixel random permutation
 ----
 
 
@@ -23,3 +23,13 @@ Fashion-MNIST reconstruction from pixel random permutation
    :maxdepth: 4
    
    fmnist
+   
+   
+Unsupervised learning: Pick up stage-specific genes in cell cycle data
+----
+
+
+.. toctree::
+   :maxdepth: 4
+   
+   cell_cycle

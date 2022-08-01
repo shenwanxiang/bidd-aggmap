@@ -1,3 +1,5 @@
 sphinx_gallery
 nbsphinx
 bokeh
+IPython
+ipykernel
