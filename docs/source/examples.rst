@@ -40,6 +40,8 @@ MEGMA: Metagenomic deep learning and key signature discovery
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 8
    
    MEGMA/megma_example
+   MEGMA/model_example
+   MEGMA/explaination_example
