@@ -4,7 +4,7 @@ Examples
 aggmap usage examples
 
 
-Unsupervised learning: MNIST reconstruction from pixel random permutation
+MNIST reconstruction from pixel random permutation
 ----
 
 
@@ -15,7 +15,7 @@ Unsupervised learning: MNIST reconstruction from pixel random permutation
 
 
 
-Unsupervised learning: Fashion-MNIST reconstruction from pixel random permutation
+Fashion-MNIST reconstruction from pixel random permutation
 ----
 
 
@@ -25,7 +25,7 @@ Unsupervised learning: Fashion-MNIST reconstruction from pixel random permutatio
    fmnist
    
    
-Unsupervised learning: Pick up stage-specific genes in cell cycle data
+Pick up stage-specific genes in cell cycle data
 ----
 
 
@@ -33,3 +33,13 @@ Unsupervised learning: Pick up stage-specific genes in cell cycle data
    :maxdepth: 4
    
    cell_cycle
+   
+ 
+MEGMA: Metagenomic deep learning and key signature discovery 
+----
+
+
+.. toctree::
+   :maxdepth: 4
+   
+   MEGMA/megma_example
