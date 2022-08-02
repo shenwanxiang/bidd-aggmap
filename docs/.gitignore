@@ -10,7 +10,7 @@ paper.old
 #ignore model files, too large
 *.h5
 *.est
-*.csv
+#*.csv
 *.html
 *.xlsx
 *.mp
