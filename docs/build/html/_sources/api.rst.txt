@@ -18,7 +18,6 @@ AggMapNet
 
 
 
-
 A number of internal functions can also be accessed separately for more fine tuned work.
 
 Useful Functions

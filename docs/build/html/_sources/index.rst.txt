@@ -12,7 +12,7 @@ Jigsaw-like aggmap: A Robust and Explainable Multi-Channel Omics Deep Learning T
 
 aggmap package is developed to enhance the learning of the unordered and unstructured omics data. aggmap includes theree major modules, they are:
 
-- **AggMap**: an unsupervised novel feature aggregation tool, which is developed to Aggregate and Map omics features into multi-channel 2D spatial-correlated image-like feature maps (Fmaps) based on their intrinsic correlations.
+- **AggMap**: an unsupervised novel feature aggregation tool, which is developed to Aggregate and Map omics features into multi-channel 2D spatial-correlated image-like feature maps (Fmaps) based on their intrinsic correlations.AggMap is an unsupervised learning method because no label is required during feature restructuring. AggMap can be considered as a Fmap jigsaw puzzle solver because it solves jigsaw puzzles of unordered FPs based on their intrinsic similarities and topological structures.  It can also be regarded as a representation learning tool because it presents a 1D vector into an image-liked 3D tensor by self-supervised learning. It can employ manifold learning method such as **UMAP** to restructure unordered FPs by learning their intrinsic structures. The proxy task of umap-based **AggMap** is to minimize the differences between the two weighted topological graphs built in the input data space and embedding 2D space. Thus, AggMap can expose the overall topology of the FPs to generate structured Fmaps based on the intrinsic structure of FPs. 
 - **AggMapNet**: a simple yet efficient CNN-based supervised learning model, which is developed for learning the output structured Fmaps of AggMap .
 - **Explainers**: the model explaination modules (Shapley-explainer and Simply-explainer), which are developed to calculate the local and global feature importance, and based on the 2D-grid of AggMap, we can generate the explaination saliency-map based on the the feature importance score 
 
@@ -75,6 +75,7 @@ Look how easy it is to use:
 
    install
    api
+   hps
    examples
    performances
    modules
