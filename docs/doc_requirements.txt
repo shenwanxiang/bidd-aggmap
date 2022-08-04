@@ -1,4 +1,6 @@
+Sphinx==5.1.1
 sphinx_gallery
+sphinx-rtd-theme
 nbsphinx
 bokeh
 IPython
