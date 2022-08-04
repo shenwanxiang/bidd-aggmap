@@ -98,7 +98,6 @@ exclude_patterns = []
 html_theme = "sphinx_rtd_theme"
 #html_theme = 'alabaster'
 html_theme_options = {"navigation_depth": -1, 
-                      "show_nav_level": -1, 
                       "collapse_navigation": False, 
                       'globaltoc_collapse': False,
                       'globaltoc_maxdepth': -1,
