@@ -45,8 +45,6 @@ Metagenomic deep learning and biomarker discovery
    _example_MEGMA/example_megma
    _example_MEGMA/example_AggMapNet
    _example_MEGMA/example_explaination
-   _example_MEGMA/example_explaination
-   
    _example_MEGMA/example_embedding_grouping
    
    
