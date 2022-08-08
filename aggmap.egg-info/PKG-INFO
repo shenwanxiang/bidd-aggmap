@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: aggmap
-Version: 1.1.1
+Version: 1.1.2
 Summary: Jigsaw-like AggMap: A Robust and Explainable Omics Deep Learning Tool
 Home-page: https://github.com/shenwanxiang/bidd-aggmap/tree/master
 Author: WanXiang Shen
@@ -8,6 +8,7 @@ License: UNKNOWN
 Platform: UNKNOWN
 Description-Content-Type: text/markdown
 Provides-Extra: dev
+License-File: LICENSE
 
 
 [![Example](https://img.shields.io/badge/Example-MNIST-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
@@ -29,7 +30,7 @@ install aggmap by:
 conda create -n aggmap python=3.7
 conda activate aggmap
 pip install --upgrade pip
-pip install aggmap==1.1.0
+pip install aggmap
 ```
 
 ----

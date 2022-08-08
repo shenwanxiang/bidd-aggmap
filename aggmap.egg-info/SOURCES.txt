@@ -1,4 +1,5 @@
 CITATION.cff
+LICENSE
 MANIFEST.in
 README.md
 requirements.txt

@@ -1,0 +1,84 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "a8f02509-2431-41eb-bfd6-68948408b07a",
+   "metadata": {},
+   "source": [
+    "## 3. Training & Test AggMapNet on MEGMA Fmaps\n",
+    "\n",
+    "**MEGMA** is short for metagenomic **M**icrobial **E**mbedding, **G**rouping, and **M**apping **A**lgorithm (MEGMA) , which is a further step development of **AggMap** that specific for metagenomic data learning. **MEGMA** is developed to transform the tabular metagenomic data into spatially-correlated color image-like 2D-representations, named as the 2D-microbiomeprints (3D tensor data in the form of row, column and channel). 2D-microbiomeprints are multichannel feature maps (Fmaps) and are the inputs of ConvNet-based AggMapNet models. \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "09287d3c-5723-41f4-8061-6fa5be942fc8",
+   "metadata": {},
+   "source": [
+    "\n",
+    "\n",
+    "\n",
+    "### Training CRC detection model \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8c0685e8-352e-4ed9-b88c-f2c19ff3f8cc",
+   "metadata": {},
+   "source": [
+    "### Test model performance"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "56e20da5-b529-4fe6-b384-8720cb63afd4",
+   "metadata": {},
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6bc12c97-aeae-4123-9082-e75557511763",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "e698f1d1-40ea-4141-98d9-9ea0038ea60d",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "6fc17a9b-ab73-45c1-9cc0-2b3a12a97393",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
