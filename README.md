@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
 
-<a href="url"><img src="https://github.com/shenwanxiang/bidd-aggmap/tree/master/docs/images/logo.png" align="left" height="170" width="130" ></a>
+<a href="url"><img src="https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/logo.png" align="left" height="170" width="130" ></a>
 
 
 
@@ -74,7 +74,7 @@ local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 
 - AggMap flowchart of feature mapping and agglomeration into ordered (spatially correlated) multi-channel feature maps (Fmaps)
 
-![how-it-works](https://github.com/shenwanxiang/bidd-aggmap/tree/master/docs/images/hiw.jpg)
+![how-it-works](https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/hiw.jpg)
 **a**, AggMap flowchart of feature mapping and aggregation into ordered (spatially-correlated) channel-split feature maps (Fmaps).**b**, CNN-based AggMapNet architecture for Fmaps learning. **c**, proof-of-concept illustration of AggMap restructuring of unordered data (randomized MNIST) into clustered channel-split Fmaps (reconstructed MNIST) for CNN-based learning and important feature analysis. **d**, typical biomedical applications of AggMap in restructuring omics data into channel-split Fmaps for multi-channel CNN-based diagnosis and biomarker discovery (explanation `saliency-map` of important features).
 
 
@@ -85,7 +85,7 @@ local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 
 
 
-![reconstruction](https://github.com/shenwanxiang/bidd-aggmap/tree/master/docs/images/reconstruction.png)
+![reconstruction](https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/reconstruction.png)
 
 `Org1`: the original grayscale images (channel = 1), `OrgRP1`: the randomized images of Org1 (channel = 1), `RPAgg1, 5`: the reconstructed images of `OrgPR1` by AggMap feature restructuring (channel = 1, 5 respectively, each color represents features of one channel). `RPAgg5-tkb`: the original images with the pixels divided into 5 groups according to the 5-channels of `RPAgg5` and colored in the same way as `RPAgg5`.
 
@@ -97,7 +97,7 @@ local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 ### The effect of the number of channels on model performance 
 
 - Multi-channel Fmaps can boost the model performance notably:
-![channel_effect](https://github.com/shenwanxiang/bidd-aggmap/tree/master/docs/images/channel_effect.png)
+![channel_effect](https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/channel_effect.png)
 
 The performance of AggMapNet using different number of channels on the `TCGA-T (a)` and `COV-D (b)`. For `TCGA-T`, ten-fold cross validation average performance, for `COV-D`, a fivefold cross validation was performed and repeat 5 rounds using different random seeds (total 25 training times), their average performances of the validation set were reported.
 ----
@@ -105,6 +105,6 @@ The performance of AggMapNet using different number of channels on the `TCGA-T (
 
 ### Example for Restructured Fmaps
 - The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/example/00_breast_cancer/00_WDBC_example_flow.ipynb) to find out more!
-![Fmap](https://github.com/shenwanxiang/bidd-aggmap/tree/master/docs/images/WDBC.png)
+![Fmap](https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/WDBC.png)
 
 ----
