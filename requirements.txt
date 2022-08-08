@@ -11,4 +11,5 @@ colored
 colorlog==4.0.2
 lapjv
 numpy==1.21.6
+numba=0.51.2
 tensorflow-gpu==2.9.1

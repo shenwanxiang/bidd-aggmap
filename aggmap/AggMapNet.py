@@ -69,7 +69,6 @@ def load_model(model_path, gpuid=None):
 
 class RegressionEstimator(BaseEstimator, RegressorMixin):
     """ An AggMap CNN Regression estimator (each sample belongs to only one class) 
-    
     Parameters
     ----------
     epochs : int, default = 200
@@ -104,8 +103,6 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
-        A parameter used for random seed.
-      
 
     Examples
     --------
@@ -373,8 +370,6 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
     """ An AggMap CNN MultiClass estimator (each sample belongs to only one class) 
-    
-    
     Parameters
     ----------
     epochs : int, default = 200
@@ -409,7 +404,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
-        A parameter used for random seed.
+
 
     Examples
     --------
@@ -717,8 +712,6 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
 
     """ An AggMap CNN MultiLabel estimator (each sample belongs to only one class) 
-    
-    
     Parameters
     ----------
     epochs : int, default = 200
@@ -753,9 +746,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
     random_state, int, default: 32
-        A parameter used for random seed.
-
-
+    name: str 
 
     Examples
     --------

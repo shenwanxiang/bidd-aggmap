@@ -197,6 +197,8 @@ class AggMap(Base):
                        verbose = 2,
                        n_neighbors = 15,
                        min_dist = 0.1,
+                       a = 1.576943460405378,
+                       b = 0.8950608781227859,
                        **kwargs):
         
         """
@@ -227,6 +229,8 @@ class AggMap(Base):
             embedded = UMAP(n_components = n_components, 
                             n_neighbors = n_neighbors,
                             min_dist = min_dist,
+                            a = a,
+                            b = b,
                             verbose = verbose,
                             random_state=random_state, 
                             metric = metric, **kwargs)
@@ -290,6 +294,8 @@ class AggMap(Base):
             emb_method = 'umap', 
             min_dist = 0.1, 
             n_neighbors = 15,
+            a = 1.576943460405378,
+            b = 0.8950608781227859,
             verbose = 2, 
             random_state = 32,
             group_color_dict  = {},
@@ -303,7 +309,11 @@ class AggMap(Base):
         var_thr: float, defalt is -1, meaning that feature will be included only if the conresponding variance larger than this value. Since some of the feature has pretty low variances, we can remove them by increasing this threshold
         split_channels: bool, if True, outputs will split into various channels using the types of feature
         fmap_shape: None or tuple, size of molmap, if None, the size of feature map will be calculated automatically
-        emb_method: {'tsne', 'umap', 'mds', 'isomap', 'random', 'lle', 'se'}, algorithm to embedd high-D to 2D
+        emb_method: {'umap', 'tsne', 'mds', 'isomap', 'random', 'lle', 'se'}, algorithm to embedd high-D to 2D
+        min_dist: float, UMAP parameters for the effective minimum distance between embedded points.
+        n_neighbors: init, UMAP parameters of controlling the embedding. Larger values result in more global views of the manifold, while smaller values result in more local data being preserved.
+        a: float, UMAP parameters of controlling the embedding. If None, it will automatically be determined by ``min_dist`` and ``spread``.
+        b: float, UMAP parameters of controlling the embedding. If None, it will automatically be determined by ``min_dist`` and ``spread``.
         group_color_dict: dict of the group colors, keys are the group names, values are the colors
         lnk_method: {'complete', 'average', 'single', 'weighted', 'centroid'}, linkage method
         kwargs: the extra parameters for the conresponding embedding method
@@ -321,6 +331,7 @@ class AggMap(Base):
         self.fmap_shape = fmap_shape
         self.emb_method = emb_method
         self.lnk_method = lnk_method
+        self.random_state = random_state
         
         if fmap_shape != None:
             assert len(fmap_shape) == 2, "fmap_shape must be a tuple with two elements!"
@@ -395,6 +406,8 @@ class AggMap(Base):
                                        n_neighbors = n_neighbors,
                                        random_state = random_state,
                                        min_dist = min_dist, 
+                                       a = a,
+                                       b = b,
                                        verbose = verbose,
                                        n_components = 2, **kwargs)
         
