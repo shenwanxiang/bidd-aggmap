@@ -1,10 +1,14 @@
 .ipynb_checkpoints
 __pycache__
 tmpignore
-#build
+build
+dist
+*.egg-info
+
 *.gzip
 zip.ipynb
 paper.old
+
 
 
 #ignore model files, too large
