@@ -858,14 +858,11 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         self.y_ = y
         
         if (X_valid is None) | (y_valid is None):
-            
             X_valid = X
             y_valid = y
-        
-        np.random.seed(self.random_state)
-        tf.compat.v1.set_random_seed(self.random_state)
-
             
+        np.random.seed(self.random_state)
+        tf.compat.v1.set_random_seed(self.random_state)            
         model = aggmodel.net._AggMapNet(X.shape[1:],
                                         n_outputs = y.shape[-1], 
                                         conv1_kernel_size = self.conv1_kernel_size,
