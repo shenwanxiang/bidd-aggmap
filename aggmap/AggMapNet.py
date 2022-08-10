@@ -268,7 +268,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         T : array-like of shape (n_samples, n_classes)
             Returns the predicted values
         """
-        y_pred = self._model.predict(X)
+        y_pred = self._model.predict(X, verbose = self.verbose)
         return y_pred
     
 
@@ -600,16 +600,15 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         # Input validation
         if  X.ndim != 4:
             raise ValueError("Found array X with dim %d. %s expected == 4." % (X.ndim, self.name))
-        y_prob = self._model.predict(X)
+        y_prob = self._model.predict(X, verbose = self.verbose)
         return y_prob
     
 
     def predict(self, X):
         probs = self.predict_proba(X)
-        y_pred = np.argmax(probs, axis=1)
+        y_pred = pd.get_dummies(np.argmax(probs, axis=1)).values
         return y_pred
-    
-    
+
 
     def score(self, X, y, scoring = 'accuracy', sample_weight=None):
         """Returns the score using the `scoring` option on the given
@@ -925,7 +924,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         # Input validation
         if  X.ndim != 4:
             raise ValueError("Found array X with dim %d. %s expected == 4." % (X.ndim, self.name))
-        y_prob = self._performance.sigmoid(self._model.predict(X))
+        y_prob = self._performance.sigmoid(self._model.predict(X, verbose = self.verbose))
         return y_prob
     
 
