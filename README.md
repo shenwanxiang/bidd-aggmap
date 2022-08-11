@@ -2,6 +2,9 @@
 [![Example](https://img.shields.io/badge/Usage-example-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Dkawtw4hanY3ks0mBMqvN1beskF6usjC)
+
+
 
 <a href="url"><img src="https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/logo.png" align="left" height="170" width="130" ></a>
 
