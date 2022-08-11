@@ -325,7 +325,8 @@ class AggMap(Base):
             
         ## embedding  into a 2d 
         assert emb_method in ['tsne', 'umap', 'mds', 'isomap', 'random', 'lle', 'se'], 'No Such Method Supported: %s' % emb_method
-
+        
+        self.feature_group_list = feature_group_list
         self.var_thr = var_thr
         self.split_channels = split_channels
         self.fmap_shape = fmap_shape
@@ -359,7 +360,7 @@ class AggMap(Base):
             
             assert len(feature_group_list) == len(self.alist), "the length of the input group list is not equal to length of the feature list"
             self.cluster_channels = len(set(feature_group_list))
-            self.feature_group_list = feature_group_list
+            self.feature_group_list_ = feature_group_list
             dfb['Subtypes'] = dfb['IDs'].map(pd.Series(feature_group_list, index = self.alist))
             
             if set(feature_group_list).issubset(set(group_color_dict.keys())):
@@ -379,8 +380,8 @@ class AggMap(Base):
             Z = linkage(squareform(dist_matrix.values),  lnk_method)
             labels = fcluster(Z, cluster_channels, criterion='maxclust')
             
-            feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
-            dfb['Subtypes'] = feature_group_list
+            feature_group_list_ = ['cluster_%s' % str(i).zfill(2) for i in labels]
+            dfb['Subtypes'] = feature_group_list_
             dfb = dfb.sort_values('Subtypes')
             unique_types = dfb['Subtypes'].unique()
             
@@ -391,7 +392,7 @@ class AggMap(Base):
             dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
             self.group_color_dict = group_color_dict           
             self.Z = Z
-            self.feature_group_list = feature_group_list
+            self.feature_group_list_ = feature_group_list_
             
 
         self.bitsinfo = dfb
@@ -472,8 +473,8 @@ class AggMap(Base):
         Z = linkage(squareform(dist_matrix.values),  self.lnk_method)
         labels = fcluster(Z, self.cluster_channels, criterion='maxclust')
 
-        feature_group_list = ['cluster_%s' % str(i).zfill(2) for i in labels]
-        dfb['Subtypes'] = feature_group_list
+        feature_group_list_ = ['cluster_%s' % str(i).zfill(2) for i in labels]
+        dfb['Subtypes'] = feature_group_list_
         dfb = dfb.sort_values('Subtypes')
         unique_types = dfb['Subtypes'].unique()
 
@@ -484,7 +485,7 @@ class AggMap(Base):
         dfb['colors'] = dfb['Subtypes'].map(group_color_dict)
         self.group_color_dict = group_color_dict           
         self.Z = Z
-        self.feature_group_list = feature_group_list
+        self.feature_group_list_ = feature_group_list_
 
         # update self.bitsinfo
         self.bitsinfo = dfb
