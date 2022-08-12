@@ -445,6 +445,7 @@ class AggMap(Base):
     def refit_c(self, cluster_channels = 10, lnk_method = 'complete', group_color_dict = {}):
         """
         re-fit the aggmap object to update the number of channels
+        
         parameters
         --------------------
         cluster_channels: int, number of the channels(clusters)
@@ -611,7 +612,7 @@ class AggMap(Base):
     
     
     def plot_scatter(self, htmlpath='./', htmlname=None, radius = 2, enabled_data_labels = False):
-        """radius: the size of the scatter, must be int"""
+        """Scatter plot, radius: the size of the scatter, must be int"""
         H_scatter = vismap.plot_scatter(self,  
                                         htmlpath=htmlpath, 
                                         htmlname=htmlname,
@@ -621,6 +622,7 @@ class AggMap(Base):
         
         
     def plot_grid(self, htmlpath='./', htmlname=None, enabled_data_labels = False):
+        """Grid plot"""
         
         H_grid = vismap.plot_grid(self,
                                   htmlpath=htmlpath, 
@@ -631,7 +633,8 @@ class AggMap(Base):
         
         
     def plot_tree(self, figsize=(16,8), add_leaf_labels = True, leaf_font_size = 18, leaf_rotation = 90):
-
+        """Diagram tree plot"""
+            
         fig = plt.figure(figsize=figsize)
         
         if self.cluster_flag:
@@ -665,12 +668,15 @@ class AggMap(Base):
         
         
     def copy(self):
+        """copy self"""
         return deepcopy(self)
         
         
     def load(self, filename):
+        """load self"""
         return self._load(filename)
     
     
     def save(self, filename):
+        """save self"""
         return self._save(filename)

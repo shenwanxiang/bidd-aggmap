@@ -69,6 +69,7 @@ def load_model(model_path, gpuid=None):
 
 class RegressionEstimator(BaseEstimator, RegressorMixin):
     """ An AggMap CNN Regression estimator (each sample belongs to only one class) 
+    
     Parameters
     ----------
     epochs : int, default = 200
@@ -95,14 +96,16 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         {'val_loss', 'val_r2'}, a monitor for model selection
     metric: str, default: 'r2'
         {'r2', 'rmse'},  a matric parameter
-    patience: int, default = 10000, 
+    patience: int, default: 10000
         A parameter used for early stopping
-    gpuid: int, default=0,
+    gpuid: int, default: 0
         A parameter used for specific gpu card
-    verbose: int, default = 0
+    verbose: int, default: 0
         if positive, then the log infomation of AggMapNet will be print
         if negative, then the log infomation of orignal model will be print
-    random_state, int, default: 32
+    random_state: int, default: 32
+        random seed.
+        
 
     Examples
     --------
@@ -276,6 +279,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
     def score(self, X, y, scoring = 'r2', sample_weight=None):
         """Returns the score using the `scoring` option on the given
         test data and labels.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -285,6 +289,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
         scoring: str, please refer to: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         sample_weight : array-like of shape (n_samples,), default=None
             Sample weights.
+        
         Returns
         -------
         score : float
@@ -330,6 +335,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
                       kernel_size = 3, sigma = 1.2):
         '''
         Feature importance calculation
+        
         Parameters
         --------------
         mp: aggmap object
@@ -370,6 +376,7 @@ class RegressionEstimator(BaseEstimator, RegressorMixin):
 class MultiClassEstimator(BaseEstimator, ClassifierMixin):
 
     """ An AggMap CNN MultiClass estimator (each sample belongs to only one class) 
+    
     Parameters
     ----------
     epochs : int, default = 200
@@ -393,17 +400,18 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     dropout: float, default: 0
         A parameter used for the dropout of the dense layers.
     monitor: str, default: 'val_loss'
-        {'val_loss', 'val_metric'}, a monitor for model selection
+        {'val_loss', 'val_metric'}, a monitor for model selection.
     metric: str, default: 'ACC'
-        {'ROC', 'ACC', 'PRC'},  a matric parameter
-    patience: int, default = 10000, 
-        A parameter used for early stopping
-    gpuid: int, default=0,
-        A parameter used for specific gpu card
-    verbose: int, default = 0
-        if positive, then the log infomation of AggMapNet will be print
-        if negative, then the log infomation of orignal model will be print
-    random_state, int, default: 32
+        {'ROC', 'ACC', 'PRC'},  a matric parameter.
+    patience: int, default: 10000 
+        A parameter used for early stopping.
+    gpuid: int, default: 0
+        A parameter used for specific gpu card.
+    verbose: int, default: 0
+        if positive, then the log infomation of AggMapNet will be print,
+        if negative, then the log infomation of orignal model will be print.
+    random_state: int, default: 32
+        Random seed.
 
 
     Examples
@@ -588,6 +596,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         X : array-like of shape (n_samples, n_features)
             Vector to be scored, where `n_samples` is the number of samples and
             `n_features` is the number of features.
+            
         Returns
         -------
         T : array-like of shape (n_samples, n_classes)
@@ -613,6 +622,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
     def score(self, X, y, scoring = 'accuracy', sample_weight=None):
         """Returns the score using the `scoring` option on the given
         test data and labels.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -622,6 +632,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         scoring: str, please refer to: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         sample_weight : array-like of shape (n_samples,), default=None
             Sample weights.
+        
         Returns
         -------
         score : float
@@ -668,6 +679,7 @@ class MultiClassEstimator(BaseEstimator, ClassifierMixin):
         
         '''
         Feature importance calculation
+        
         Parameters
         --------------
         mp: aggmap object
@@ -711,19 +723,20 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
 
 
     """ An AggMap CNN MultiLabel estimator (each sample belongs to only one class) 
+    
     Parameters
     ----------
     epochs : int, default = 200
         A parameter used for training epochs. 
     conv1_kernel_size: int, default = 13
-        A parameter used for the kernel size of first covolutional layers
+        A parameter used for the kernel size of first covolutional layers。
     dense_layers: list, default = [128]
         A parameter used for the dense layers.  
     batch_size: int, default: 128
         A parameter used for the batch size.
     lr: float, default: 1e-4
         A parameter used for the learning rate.
-    loss: string or function, default: tf.nn.sigmoid_cross_entropy_with_logits
+    loss: string or function, default: tf.nn.sigmoid_cross_entropy_with_logits。
         A parameter used for the loss function
     batch_norm: bool, default: False
         batch normalization after convolution layers.
@@ -734,18 +747,20 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     dropout: float, default: 0
         A parameter used for the dropout of the dense layers, such as 0.1, 0.3, 0.5.
     monitor: str, default: 'val_loss'
-        {'val_loss', 'val_metric'}, a monitor for model selection
+        {'val_loss', 'val_metric'}, a monitor for model selection。
     metric: str, default: 'ROC'
-        {'ROC', 'ACC', 'PRC'},  a matric parameter
-    patience: int, default = 10000, 
-        A parameter used for early stopping
-    gpuid: int, default=0,
-        A parameter used for specific gpu card
-    verbose: int, default = 0
-        if positive, then the log infomation of AggMapNet will be print
-        if negative, then the log infomation of orignal model will be print
-    random_state, int, default: 32
-    name: str 
+        {'ROC', 'ACC', 'PRC'},  a matric parameter。
+    patience: int, default: 10000 
+        A parameter used for early stopping。
+    gpuid: int, default: 0
+        A parameter used for specific gpu card。
+    verbose: int, default: 0
+        if positive, then the log infomation of AggMapNet will be print，
+        if negative, then the log infomation of orignal model will be print。
+    random_state: int, default: 32
+        Random seed
+    name: str
+        Model name
 
     Examples
     --------
@@ -912,6 +927,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         X : array-like of shape (n_samples, n_features)
             Vector to be scored, where `n_samples` is the number of samples and
             `n_features` is the number of features.
+            
         Returns
         -------
         T : array-like of shape (n_samples, n_classes)
@@ -937,6 +953,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
     def score(self, X, y, scoring = 'accuracy', sample_weight=None):
         """Returns the score using the `scoring` option on the given
         test data and labels.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -946,6 +963,7 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         scoring: str, please refer to: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
         sample_weight : array-like of shape (n_samples,), default=None
             Sample weights.
+            
         Returns
         -------
         score : float
@@ -990,7 +1008,8 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
                       apply_smoothing = False, 
                       kernel_size = 3, sigma = 1.2):
         '''
-        Feature importance calculation
+        Feature importance calculation.
+        
         Parameters
         --------------
         mp: aggmap object
@@ -998,13 +1017,13 @@ class MultiLabelEstimator(BaseEstimator, ClassifierMixin):
         y: trianing or test set y arrays
             whether the task is binary, if True, the feature importance will be calculated for one class only
         explain_format: {'local', 'global'}, default: 'global'
-            local or global feature importance, if local, then X must be one sample
-        apply_logrithm: {True, False}, default: False
-            whether apply a logarithm transformation on the importance values
-        apply_smoothing: {True, False}, default: False
-            whether apply a smoothing transformation on the importance values
-        kernel_size: odd number, the kernel size to perform the smoothing
-        sigma: float, sigma for gaussian smoothing
+            local or global feature importance, if local, then X must be one sample.
+        apply_logrithm: {True, False}, default: False.
+            whether apply a logarithm transformation on the importance values.
+        apply_smoothing: {True, False}, default: False.
+            whether apply a smoothing transformation on the importance values.
+        kernel_size: odd number, the kernel size to perform the smoothing.
+        sigma: float, sigma for gaussian smoothing.
         
         Returns
         ------------        
