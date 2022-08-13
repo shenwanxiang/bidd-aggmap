@@ -59,13 +59,13 @@ class shapley_explainer:
     >>> local_imp_shap = shap_explainer.local_explain(clf.X_[[0]])
     >>> ## S-map of shapley explainer
     >>> sns.heatmap(local_imp_shap.shapley_importance_class_1.values.reshape(mp.fmap_shape), 
-    cmap = 'rainbow')
+    >>> cmap = 'rainbow')
     >>> ## shapley plot
     >>> shap.summary_plot(shap_explainer.shap_values, 
-    feature_names = shap_explainer.feature_names) # #global  plot_type='bar
+    >>> feature_names = shap_explainer.feature_names) # #global  plot_type='bar
     >>> shap.initjs()
     >>> shap.force_plot(shap_explainer.explainer.expected_value[1], 
-    shap_explainer.shap_values[1], feature_names = shap_explainer.feature_names)
+    >>> shap_explainer.shap_values[1], feature_names = shap_explainer.feature_names)
 
     """
 
@@ -239,7 +239,8 @@ class simply_explainer:
     >>> global_imp_simp = simp_explainer.global_explain(clf.X_, clf.y_)
     >>> local_imp_simp = simp_explainer.local_explain(clf.X_[[0]], clf.y_[[0]])    
     >>> ## S-map of simply explainer
-    >>> sns.heatmap(local_imp_simp.simply_importance.values.reshape(mp.fmap_shape), cmap = 'rainbow')
+    >>> sns.heatmap(local_imp_simp.simply_importance.values.reshape(mp.fmap_shape), 
+    >>> cmap = 'rainbow')
     
     """
     
