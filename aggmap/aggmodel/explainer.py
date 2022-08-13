@@ -23,17 +23,57 @@ from aggmap.utils.logtools import print_warn, print_info
 
 
 class shapley_explainer:
-    '''
-    limiations:https://christophm.github.io/interpretable-ml-book/shapley.html#disadvantages-16
-    Problems with Shapley-value-based explanations as feature importance measures
-    The SHAP values do not identify causality
-    Global mean absolute Deep SHAP feature importance is the average impact on model output magnitude
-    '''
+    """Kernel Shap based model explaination, the limiations can be found in this paper:https://christophm.github.io/interpretable-ml-book/shapley.html#disadvantages-16 <Problems with Shapley-value-based explanations as feature importance measures>. The SHAP values do not identify causality Global mean absolute Deep SHAP feature importance is the average impact on model output magnitude.
+    
+  
+    Parameters
+    ----------
+    estimator:
+        model with a predict or predict_probe method
+    mp:
+        aggmap object
+    backgroud: string or int
+        {'min', 'all', int}.
+        if min, then use the min value as the backgroud data (equals to 1 sample)
+        if int, then sample the K samples as the backgroud data
+        if 'all' use all of the train data as the backgroud data for shap,
+    k_means_sampling: bool,
+        whether use the k-mean to sample the backgroud values or not
+    link : 
+        {"identity", "logit"}. A generalized linear model link to connect the feature importance values to the model output. 
+        Since the feature importance values, phi, sum up to the model output, it often makes sense to connect them 
+        to the output with a link function where link(output) = sum(phi). 
+        If the model output is a probability then the LogitLink link function makes the feature importance values have log-odds units.
+    args: 
+        Other parameters for shap.KernelExplainer.
+        
+        
+    
+    Examples
+    --------
+    >>> import seaborn as sns
+    >>> from aggmap.aggmodel.explainer import shapley_explainer
+
+    >>> ## shapley explainer
+    >>> shap_explainer = shapley_explainer(estimator, mp)
+    >>> global_imp_shap = shap_explainer.global_explain(clf.X_)
+    >>> local_imp_shap = shap_explainer.local_explain(clf.X_[[0]])
+    
+    >>> ## S-map of shapley explainer
+    >>> sns.heatmap(local_imp_shap.shapley_importance_class_1.values.reshape(mp.fmap_shape), cmap = 'rainbow')
+
+    >>> ## shapley plot
+    >>> shap.summary_plot(shap_explainer.shap_values, feature_names = shap_explainer.feature_names) # #global  plot_type='bar
+    >>> shap.initjs()
+    >>> shap.force_plot(shap_explainer.explainer.expected_value[1], shap_explainer.shap_values[1], feature_names = shap_explainer.feature_names)
+
+    """
 
     def __init__(self, estimator, mp, backgroud = 'min', k_means_sampling = True, link='identity', **args):
         '''
+        
         Parameters
-        -------------------
+        ----------
         estimator:
             model with a predict or predict_probe method
         mp:
@@ -105,8 +145,9 @@ class shapley_explainer:
         
         '''
         Explaination of one sample only:
+        
         Parameters
-        ------------------
+        ----------
         X: None or 4D array, where the shape is (n, w, h, c)
            the 4D array of AggMap multi-channel fmaps.
            Noted if X is None, then use the estimator.X_[[idx]] instead, namely explain the first sample if idx=0
@@ -128,9 +169,10 @@ class shapley_explainer:
     
     def global_explain(self, X=None, nsamples = 'auto', **args):
         '''
-        Explaination of many samples
+        Explaination of many samples.
+        
         Parameters
-        ------------------
+        ----------
         X: None or 4D array, where the shape is (n, w, h, c)
            the 4D array of AggMap multi-channel fmaps.
            Noted that if X is None, then use the estimator.X_ instead, namely explain the training set of the estimator
@@ -167,6 +209,41 @@ class shapley_explainer:
 
 class simply_explainer:
     
+    """Simply-explainer for modek explaination.
+
+    Parameters
+    ----------
+    estimator:
+        model with a predict or predict_probe method
+    mp:
+        aggmap object
+    backgroud: 
+        {'min', 'zeros'}, if 'zero' use all zeros as the backgroud data, if "min" use the min value of a vector of the training set
+    apply_logrithm: bool, default: False
+        apply the logirthm to the feature importance score
+    apply_smoothing: bool, default: False
+        apply the gaussian smoothing on the feature importance score (s-map )
+    kernel_size:
+        the kernel size for the smoothing
+    sigma:
+        the sigma for the smoothing.
+        
+    
+    
+            
+    Examples
+    --------
+    >>> import seaborn as sns
+    >>> from aggmap.aggmodel.explainer import simply_explainer
+    
+    >>> simp_explainer = simply_explainer(estimator, mp)
+    >>> global_imp_simp = simp_explainer.global_explain(clf.X_, clf.y_)
+    >>> local_imp_simp = simp_explainer.local_explain(clf.X_[[0]], clf.y_[[0]])    
+    >>> ## S-map of simply explainer
+    >>> sns.heatmap(local_imp_simp.simply_importance.values.reshape(mp.fmap_shape), cmap = 'rainbow')
+    
+    """
+    
     def __init__(self, 
                  estimator, 
                  mp, 
@@ -177,8 +254,10 @@ class simply_explainer:
                  sigma = 1.
                 ):
         '''
+        Simply-explainer for modek explaination.
+        
         Parameters
-        -------------------
+        ----------
         estimator:
             model with a predict or predict_probe method
         mp:
@@ -192,7 +271,7 @@ class simply_explainer:
         kernel_size:
             the kernel size for the smoothing
         sigma:
-            the sigma for the smoothing
+            the sigma for the smoothing.
         '''
         self.estimator = estimator
         self.mp = mp
@@ -226,15 +305,17 @@ class simply_explainer:
     
     def global_explain(self, X=None, y=None):
         '''
-        Explaination of many samples
+        Explaination of many samples.
+        
         Parameters
-        ------------------
+        ----------
         X: None or 4D array, where the shape is (n, w, h, c)
            the 4D array of AggMap multi-channel fmaps
         y: None or 4D array, where the shape is (n, class_num)
            the True label
         Noted that if X and y are None, then use the estimator.X_ and estimator.y_ instead, namely explain the training set of the estimator
         '''
+        
         if X is None:
             X = self.estimator.X_
             y = self.estimator.y_
@@ -312,19 +393,23 @@ class simply_explainer:
 
     def local_explain(self, X=None, y=None, idx=0):
         '''
-        Explaination of one sample only
+        Explaination of one sample only.
+        
         Parameters
-        ------------------
+        ----------
         X: None or 4D array, where the shape is (1, w, h, c)
         y: the True label, None or 4D array, where the shape is (1, class_num).
         idx: int, 
              index of the sample to interpret
-             Noted that if X and y are None, then use the estimator.X_[[idx]] and estimator.y_[[idx]] instead, namely explain the first sample if idx=0
+             Noted that if X and y are None, then use the estimator.X_[[idx]] and estimator.y_[[idx]] instead, namely explain the first sample if idx=0.
              
         Return
-        ------------------
+        ----------
             Feature importance of the current class
+            
+
         '''
+        
         if X is None:
             X = self.estimator.X_[[idx]]
             y = self.estimator.y_[[idx]]
