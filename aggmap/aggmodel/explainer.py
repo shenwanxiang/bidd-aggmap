@@ -33,8 +33,9 @@ class shapley_explainer:
     mp:
         aggmap object
     backgroud: string or int
-        {'min', 'all', int}.
+        {'min', 'global_min','all', int}.
         if min, then use the min value as the backgroud data (equals to 1 sample)
+        if global_min, then use the min value of all data as the backgroud data.   
         if int, then sample the K samples as the backgroud data
         if 'all' use all of the train data as the backgroud data for shap,
     k_means_sampling: bool,
@@ -79,8 +80,9 @@ class shapley_explainer:
         mp:
             aggmap object
         backgroud: string or int
-            {'min', 'all', int}.
+            {'min', 'global_min', 'all', int}.
             if min, then use the min value as the backgroud data (equals to 1 sample)
+            if global_min, then use the min value of all data as the backgroud data.            
             if int, then sample the K samples as the backgroud data
             if 'all' use all of the train data as the backgroud data for shap,
         k_means_sampling: bool,
@@ -110,8 +112,15 @@ class shapley_explainer:
         else:
             if backgroud == 'min':
                 self.backgroud_data =  train_features.min().to_frame().T.values
+                
+            elif backgroud == 'global_min':
+                gmin =  train_features.min().min()
+                self.backgroud_data =  np.full(shape=(1, train_features.shape[1]), 
+                                               fill_value = gmin)                
             else:
                 self.backgroud_data =  train_features
+
+                    
         self.explainer = shap.KernelExplainer(self._predict_warpper, self.backgroud_data, link=self.link, **args)
         self.feature_names = train_features.columns.tolist() # mp.alist
 
@@ -213,19 +222,21 @@ class simply_explainer:
 
     Parameters
     ----------
-    estimator:
+    estimator: object
         model with a predict or predict_probe method
-    mp:
+    mp: object
         aggmap object
-    backgroud: 
-        {'min', 'zeros'}, if 'zero' use all zeros as the backgroud data, if "min" use the min value of a vector of the training set
+    backgroud: {'min', 'global_min','zeros'}, default: 'min'.
+        if "min", then use the min value of a vector of the training set,
+        if 'global_min', then use the min value of all training set.
+        if 'zero', then use all zeros as the backgroud data.    
     apply_logrithm: bool, default: False
         apply the logirthm to the feature importance score
     apply_smoothing: bool, default: False
-        apply the gaussian smoothing on the feature importance score (s-map )
-    kernel_size:
+        apply the gaussian smoothing on the feature importance score (Saliency map)
+    kernel_size: int, default: 5.
         the kernel size for the smoothing
-    sigma:
+    sigma: float, default: 1.0.
         the sigma for the smoothing.
         
     
@@ -263,7 +274,10 @@ class simply_explainer:
         mp:
             aggmap object
         backgroud: 
-            {'min', 'zeros'}, if 'zero' use all zeros as the backgroud data, if "min" use the min value of a vector of the training set
+            {'min', 'global_min', 'zeros'}, 
+            if 'zero' use all zeros as the backgroud data, 
+            if "min" use the min value of a vector of the training set,
+            if 'global_min', use the min value of all training set.
         apply_logrithm: bool, default: False
             apply the logirthm to the feature importance score
         apply_smoothing: bool, default: False
@@ -282,8 +296,12 @@ class simply_explainer:
         self.backgroud = backgroud
         if backgroud == 'min':
             self.backgroud_data =  mp.transform_mpX_to_df(self.estimator.X_).min().values
+        elif backgroud == 'zeros':
+            self.backgroud_data =  np.zeros(shape=(len(mp.df_grid_reshape), ))
         else:
-            self.backgroud_data =  np.zeros(shape=(len(mp.df_grid_reshape),))
+            gmin = self.estimator.X_.min()
+            self.backgroud_data =  np.full(shape=(len(mp.df_grid_reshape), ), 
+                                           fill_value = gmin)
 
         self.scaler = StandardScaler()
 
@@ -326,7 +344,7 @@ class simply_explainer:
         
         dfY = pd.DataFrame(y)
         Y_true = y
-        Y_prob = self.estimator._model.predict(X)
+        Y_prob = self.estimator._model.predict(X, verbose = 0)
         
         T = len(self.df_grid)
         nX = 20 # 10 arrX to predict
@@ -355,7 +373,7 @@ class simply_explainer:
                 if (flag == nX) | (i == T-1):
                     X2p = np.concatenate(tmp_X)
                     ## step 2: make predictions
-                    Y_pred_prob = self.estimator._model.predict(X2p) #predict ont by one is not efficiency
+                    Y_pred_prob = self.estimator._model.predict(X2p, verbose = 0) #predict ont by one is not efficiency
                     if self.estimator.name == 'AggMap MultiLabels Estimator':
                         Y_pred_prob = self._sigmoid(Y_pred_prob)    
 
@@ -423,7 +441,7 @@ class simply_explainer:
         
         dfY = pd.DataFrame(y)
         Y_true = y
-        Y_prob = self.estimator._model.predict(X)
+        Y_prob = self.estimator._model.predict(X, verbose = 0)
         
         T = len(self.df_grid)
         nX = 20 # 10 arrX to predict
@@ -445,7 +463,7 @@ class simply_explainer:
             all_X1.append(X1)
 
         all_X = np.concatenate(all_X1)
-        all_Y_pred_prob = self.estimator._model.predict(all_X)
+        all_Y_pred_prob = self.estimator._model.predict(all_X, verbose = 0)
 
         for Y_pred_prob in all_Y_pred_prob:
             if self.estimator.name == 'AggMap MultiLabels Estimator':
