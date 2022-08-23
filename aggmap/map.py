@@ -133,7 +133,7 @@ class AggMap(Base):
     by_scipy: bool, defalt: False.
         calculate the distance by using the scipy pdist fuction.
         It can bu useful when dfx.shape[1] > 20000, i.e., the number of features is very large
-        Using pdist will increase the speed to calculate the distance, but may result a lower precision
+        Using pdist will increase the speed to calculate the distance.
     
     n_cpus: int, default: 16
         number of cpu cores to use to calculate the distance.        
