@@ -12,7 +12,7 @@ paper.old
 *.est
 #*.csv
 #*.html
-**/images/*.html
+*.html
 *.xlsx
 *.mp
 *.svg

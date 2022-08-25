@@ -14,8 +14,9 @@ paper.old
 #ignore model files, too large
 *.h5
 *.est
+*/images/*.html
 
-*.html
+#*.html
 *.xlsx
 *.mp
 *.svg
