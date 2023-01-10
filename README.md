@@ -5,7 +5,7 @@
 [![Downloads](https://pepy.tech/badge/aggmap)](https://pepy.tech/project/aggmap)
 
 
-<a href="url"><img src="https://github.com/shenwanxiang/bidd-aggmap/blob/afccea2135b7d61e3a153ec852f1e3f6400f2f8b/docs/images/logo.png" align="left" height="170" width="130" ></a>
+<a href="url"><img src="/docs/images/logo.png" align="left" height="170" width="130" ></a>
 
 
 
