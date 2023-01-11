@@ -5,7 +5,7 @@
 [![Downloads](https://pepy.tech/badge/aggmap)](https://pepy.tech/project/aggmap)
 
 
-<a href="url"><img src="/docs/images/logo.png" align="left" height="170" width="130" ></a>
+<img src="/docs/images/logo.png" align="left" height="170" width="130" >
 
 
 
