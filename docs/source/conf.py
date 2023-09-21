@@ -32,7 +32,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", ".ipynb_checkpoints"]
 project = 'aggmap'
 copyright = '2022, Shen Wan Xiang'
 author = 'Shen Wan Xiang'
-release = '1.1.1'
+release = '1.1.8'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
