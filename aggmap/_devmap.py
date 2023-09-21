@@ -306,7 +306,7 @@ class AggMap(Base):
         else:
             if fmap_shape == None:
                 N = len(self.flist)
-                l = np.int(np.sqrt(N))*2
+                l = np._int(np.sqrt(N))*2
                 fmap_shape = (l, l)                
             S = Scatter2Array(fmap_shape)
         
