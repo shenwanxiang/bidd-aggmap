@@ -24,7 +24,7 @@ install aggmap by:
 conda create -n aggmap python=3.8
 conda activate aggmap
 pip install --upgrade pip
-pip install aggmap
+pip install aggmap==1.2.1
 ```
 
 ----
