@@ -1,4 +1,3 @@
-
 [![Example](https://img.shields.io/badge/Usage-example-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
@@ -83,8 +82,9 @@ local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 ----
 ### Proof-of-Concepts of reconstruction ability on MNIST Dataset
 
-<video src='http://www.shenwx.com/files/Video_MNIST.mp4' width=180/>  
-
+<video width="320" height="240" controls>
+  <source src="https://www.shenwx.com/files/Video_MNIST.mp4" type="video/mp4">
+</video>
 
 - It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data:
 
