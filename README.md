@@ -1,6 +1,5 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6474351.svg)](https://doi.org/10.5281/zenodo.6474351)
 [![Example](https://img.shields.io/badge/Usage-example-green)](https://github.com/shenwanxiang/bidd-aggmap/tree/master/paper/example)
-
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/aggmap)](https://pepy.tech/project/aggmap)
