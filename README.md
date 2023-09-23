@@ -83,8 +83,10 @@ local_shap_importance = shap_explainer.local_explain(clf.X_[[0]])
 ----
 ### Proof-of-Concepts of reconstruction ability on MNIST Dataset
 
-[![Watch the video](http://www.shenwx.com/files/Video_MNIST.mp4)]
 
+caption1 | caption2
+:-: | :-:
+<video src='video1.mov' width=180/> | <video src='[video2.mp4](http://www.shenwx.com/files/Video_MNIST.mp4)' width=180/>
 
 - It can reconstruct to the original image from completely randomly permuted (disrupted) MNIST data:
 
