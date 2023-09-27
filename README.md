@@ -15,7 +15,7 @@
 ----
 
 
-### Installation
+### Installation (Only on Linux system) 
 
 install aggmap by:
 ```bash
