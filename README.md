@@ -2,7 +2,7 @@
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/aggmap)](https://pepy.tech/project/aggmap)
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
-[![Paper](https://img.shields.io/badge/paper-Nucleic_Acids_Research-blue)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9071488/)
+[![Paper](https://img.shields.io/badge/paper-Nucleic_Acids_Research-blue)](https://academic.oup.com/nar/article/50/8/e45/6517966?login=false)
 
   
 <img src="./docs/images/logo.png" align="left" height="170" width="130" >
