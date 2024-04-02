@@ -2,8 +2,9 @@
 [![Documentation Status](https://readthedocs.org/projects/bidd-aggmap/badge/?version=latest)](https://bidd-aggmap.readthedocs.io/en/latest/?badge=latest)
 [![Downloads](https://pepy.tech/badge/aggmap)](https://pepy.tech/project/aggmap)
 [![PyPI version](https://badge.fury.io/py/aggmap.svg)](https://badge.fury.io/py/aggmap)
+[![Paper](https://img.shields.io/badge/paper-Nucleic%Acids%Research-green)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9071488/)
 
-
+  
 <img src="./docs/images/logo.png" align="left" height="170" width="130" >
 
 
