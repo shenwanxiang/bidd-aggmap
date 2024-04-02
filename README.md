@@ -108,6 +108,10 @@ The performance of AggMapNet using different number of channels on the `TCGA-T (
 ----
 
 
+### Citation
+Shen, Wan Xiang, et al. "AggMapNet: enhanced and explainable low-sample omics deep learning with feature-aggregated multi-channel networks." Nucleic Acids Research 50.8 (2022): e45-e45.
+
+
 ### Example for Restructured Fmaps
 - The example on WDBC dataset: click [here](https://github.com/shenwanxiang/bidd-aggmap/blob/master/paper/example/00_breast_cancer/00_WDBC_example_flow.ipynb) to find out more!
 ![Fmap](https://raw.githubusercontent.com/shenwanxiang/bidd-aggmap/master/docs/images/WDBC.png)
